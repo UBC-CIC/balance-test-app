@@ -1,5 +1,6 @@
 import 'package:balance_test/recording_page.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 import 'my_fading_scrollview.dart';
 
@@ -15,6 +16,7 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   //VARIABLES
 
+  //Controller for fading scroll view
   final controller = ScrollController();
 
   //UI
@@ -33,16 +35,17 @@ class _HomePageState extends State<HomePage> {
               child:
                   Column(mainAxisAlignment: MainAxisAlignment.start, children: [
                 Padding(
-                  padding: const EdgeInsets.fromLTRB(0, 3, 0, 3),
+                  padding: const EdgeInsets.fromLTRB(0, 2, 0, 2),
                   child: Center(
                     child: Card(
-                      elevation: 10,
+                      color: const Color(0xffffffff),
+                      elevation: 2,
                       shadowColor: Colors.white70,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(15.0),
                       ),
                       child: SizedBox(
-                        width: width * 0.87,
+                        width: width * 0.90,
                         height: 155,
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -50,34 +53,159 @@ class _HomePageState extends State<HomePage> {
                           children: [
                             Padding(
                               padding:
-                                  const EdgeInsets.fromLTRB(25.0, 32, 0, 0),
+                                  const EdgeInsets.fromLTRB(20.0, 32, 0, 0),
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  const Text(
+                                  Text(
+                                    // 'Sitting with\nBack Unsupported\nFeet Supported',
                                     'Sit to Stand',
-                                    style: TextStyle(
-                                      color: Color(0xff2A2A2A),
-                                      fontFamily: 'DMSans-Bold',
-                                      fontSize: 30,
+                                    style: GoogleFonts.nunito(
+                                      textStyle: const TextStyle(
+                                        color: Color(0xff2A2A2A),
+                                        // fontFamily: 'DMSans-Bold',
+                                        fontSize: 30,
+                                        fontWeight: FontWeight.bold,
+                                      ),
                                     ),
                                   ),
                                   Padding(
                                     padding:
                                         const EdgeInsets.fromLTRB(0, 10, 0, 0),
                                     child: Row(
-                                      children: const [
-                                        Icon(Icons.access_time_rounded,
-                                            color: Colors.blue),
+                                      children: [
+                                        const Icon(Icons.access_time_rounded,
+                                            color: Color(0xff006CC6)),
                                         Padding(
-                                          padding:
-                                              EdgeInsets.fromLTRB(8, 0, 0, 0),
+                                          padding: const EdgeInsets.fromLTRB(
+                                              8, 0, 0, 0),
                                           child: Text(
                                             '1 Minute',
-                                            style: TextStyle(
-                                              color: Colors.blue,
+                                            style: GoogleFonts.nunito(
+                                              textStyle: const TextStyle(
+                                                color: Color(0xff006CC6),
+                                                fontFamily: 'DMSans-Medium',
+                                                fontSize: 20,
+                                                fontWeight: FontWeight.w600,
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.fromLTRB(0, 0, 20, 0),
+                              child: FittedBox(
+                                fit: BoxFit.scaleDown,
+                                child: SizedBox(
+                                  height: 70,
+                                  width: 0.28 * width,
+                                  child: ElevatedButton(
+                                    onPressed: () {
+                                      Navigator.push(
+                                          widget.parentCtx,
+                                          //Used to pop to main page instead of home
+                                          MaterialPageRoute(
+                                              builder: (context) =>
+                                                  const RecordingPage(
+                                                    movementType:
+                                                        "Sit to Stand",
+                                                  )));
+                                    },
+                                    style: ElevatedButton.styleFrom(
+                                        elevation: 0,
+                                        backgroundColor:
+                                            const Color(0xff006CC6),
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(20),
+                                          //border radius equal to or more than 50% of width
+                                        )),
+                                    child: FittedBox(
+                                      fit: BoxFit.scaleDown,
+                                      child: Row(
+                                      children: [
+                                        Text(
+                                          'Start',
+                                          style: GoogleFonts.nunito(
+                                            textStyle: const TextStyle(
+                                              color: Colors.white,
                                               fontFamily: 'DMSans-Medium',
-                                              fontSize: 20,
+                                              fontSize: 25,
+                                              fontWeight: FontWeight.w500,
+                                            ),
+                                          ),
+                                        ),
+                                        const Icon(Icons.play_arrow_rounded)
+                                      ],
+                                    ),),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(0, 2, 0, 2),
+                  child: Center(
+                    child: Card(
+                      color: const Color(0xffffffff),
+                      elevation: 2,
+                      shadowColor: Colors.white70,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(15.0),
+                      ),
+                      child: SizedBox(
+                        width: width * 0.90,
+                        height: 155,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Padding(
+                              padding:
+                                  const EdgeInsets.fromLTRB(20.0, 32, 0, 0),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    'Sit to Stand',
+                                    style: GoogleFonts.nunito(
+                                      textStyle: const TextStyle(
+                                        color: Color(0xff2A2A2A),
+                                        // fontFamily: 'DMSans-Bold',
+                                        fontSize: 30,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ),
+                                  Padding(
+                                    padding:
+                                        const EdgeInsets.fromLTRB(0, 10, 0, 0),
+                                    child: Row(
+                                      children: [
+                                        const Icon(Icons.access_time_rounded,
+                                            color: Color(0xff006CC6)),
+                                        Padding(
+                                          padding: const EdgeInsets.fromLTRB(
+                                              8, 0, 0, 0),
+                                          child: Text(
+                                            '1 Minute',
+                                            style: GoogleFonts.nunito(
+                                              textStyle: const TextStyle(
+                                                color: Color(0xff006CC6),
+                                                fontFamily: 'DMSans-Medium',
+                                                fontSize: 20,
+                                                fontWeight: FontWeight.w600,
+                                              ),
                                             ),
                                           ),
                                         ),
@@ -105,23 +233,27 @@ class _HomePageState extends State<HomePage> {
                                   },
                                   style: ElevatedButton.styleFrom(
                                       elevation: 0,
+                                      backgroundColor: const Color(0xff006CC6),
                                       shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(12),
+                                        borderRadius: BorderRadius.circular(20),
                                         //border radius equal to or more than 50% of width
                                       )),
                                   child: FittedBox(
                                     fit: BoxFit.scaleDown,
                                     child: Row(
-                                      children: const [
+                                      children: [
                                         Text(
                                           'Start',
-                                          style: TextStyle(
-                                            color: Colors.white,
-                                            fontFamily: 'DMSans-Medium',
-                                            fontSize: 25,
+                                          style: GoogleFonts.nunito(
+                                            textStyle: const TextStyle(
+                                              color: Colors.white,
+                                              fontFamily: 'DMSans-Medium',
+                                              fontSize: 25,
+                                              fontWeight: FontWeight.w500,
+                                            ),
                                           ),
                                         ),
-                                        Icon(Icons.play_arrow_rounded)
+                                        const Icon(Icons.play_arrow_rounded)
                                       ],
                                     ),
                                   ),
@@ -135,16 +267,17 @@ class _HomePageState extends State<HomePage> {
                   ),
                 ),
                 Padding(
-                  padding: const EdgeInsets.fromLTRB(0, 3, 0, 3),
+                  padding: const EdgeInsets.fromLTRB(0, 2, 0, 2),
                   child: Center(
                     child: Card(
-                      elevation: 10,
+                      color: const Color(0xffffffff),
+                      elevation: 2,
                       shadowColor: Colors.white70,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(15.0),
                       ),
                       child: SizedBox(
-                        width: width * 0.87,
+                        width: width * 0.90,
                         height: 155,
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -152,34 +285,40 @@ class _HomePageState extends State<HomePage> {
                           children: [
                             Padding(
                               padding:
-                                  const EdgeInsets.fromLTRB(25.0, 32, 0, 0),
+                                  const EdgeInsets.fromLTRB(20.0, 32, 0, 0),
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  const Text(
+                                  Text(
                                     'Sit to Stand',
-                                    style: TextStyle(
-                                      color: Color(0xff2A2A2A),
-                                      fontFamily: 'DMSans-Bold',
-                                      fontSize: 30,
+                                    style: GoogleFonts.nunito(
+                                      textStyle: const TextStyle(
+                                        color: Color(0xff2A2A2A),
+                                        // fontFamily: 'DMSans-Bold',
+                                        fontSize: 30,
+                                        fontWeight: FontWeight.bold,
+                                      ),
                                     ),
                                   ),
                                   Padding(
                                     padding:
                                         const EdgeInsets.fromLTRB(0, 10, 0, 0),
                                     child: Row(
-                                      children: const [
-                                        Icon(Icons.access_time_rounded,
-                                            color: Colors.blue),
+                                      children: [
+                                        const Icon(Icons.access_time_rounded,
+                                            color: Color(0xff006CC6)),
                                         Padding(
-                                          padding:
-                                              EdgeInsets.fromLTRB(8, 0, 0, 0),
+                                          padding: const EdgeInsets.fromLTRB(
+                                              8, 0, 0, 0),
                                           child: Text(
                                             '1 Minute',
-                                            style: TextStyle(
-                                              color: Colors.blue,
-                                              fontFamily: 'DMSans-Medium',
-                                              fontSize: 20,
+                                            style: GoogleFonts.nunito(
+                                              textStyle: const TextStyle(
+                                                color: Color(0xff006CC6),
+                                                fontFamily: 'DMSans-Medium',
+                                                fontSize: 20,
+                                                fontWeight: FontWeight.w600,
+                                              ),
                                             ),
                                           ),
                                         ),
@@ -207,23 +346,27 @@ class _HomePageState extends State<HomePage> {
                                   },
                                   style: ElevatedButton.styleFrom(
                                       elevation: 0,
+                                      backgroundColor: const Color(0xff006CC6),
                                       shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(12),
+                                        borderRadius: BorderRadius.circular(20),
                                         //border radius equal to or more than 50% of width
                                       )),
                                   child: FittedBox(
                                     fit: BoxFit.scaleDown,
                                     child: Row(
-                                      children: const [
+                                      children: [
                                         Text(
                                           'Start',
-                                          style: TextStyle(
-                                            color: Colors.white,
-                                            fontFamily: 'DMSans-Medium',
-                                            fontSize: 25,
+                                          style: GoogleFonts.nunito(
+                                            textStyle: const TextStyle(
+                                              color: Colors.white,
+                                              fontFamily: 'DMSans-Medium',
+                                              fontSize: 25,
+                                              fontWeight: FontWeight.w500,
+                                            ),
                                           ),
                                         ),
-                                        Icon(Icons.play_arrow_rounded)
+                                        const Icon(Icons.play_arrow_rounded)
                                       ],
                                     ),
                                   ),
@@ -237,16 +380,17 @@ class _HomePageState extends State<HomePage> {
                   ),
                 ),
                 Padding(
-                  padding: const EdgeInsets.fromLTRB(0, 3, 0, 3),
+                  padding: const EdgeInsets.fromLTRB(0, 2, 0, 2),
                   child: Center(
                     child: Card(
-                      elevation: 10,
+                      color: const Color(0xffffffff),
+                      elevation: 2,
                       shadowColor: Colors.white70,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(15.0),
                       ),
                       child: SizedBox(
-                        width: width * 0.87,
+                        width: width * 0.90,
                         height: 155,
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -254,34 +398,40 @@ class _HomePageState extends State<HomePage> {
                           children: [
                             Padding(
                               padding:
-                                  const EdgeInsets.fromLTRB(25.0, 32, 0, 0),
+                                  const EdgeInsets.fromLTRB(20.0, 32, 0, 0),
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  const Text(
+                                  Text(
                                     'Sit to Stand',
-                                    style: TextStyle(
-                                      color: Color(0xff2A2A2A),
-                                      fontFamily: 'DMSans-Bold',
-                                      fontSize: 30,
+                                    style: GoogleFonts.nunito(
+                                      textStyle: const TextStyle(
+                                        color: Color(0xff2A2A2A),
+                                        // fontFamily: 'DMSans-Bold',
+                                        fontSize: 30,
+                                        fontWeight: FontWeight.bold,
+                                      ),
                                     ),
                                   ),
                                   Padding(
                                     padding:
                                         const EdgeInsets.fromLTRB(0, 10, 0, 0),
                                     child: Row(
-                                      children: const [
-                                        Icon(Icons.access_time_rounded,
-                                            color: Colors.blue),
+                                      children: [
+                                        const Icon(Icons.access_time_rounded,
+                                            color: Color(0xff006CC6)),
                                         Padding(
-                                          padding:
-                                              EdgeInsets.fromLTRB(8, 0, 0, 0),
+                                          padding: const EdgeInsets.fromLTRB(
+                                              8, 0, 0, 0),
                                           child: Text(
                                             '1 Minute',
-                                            style: TextStyle(
-                                              color: Colors.blue,
-                                              fontFamily: 'DMSans-Medium',
-                                              fontSize: 20,
+                                            style: GoogleFonts.nunito(
+                                              textStyle: const TextStyle(
+                                                color: Color(0xff006CC6),
+                                                fontFamily: 'DMSans-Medium',
+                                                fontSize: 20,
+                                                fontWeight: FontWeight.w600,
+                                              ),
                                             ),
                                           ),
                                         ),
@@ -309,23 +459,27 @@ class _HomePageState extends State<HomePage> {
                                   },
                                   style: ElevatedButton.styleFrom(
                                       elevation: 0,
+                                      backgroundColor: const Color(0xff006CC6),
                                       shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(12),
+                                        borderRadius: BorderRadius.circular(20),
                                         //border radius equal to or more than 50% of width
                                       )),
                                   child: FittedBox(
                                     fit: BoxFit.scaleDown,
                                     child: Row(
-                                      children: const [
+                                      children: [
                                         Text(
                                           'Start',
-                                          style: TextStyle(
-                                            color: Colors.white,
-                                            fontFamily: 'DMSans-Medium',
-                                            fontSize: 25,
+                                          style: GoogleFonts.nunito(
+                                            textStyle: const TextStyle(
+                                              color: Colors.white,
+                                              fontFamily: 'DMSans-Medium',
+                                              fontSize: 25,
+                                              fontWeight: FontWeight.w500,
+                                            ),
                                           ),
                                         ),
-                                        Icon(Icons.play_arrow_rounded)
+                                        const Icon(Icons.play_arrow_rounded)
                                       ],
                                     ),
                                   ),
@@ -339,16 +493,17 @@ class _HomePageState extends State<HomePage> {
                   ),
                 ),
                 Padding(
-                  padding: const EdgeInsets.fromLTRB(0, 3, 0, 3),
+                  padding: const EdgeInsets.fromLTRB(0, 2, 0, 2),
                   child: Center(
                     child: Card(
-                      elevation: 10,
+                      color: const Color(0xffffffff),
+                      elevation: 2,
                       shadowColor: Colors.white70,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(15.0),
                       ),
                       child: SizedBox(
-                        width: width * 0.87,
+                        width: width * 0.90,
                         height: 155,
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -356,34 +511,40 @@ class _HomePageState extends State<HomePage> {
                           children: [
                             Padding(
                               padding:
-                                  const EdgeInsets.fromLTRB(25.0, 32, 0, 0),
+                                  const EdgeInsets.fromLTRB(20.0, 32, 0, 0),
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  const Text(
+                                  Text(
                                     'Sit to Stand',
-                                    style: TextStyle(
-                                      color: Color(0xff2A2A2A),
-                                      fontFamily: 'DMSans-Bold',
-                                      fontSize: 30,
+                                    style: GoogleFonts.nunito(
+                                      textStyle: const TextStyle(
+                                        color: Color(0xff2A2A2A),
+                                        // fontFamily: 'DMSans-Bold',
+                                        fontSize: 30,
+                                        fontWeight: FontWeight.bold,
+                                      ),
                                     ),
                                   ),
                                   Padding(
                                     padding:
                                         const EdgeInsets.fromLTRB(0, 10, 0, 0),
                                     child: Row(
-                                      children: const [
-                                        Icon(Icons.access_time_rounded,
-                                            color: Colors.blue),
+                                      children: [
+                                        const Icon(Icons.access_time_rounded,
+                                            color: Color(0xff006CC6)),
                                         Padding(
-                                          padding:
-                                              EdgeInsets.fromLTRB(8, 0, 0, 0),
+                                          padding: const EdgeInsets.fromLTRB(
+                                              8, 0, 0, 0),
                                           child: Text(
                                             '1 Minute',
-                                            style: TextStyle(
-                                              color: Colors.blue,
-                                              fontFamily: 'DMSans-Medium',
-                                              fontSize: 20,
+                                            style: GoogleFonts.nunito(
+                                              textStyle: const TextStyle(
+                                                color: Color(0xff006CC6),
+                                                fontFamily: 'DMSans-Medium',
+                                                fontSize: 20,
+                                                fontWeight: FontWeight.w600,
+                                              ),
                                             ),
                                           ),
                                         ),
@@ -411,23 +572,27 @@ class _HomePageState extends State<HomePage> {
                                   },
                                   style: ElevatedButton.styleFrom(
                                       elevation: 0,
+                                      backgroundColor: const Color(0xff006CC6),
                                       shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(12),
+                                        borderRadius: BorderRadius.circular(20),
                                         //border radius equal to or more than 50% of width
                                       )),
                                   child: FittedBox(
                                     fit: BoxFit.scaleDown,
                                     child: Row(
-                                      children: const [
+                                      children: [
                                         Text(
                                           'Start',
-                                          style: TextStyle(
-                                            color: Colors.white,
-                                            fontFamily: 'DMSans-Medium',
-                                            fontSize: 25,
+                                          style: GoogleFonts.nunito(
+                                            textStyle: const TextStyle(
+                                              color: Colors.white,
+                                              fontFamily: 'DMSans-Medium',
+                                              fontSize: 25,
+                                              fontWeight: FontWeight.w500,
+                                            ),
                                           ),
                                         ),
-                                        Icon(Icons.play_arrow_rounded)
+                                        const Icon(Icons.play_arrow_rounded)
                                       ],
                                     ),
                                   ),
@@ -440,108 +605,6 @@ class _HomePageState extends State<HomePage> {
                     ),
                   ),
                 ),
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(0, 3, 0, 3),
-                  child: Center(
-                    child: Card(
-                      elevation: 10,
-                      shadowColor: Colors.white70,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(15.0),
-                      ),
-                      child: SizedBox(
-                        width: width * 0.87,
-                        height: 155,
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            Padding(
-                              padding:
-                                  const EdgeInsets.fromLTRB(25.0, 32, 0, 0),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  const Text(
-                                    'Sit to Stand',
-                                    style: TextStyle(
-                                      color: Color(0xff2A2A2A),
-                                      fontFamily: 'DMSans-Bold',
-                                      fontSize: 30,
-                                    ),
-                                  ),
-                                  Padding(
-                                    padding:
-                                        const EdgeInsets.fromLTRB(0, 10, 0, 0),
-                                    child: Row(
-                                      children: const [
-                                        Icon(Icons.access_time_rounded,
-                                            color: Colors.blue),
-                                        Padding(
-                                          padding:
-                                              EdgeInsets.fromLTRB(8, 0, 0, 0),
-                                          child: Text(
-                                            '1 Minute',
-                                            style: TextStyle(
-                                              color: Colors.blue,
-                                              fontFamily: 'DMSans-Medium',
-                                              fontSize: 20,
-                                            ),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.fromLTRB(0, 0, 20, 0),
-                              child: SizedBox(
-                                height: 70,
-                                width: 0.28 * width,
-                                child: ElevatedButton(
-                                  onPressed: () {
-                                    Navigator.push(
-                                        widget.parentCtx,
-                                        //Used to pop to main page instead of home
-                                        MaterialPageRoute(
-                                            builder: (context) =>
-                                                const RecordingPage(
-                                                  movementType: "Sit to Stand",
-                                                )));
-                                  },
-                                  style: ElevatedButton.styleFrom(
-                                      elevation: 0,
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(12),
-                                        //border radius equal to or more than 50% of width
-                                      )),
-                                  child: FittedBox(
-                                    fit: BoxFit.scaleDown,
-                                    child: Row(
-                                      children: const [
-                                        Text(
-                                          'Start',
-                                          style: TextStyle(
-                                            color: Colors.white,
-                                            fontFamily: 'DMSans-Medium',
-                                            fontSize: 25,
-                                          ),
-                                        ),
-                                        Icon(Icons.play_arrow_rounded)
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ),
-                ), // Sit to Stand
               ])),
         ),
       ),

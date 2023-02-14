@@ -80,7 +80,7 @@ class FadingEdgeScrollView extends StatefulWidget {
   factory FadingEdgeScrollView.fromSingleChildScrollView({
     Key? key,
     required SingleChildScrollView child,
-    double gradientFractionOnStart = 0.02,
+    double gradientFractionOnStart = 0.03,
     double gradientFractionOnEnd = 0.0,
     bool shouldDisposeScrollController = false,
   }) {

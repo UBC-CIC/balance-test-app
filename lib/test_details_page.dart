@@ -1,11 +1,14 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'dart:convert';
 import "package:http/http.dart" as http;
 import 'dart:math';
 import 'loading.dart';
 import 'package:gaimon/gaimon.dart';
 
+import 'my_fading_scrollview.dart';
 
 class TestSummary extends StatefulWidget {
   const TestSummary({
@@ -42,7 +45,9 @@ class TestSummary extends StatefulWidget {
 }
 
 class _TestSummaryState extends State<TestSummary> {
+  //VARIABLES
   final _showCheck = ValueNotifier<bool>(false);
+  final controller = ScrollController();
 
   //METHODS
 
@@ -97,7 +102,6 @@ class _TestSummaryState extends State<TestSummary> {
     });
   }
 
-
   // Converts movement title name to api format
   String convertMovementType() {
     if (widget.movementType == "Sit to Stand") {
@@ -106,8 +110,8 @@ class _TestSummaryState extends State<TestSummary> {
     return "";
   }
 
-Future<http.Response> postRequest() async {
-  // Future<void> postRequest() async {
+  Future<http.Response> postRequest() async {
+    // Future<void> postRequest() async {
     final Map<String, Map<String, Object>> jsonMap = {};
 
     int tsLength = widget.timeStampData.length;
@@ -210,30 +214,36 @@ Future<http.Response> postRequest() async {
     String timeElapsed = widget.timeElapsed;
 
     return Scaffold(
-        backgroundColor: Colors.white,
+        backgroundColor: const Color(0xfff2f1f6),
         appBar: AppBar(
+          automaticallyImplyLeading: false,   // Removes back button from appbar
           toolbarHeight: 0.1 * height,
           systemOverlayStyle: const SystemUiOverlayStyle(
             statusBarBrightness: Brightness.light, // light for black status bar
           ),
-          title: const Text(
+          title: Text(
             'Review Details',
-            style: TextStyle(
-              color: Color.fromRGBO(141, 148, 162, 1.0),
-              fontFamily: 'DMSans-Regular',
-              fontSize: 32,
+            style: GoogleFonts.nunito(
+              textStyle: const TextStyle(
+                // color: Color.fromRGBO(141, 148, 162, 1.0),
+                color: Colors.black,
+                fontFamily: 'DMSans-Regular',
+                fontSize: 32,
+              ),
             ),
           ),
           elevation: 0,
           backgroundColor: Colors.transparent,
         ),
-        body: SingleChildScrollView(
-            child:
-                Column(mainAxisAlignment: MainAxisAlignment.start, children: [
+        body: FadingEdgeScrollView.fromSingleChildScrollView(
+    child: SingleChildScrollView(
+        controller: controller,
+        child: Column(mainAxisAlignment: MainAxisAlignment.start, children: [
           Padding(
             padding: const EdgeInsets.fromLTRB(0, 30, 0, 0),
             child: Center(
               child: Card(
+                color: Colors.white,
                 elevation: 10,
                 shadowColor: Colors.white70,
                 shape: RoundedRectangleBorder(
@@ -284,7 +294,7 @@ Future<http.Response> postRequest() async {
                                         const Text(
                                           'Movement',
                                           style: TextStyle(
-                                            color: Color(0xff2A2A2A),
+                                            color: Colors.indigo,
                                             fontFamily: 'DMSans-Medium',
                                             fontSize: 18,
                                           ),
@@ -323,7 +333,7 @@ Future<http.Response> postRequest() async {
                                         const Text(
                                           'Test Duration',
                                           style: TextStyle(
-                                            color: Color(0xff2A2A2A),
+                                            color: Colors.indigo,
                                             fontFamily: 'DMSans-Medium',
                                             fontSize: 18,
                                           ),
@@ -359,7 +369,7 @@ Future<http.Response> postRequest() async {
                             border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(10),
                               borderSide: const BorderSide(
-                                width: 0,
+                                width: 1,
                                 style: BorderStyle.none,
                               ),
                             ),
@@ -390,7 +400,8 @@ Future<http.Response> postRequest() async {
                                           //border radius equal to or more than 50% of width
                                         )),
                                     child: const Icon(
-                                      Icons.arrow_back_ios,
+                                      CupertinoIcons.back,
+                                      size: 30,
                                       color: Colors.black,
                                     ),
                                   )),
@@ -407,7 +418,7 @@ Future<http.Response> postRequest() async {
                                               BorderRadius.circular(8),
                                           //border radius equal to or more than 50% of width
                                         )),
-                                    child: const Icon(Icons.send_rounded)),
+                                    child: const Icon(CupertinoIcons.paperplane_fill)),
                               ),
                             ]),
                       ),
@@ -417,6 +428,6 @@ Future<http.Response> postRequest() async {
               ),
             ),
           ),
-        ])));
+        ]))));
   }
 }

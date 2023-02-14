@@ -1,8 +1,9 @@
 import 'dart:async';
 import 'dart:core';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:motion_sensors/motion_sensors.dart';
-import 'package:balance_test/test_summary.dart';
+import 'package:balance_test/test_summary_page.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class RecordingPage extends StatefulWidget {
@@ -73,7 +74,7 @@ class _RecordingPageState extends State<RecordingPage> {
       stopwatch.start();
       timer = Timer.periodic(const Duration(seconds: 1), (timer) {
         setState(() {});
-        if(stopwatch.elapsedMilliseconds>150000) {
+        if (stopwatch.elapsedMilliseconds > 150000) {
           for (final subscription in _streamSubscriptions) {
             subscription.cancel();
           }
@@ -88,22 +89,19 @@ class _RecordingPageState extends State<RecordingPage> {
             context,
             MaterialPageRoute(
                 builder: (context) => TestSummary(
-                  movementType: widget.movementType,
-                  timeStampData: timeStampData,
-                  accelerometerDataX:
-                  accelerometerDataX,
-                  accelerometerDataY:
-                  accelerometerDataY,
-                  accelerometerDataZ:
-                  accelerometerDataZ,
-                  gyroscopeDataX: gyroscopeDataX,
-                  gyroscopeDataY: gyroscopeDataY,
-                  gyroscopeDataZ: gyroscopeDataZ,
-                  magnetometerDataX: magnetometerDataX,
-                  magnetometerDataY: magnetometerDataY,
-                  magnetometerDataZ: magnetometerDataZ,
-                  timeElapsed: timeElapsed,
-                )),
+                      movementType: widget.movementType,
+                      timeStampData: timeStampData,
+                      accelerometerDataX: accelerometerDataX,
+                      accelerometerDataY: accelerometerDataY,
+                      accelerometerDataZ: accelerometerDataZ,
+                      gyroscopeDataX: gyroscopeDataX,
+                      gyroscopeDataY: gyroscopeDataY,
+                      gyroscopeDataZ: gyroscopeDataZ,
+                      magnetometerDataX: magnetometerDataX,
+                      magnetometerDataY: magnetometerDataY,
+                      magnetometerDataZ: magnetometerDataZ,
+                      timeElapsed: timeElapsed,
+                    )),
           );
           setState(() {
             recordingStarted = false;
@@ -169,7 +167,6 @@ class _RecordingPageState extends State<RecordingPage> {
 
   @override
   Widget build(BuildContext context) {
-
     String title = widget.movementType;
 
     double height = MediaQuery.of(context).size.height;
@@ -177,7 +174,7 @@ class _RecordingPageState extends State<RecordingPage> {
 
     return MaterialApp(
       home: Scaffold(
-        backgroundColor: Colors.white,
+        backgroundColor: const Color(0xfff2f1f6),
         appBar: AppBar(
           toolbarHeight: 0.1 * height,
           title: Padding(
@@ -185,11 +182,14 @@ class _RecordingPageState extends State<RecordingPage> {
             child: Text(
               title,
               textAlign: TextAlign.center,
-              style: const TextStyle(
-                color: Color.fromRGBO(141, 148, 162, 1.0),
-                fontFamily: 'DMSans-Regular',
+              style: GoogleFonts.nunito(
+    textStyle: const TextStyle(
+                // color: Color.fromRGBO(141, 148, 162, 1.0),
+                color: Colors.black,
+                // fontFamily: 'DMSans-Regular',
                 fontSize: 32,
               ),
+            ),
             ),
           ),
           elevation: 0,
@@ -197,111 +197,120 @@ class _RecordingPageState extends State<RecordingPage> {
         ),
         body: Column(
           mainAxisAlignment: MainAxisAlignment.start,
-            children: <Widget>[
-              Padding(padding: EdgeInsets.fromLTRB(0, 0.15*height, 0, 0.05*height),
-              child:
-              Text(
+          children: <Widget>[
+            Padding(
+              padding: EdgeInsets.fromLTRB(0, 0.15 * height, 0, 0.05 * height),
+              child: Text(
                 '${stopwatch.elapsed.inMinutes.toString().padLeft(2, '0')}:${(stopwatch.elapsed.inSeconds % 60).toString().padLeft(2, '0')}',
-                style: GoogleFonts.varelaRound(textStyle:const TextStyle(
-                  color: Color(0xff2A2A2A),
-                  fontSize: 70,
-                ),),
-              ),),
-              Padding(
-                padding: EdgeInsets.fromLTRB(0, 0.05*height, 0, 0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
+                style: GoogleFonts.varelaRound(
+                  textStyle: const TextStyle(
+                    color: Color(0xff2A2A2A),
+                    fontSize: 70,
+                  ),
+                ),
+              ),
+            ),
+            Padding(
+              padding: EdgeInsets.fromLTRB(0, 0.05 * height, 0, 0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  SizedBox(
+                      height: 0.3*width,
+                      width: 0.3*width,
+                      child: ElevatedButton(
+                        onPressed: () {
+                          stopTimer();
+                          for (final subscription in _streamSubscriptions) {
+                            subscription.cancel();
+                          }
+                          Navigator.pop(context);
+                        },
+                        style: ElevatedButton.styleFrom(
+                            backgroundColor: const Color(0xffECEDF0),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(62.5),
+                              //border radius equal to or more than 50% of width
+                            )),
+                        child: const Icon(
+                          CupertinoIcons.back,
+                          color: Colors.black,
+                          size: 40,
+                        ),
+                      )),
+                  if (!recordingStarted)
                     SizedBox(
-                        height: 125,
-                        width: 125,
+                        height: 0.3*width,
+                        width: 0.3*width,
                         child: ElevatedButton(
-                          onPressed: () {
-                            stopTimer();
-                            for (final subscription in _streamSubscriptions) {
-                              subscription.cancel();
-                            }
-                            Navigator.pop(context);
-                          },
+                          onPressed: startRecording,
                           style: ElevatedButton.styleFrom(
-                              backgroundColor: const Color(0xffECEDF0),
+                              backgroundColor: const Color(0xff006CC6),
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(62.5),
                                 //border radius equal to or more than 50% of width
                               )),
                           child: const Icon(
-                            Icons.arrow_back_ios,
-                            color: Colors.black,
+                            Icons.play_arrow_rounded,
+                            size: 40,
                           ),
                         )),
-                    if (!recordingStarted)
-                      SizedBox(
-                          height: 125,
-                          width: 125,
-                          child: ElevatedButton(
-                            onPressed: startRecording,
-                            style: ElevatedButton.styleFrom(
-                                shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(62.5),
-                              //border radius equal to or more than 50% of width
-                            )),
-                            child: const Icon(Icons.play_arrow_rounded),
-                          )),
-                    if (recordingStarted)
-                      SizedBox(
-                          height: 125,
-                          width: 125,
-                          child: ElevatedButton(
-                            onPressed: () {
-                              for (final subscription in _streamSubscriptions) {
-                                subscription.cancel();
-                              }
+                  if (recordingStarted)
+                    SizedBox(
+                        height: 0.3*width,
+                        width: 0.3*width,
+                        child: ElevatedButton(
+                          onPressed: () {
+                            for (final subscription in _streamSubscriptions) {
+                              subscription.cancel();
+                            }
 
-                              String timeElapsed =
-                                  '${stopwatch.elapsed.inMinutes}:${(stopwatch.elapsed.inSeconds % 60).toString().padLeft(2, '0')}';
-                              setState(() {
-                                stopTimer();
-                              });
+                            String timeElapsed =
+                                '${stopwatch.elapsed.inMinutes}:${(stopwatch.elapsed.inSeconds % 60).toString().padLeft(2, '0')}';
+                            setState(() {
+                              stopTimer();
+                            });
 
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => TestSummary(
-                                          movementType: title,
-                                          timeStampData: timeStampData,
-                                          accelerometerDataX:
-                                              accelerometerDataX,
-                                          accelerometerDataY:
-                                              accelerometerDataY,
-                                          accelerometerDataZ:
-                                              accelerometerDataZ,
-                                          gyroscopeDataX: gyroscopeDataX,
-                                          gyroscopeDataY: gyroscopeDataY,
-                                          gyroscopeDataZ: gyroscopeDataZ,
-                                          magnetometerDataX: magnetometerDataX,
-                                          magnetometerDataY: magnetometerDataY,
-                                          magnetometerDataZ: magnetometerDataZ,
-                                          timeElapsed: timeElapsed,
-                                        )),
-                              );
-                              setState(() {
-                                recordingStarted = false;
-                              });
-                            },
-                            style: ElevatedButton.styleFrom(
-                                backgroundColor: const Color(0xffD55A1B),
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(62.5),
-                                  //border radius equal to or more than 50% of width
-                                )),
-                            child: const Icon(Icons.stop_rounded),
-                          )),
-                  ],
-                ),
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => TestSummary(
+                                        movementType: title,
+                                        timeStampData: timeStampData,
+                                        accelerometerDataX: accelerometerDataX,
+                                        accelerometerDataY: accelerometerDataY,
+                                        accelerometerDataZ: accelerometerDataZ,
+                                        gyroscopeDataX: gyroscopeDataX,
+                                        gyroscopeDataY: gyroscopeDataY,
+                                        gyroscopeDataZ: gyroscopeDataZ,
+                                        magnetometerDataX: magnetometerDataX,
+                                        magnetometerDataY: magnetometerDataY,
+                                        magnetometerDataZ: magnetometerDataZ,
+                                        timeElapsed: timeElapsed,
+                                      )),
+                            );
+                            setState(() {
+                              recordingStarted = false;
+                            });
+                          },
+                          style: ElevatedButton.styleFrom(
+                              backgroundColor: const Color(0xfffe3d30),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(62.5),
+                                //border radius equal to or more than 50% of width
+                              )),
+                          child: const Icon(
+                            Icons.stop_rounded,
+                            size: 40,
+                            color: Colors.white,
+                          ),
+                        )),
+                ],
               ),
-            ],
-          ),
+            ),
+          ],
         ),
+      ),
     );
   }
 }

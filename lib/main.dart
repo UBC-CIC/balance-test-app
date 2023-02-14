@@ -1,4 +1,5 @@
 import 'package:balance_test/home_page.dart';
+import 'package:balance_test/past_tests.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -63,10 +64,7 @@ class _MyHomePageState extends State<MyHomePage> {
         Icons.show_chart_rounded,
         size: 150,
       ),
-      const Icon(
-        Icons.menu_rounded,
-        size: 150,
-      ),
+      PastTests(parentCtx: context),
       const Icon(
         Icons.account_circle,
         size: 150,
@@ -82,7 +80,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
     return MaterialApp(
       home: Scaffold(
-        backgroundColor: Colors.white,
+        backgroundColor: const Color(0xfff2f1f6),
         appBar: AppBar(
           toolbarHeight: 0.1 * height,
           centerTitle: false,
@@ -93,24 +91,31 @@ class _MyHomePageState extends State<MyHomePage> {
             padding: EdgeInsets.fromLTRB(0.05 * width, 0, 0, 0),
             child: Text(
               titles.elementAt(_selectedIndex),
-              style: const TextStyle(
-                color: Color.fromRGBO(141, 148, 162, 1.0),
+              style: TextStyle(
+                // color: Color.fromRGBO(141, 148, 162, 1.0),
+                color: Colors.black,
                 fontFamily: 'DMSans-Medium',
-                fontSize: 40,
+                fontSize: 0.1*width,
               ),
             ),
           ),
           elevation: 0,
           backgroundColor: Colors.transparent,
         ),
+
+
         body: Column(children: [
           pages.elementAt(_selectedIndex), //New
         ]),
+
+
         bottomNavigationBar: BottomNavigationBar(
+          backgroundColor: const Color(0xfff3f3f2),
           type: BottomNavigationBarType.fixed,
           // Fix for >4 item navbar
           enableFeedback: true,
-          unselectedItemColor: const Color.fromRGBO(203, 203, 203, 1.0),
+          unselectedItemColor: const Color(0xff929292),
+          selectedItemColor: const Color(0xff006CC6),
           currentIndex: _selectedIndex,
           onTap: _onItemTapped,
           elevation: 30,
