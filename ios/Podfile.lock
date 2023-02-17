@@ -1,5 +1,7 @@
 PODS:
   - Flutter (1.0.0)
+  - flutter_ringtone_player (0.0.1):
+    - Flutter
   - gaimon (0.0.1):
     - Flutter
   - motion_sensors (0.0.1):
@@ -10,6 +12,7 @@ PODS:
 
 DEPENDENCIES:
   - Flutter (from `Flutter`)
+  - flutter_ringtone_player (from `.symlinks/plugins/flutter_ringtone_player/ios`)
   - gaimon (from `.symlinks/plugins/gaimon/ios`)
   - motion_sensors (from `.symlinks/plugins/motion_sensors/ios`)
   - path_provider_foundation (from `.symlinks/plugins/path_provider_foundation/ios`)
@@ -17,6 +20,8 @@ DEPENDENCIES:
 EXTERNAL SOURCES:
   Flutter:
     :path: Flutter
+  flutter_ringtone_player:
+    :path: ".symlinks/plugins/flutter_ringtone_player/ios"
   gaimon:
     :path: ".symlinks/plugins/gaimon/ios"
   motion_sensors:
@@ -26,6 +31,7 @@ EXTERNAL SOURCES:
 
 SPEC CHECKSUMS:
   Flutter: f04841e97a9d0b0a8025694d0796dd46242b2854
+  flutter_ringtone_player: 15eba85187230b87b2512f0e1b92225618bc03e7
   gaimon: 7688c586f38dcc4782e6fe26f648057d280a9d8b
   motion_sensors: 03f55b7c637a7e365a0b5f9697a449f9059d5d91
   path_provider_foundation: 37748e03f12783f9de2cb2c4eadfaa25fe6d4852

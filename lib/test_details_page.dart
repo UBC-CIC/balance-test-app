@@ -5,202 +5,25 @@ import 'package:google_fonts/google_fonts.dart';
 import 'dart:convert';
 import "package:http/http.dart" as http;
 import 'dart:math';
-import 'loading.dart';
+import 'loading_page.dart';
 import 'package:gaimon/gaimon.dart';
 
 import 'my_fading_scrollview.dart';
 
-class TestSummary extends StatefulWidget {
-  const TestSummary({
-    Key? key,
-    required this.timeStampData,
-    required this.accelerometerDataX,
-    required this.accelerometerDataY,
-    required this.accelerometerDataZ,
-    required this.gyroscopeDataX,
-    required this.gyroscopeDataY,
-    required this.gyroscopeDataZ,
-    required this.magnetometerDataX,
-    required this.magnetometerDataY,
-    required this.magnetometerDataZ,
-    required this.movementType,
-    required this.timeElapsed,
-  }) : super(key: key);
+class TestDetailsPage extends StatefulWidget {
+  const TestDetailsPage({Key? key, required this.testID}) : super(key: key);
 
-  final List<String> timeStampData;
-  final List<double> accelerometerDataX;
-  final List<double> accelerometerDataY;
-  final List<double> accelerometerDataZ;
-  final List<double> gyroscopeDataX;
-  final List<double> gyroscopeDataY;
-  final List<double> gyroscopeDataZ;
-  final List<double> magnetometerDataX;
-  final List<double> magnetometerDataY;
-  final List<double> magnetometerDataZ;
-  final String movementType;
-  final String timeElapsed;
+  final String testID;
 
   @override
-  State<TestSummary> createState() => _TestSummaryState();
+  State<TestDetailsPage> createState() => _TestDetailsPageState();
 }
 
-class _TestSummaryState extends State<TestSummary> {
+class _TestDetailsPageState extends State<TestDetailsPage> {
   //VARIABLES
-  final _showCheck = ValueNotifier<bool>(false);
   final controller = ScrollController();
 
   //METHODS
-
-  showLoaderDialog(BuildContext context) {
-    var height = MediaQuery.of(context).size.height;
-    var width = MediaQuery.of(context).size.width;
-    AlertDialog alert = AlertDialog(
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(10.0),
-      ),
-      content: Container(
-        width: 230,
-        height: 230,
-        child: Row(
-          children: [
-            const CircularProgressIndicator(),
-            Container(
-                margin: const EdgeInsets.only(left: 7),
-                child: const Text("Loading...")),
-          ],
-        ),
-      ),
-    );
-    showDialog(
-      barrierDismissible: false,
-      context: context,
-      builder: (BuildContext context) {
-        return alert;
-      },
-    );
-  }
-
-  void sendData() {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return Loading(showCheckmark: _showCheck);
-      },
-    );
-    postRequest().then((value) {
-      Gaimon.success();
-      print("returned from post request");
-      _showCheck.value = true;
-      Future.delayed(const Duration(seconds: 2), () {
-        setState(() {
-          _showCheck.value = false;
-          Navigator.pop(context);
-          Navigator.pop(context);
-          Navigator.pop(context);
-        });
-      });
-    });
-  }
-
-  // Converts movement title name to api format
-  String convertMovementType() {
-    if (widget.movementType == "Sit to Stand") {
-      return "sit-to-stand";
-    }
-    return "";
-  }
-
-  Future<http.Response> postRequest() async {
-    // Future<void> postRequest() async {
-    final Map<String, Map<String, Object>> jsonMap = {};
-
-    int tsLength = widget.timeStampData.length;
-    int axLength = widget.accelerometerDataX.length;
-    int ayLength = widget.accelerometerDataY.length;
-    int azLength = widget.accelerometerDataZ.length;
-    int gxLength = widget.gyroscopeDataX.length;
-    int gyLength = widget.gyroscopeDataY.length;
-    int gzLength = widget.gyroscopeDataZ.length;
-    int mxLength = widget.magnetometerDataX.length;
-    int myLength = widget.magnetometerDataY.length;
-    int mzLength = widget.magnetometerDataZ.length;
-
-    int minLen = [
-      tsLength,
-      axLength,
-      ayLength,
-      azLength,
-      gxLength,
-      gyLength,
-      gzLength,
-      mxLength,
-      myLength,
-      mzLength
-    ].reduce(min);
-
-    print(minLen);
-
-    for (var i = 0; i < minLen; i++) {
-      Map<String, Object> dataPointMap = {};
-      dataPointMap["patient_id"] = "app-testing";
-      dataPointMap["movement"] = convertMovementType();
-      dataPointMap["ts"] = widget.timeStampData[i + tsLength - minLen];
-      dataPointMap["ax"] = widget.accelerometerDataX[i + axLength - minLen];
-      dataPointMap["ay"] = widget.accelerometerDataY[i + ayLength - minLen];
-      dataPointMap["az"] = widget.accelerometerDataZ[i + azLength - minLen];
-      dataPointMap["gx"] = widget.gyroscopeDataX[i + gxLength - minLen];
-      dataPointMap["gy"] = widget.gyroscopeDataY[i + gyLength - minLen];
-      dataPointMap["gz"] = widget.gyroscopeDataZ[i + gzLength - minLen];
-      dataPointMap["mx"] = widget.magnetometerDataX[i + mxLength - minLen];
-      dataPointMap["my"] = widget.magnetometerDataY[i + myLength - minLen];
-      dataPointMap["mz"] = widget.magnetometerDataZ[i + mzLength - minLen];
-      jsonMap[i.toString()] = dataPointMap;
-    }
-
-    String body = json.encode(jsonMap);
-
-    List<int> jsonBytes = utf8.encode(body);
-    double jsonSizeInMB = jsonBytes.length / pow(1024, 2);
-    print('JSON size: $jsonSizeInMB MB');
-
-    // final Map<String, Object> arrayMap = {};
-    // arrayMap["patient_id"] = "app-testing";
-    // arrayMap["movement"] = "sit-to-stand";
-    // arrayMap["ts"] = widget.timeStampData;
-    // arrayMap["ax"] = widget.accelerometerDataX;
-    // arrayMap["ay"] = widget.accelerometerDataY;
-    // arrayMap["az"] = widget.accelerometerDataZ;
-    // arrayMap["gx"] = widget.gyroscopeDataX;
-    // arrayMap["gy"] = widget.gyroscopeDataY;
-    // arrayMap["gz"] = widget.gyroscopeDataZ;
-    // arrayMap["mx"] = widget.magnetometerDataX;
-    // arrayMap["my"] = widget.magnetometerDataY;
-    // arrayMap["mz"] = widget.magnetometerDataZ;
-    //
-    // String arrayJson = json.encode(arrayMap);
-    // List<int> jsonBytesarray = utf8.encode(arrayJson);
-    // double jsonSizeInMBarray = jsonBytesarray.length / pow(1024, 2);
-    // print('JSON size: $jsonSizeInMBarray MB');
-
-    // await Future.delayed(const Duration(seconds: 2));
-    // return;
-
-    int before = DateTime.now()
-        .millisecondsSinceEpoch; // Used to show animation for >= 2 seconds
-    var url = Uri.https('ox515vr0t5.execute-api.ca-central-1.amazonaws.com',
-        '/data-workflow-beta/data_input/json');
-    var response = await http.post(url,
-        //headers: {"Content-Type": "application/json"},
-        body: body);
-    print("${response.statusCode}");
-    print("${response.body}");
-
-    int after = DateTime.now().millisecondsSinceEpoch;
-    if (((after - before) / 1000) < 2) {
-      await Future.delayed(Duration(milliseconds: (2000 - (after - before))));
-    }
-    return response;
-  }
 
 //UI
 
@@ -209,225 +32,434 @@ class _TestSummaryState extends State<TestSummary> {
     double height = MediaQuery.of(context).size.height;
     double width = MediaQuery.of(context).size.width;
 
-    String movementType = widget.movementType;
-
-    String timeElapsed = widget.timeElapsed;
-
     return Scaffold(
+      extendBodyBehindAppBar: true,
         backgroundColor: const Color(0xfff2f1f6),
         appBar: AppBar(
-          automaticallyImplyLeading: false,   // Removes back button from appbar
-          toolbarHeight: 0.1 * height,
-          systemOverlayStyle: const SystemUiOverlayStyle(
-            statusBarBrightness: Brightness.light, // light for black status bar
+          leading: GestureDetector(
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+                children: const [
+                  Icon( Icons.arrow_back_rounded, color: Colors.black, size: 32,),
+              ]),
+            onTap: () {
+              Navigator.pop(context);
+            } ,
+          ) ,
+          iconTheme: const IconThemeData(
+            color: Colors.black, //change your color here
           ),
-          title: Text(
-            'Review Details',
-            style: GoogleFonts.nunito(
-              textStyle: const TextStyle(
-                // color: Color.fromRGBO(141, 148, 162, 1.0),
-                color: Colors.black,
-                fontFamily: 'DMSans-Regular',
-                fontSize: 32,
+          toolbarHeight: 0.06 * height,
+          title: Padding(
+            padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
+            child: Text(
+              'Test Details',
+              textAlign: TextAlign.center,
+              style: GoogleFonts.nunito(
+                textStyle: const TextStyle(
+                  // color: Color.fromRGBO(141, 148, 162, 1.0),
+                  color: Colors.black,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 24,
+                ),
               ),
             ),
           ),
           elevation: 0,
-          backgroundColor: Colors.transparent,
+          backgroundColor: const Color(0xfcf2f1f6),
         ),
-        body: FadingEdgeScrollView.fromSingleChildScrollView(
-    child: SingleChildScrollView(
-        controller: controller,
-        child: Column(mainAxisAlignment: MainAxisAlignment.start, children: [
-          Padding(
-            padding: const EdgeInsets.fromLTRB(0, 30, 0, 0),
-            child: Center(
-              child: Card(
-                color: Colors.white,
-                elevation: 10,
-                shadowColor: Colors.white70,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(15.0),
-                ),
-                child: SizedBox(
-                  width: width * 0.9,
-                  height: 600,
-                  child: Column(
-                    //crossAxisAlignment: CrossAxisAlignment.start,
+        body: SingleChildScrollView(
+                controller: controller,
+                child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Padding(
-                        padding: const EdgeInsets.fromLTRB(26.0, 20, 0, 0),
-                        child: Column(
-                          children: [
-                            Padding(
-                              padding: const EdgeInsets.fromLTRB(0, 0, 0, 10),
-                              child: Row(
-                                children: const [
-                                  Text(
-                                    'Summary',
-                                    style: TextStyle(
-                                      color: Color(0xff2A2A2A),
-                                      fontFamily: 'DMSans-Medium',
-                                      fontSize: 32,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.fromLTRB(0, 7, 0, 7),
-                              child: Row(
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: [
-                                  const Icon(
-                                    Icons.accessibility_new_rounded,
-                                    size: 55,
-                                    color: Colors.indigo,
-                                  ),
-                                  Padding(
-                                    padding:
-                                        const EdgeInsets.fromLTRB(25, 0, 0, 0),
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        const Text(
-                                          'Movement',
-                                          style: TextStyle(
-                                            color: Colors.indigo,
-                                            fontFamily: 'DMSans-Medium',
-                                            fontSize: 18,
-                                          ),
-                                        ),
-                                        Text(
-                                          movementType,
-                                          style: const TextStyle(
-                                            color: Color(0xff2A2A2A),
-                                            fontFamily: 'DMSans-Medium',
-                                            fontSize: 26,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.fromLTRB(0, 7, 0, 18),
-                              child: Row(
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: [
-                                  const Icon(
-                                    Icons.access_time_rounded,
-                                    size: 55,
-                                    color: Colors.indigo,
-                                  ),
-                                  Padding(
-                                    padding:
-                                        const EdgeInsets.fromLTRB(25, 0, 0, 0),
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        const Text(
-                                          'Test Duration',
-                                          style: TextStyle(
-                                            color: Colors.indigo,
-                                            fontFamily: 'DMSans-Medium',
-                                            fontSize: 18,
-                                          ),
-                                        ),
-                                        Text(
-                                          '$timeElapsed min',
-                                          style: const TextStyle(
-                                            color: Color(0xff2A2A2A),
-                                            fontFamily: 'DMSans-Medium',
-                                            fontSize: 26,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ],
-                        ),
+                      Divider(
+                        height: 0.12*height,
+                        thickness: 1,
+                        indent: 5,
+                        endIndent: 5,
+                        color: Colors.transparent,
                       ),
-                      SizedBox(
-                        height: 270,
-                        width: 0.82 * width,
-                        child: TextField(
-                          maxLines: 13,
-                          minLines: 13,
-                          maxLength: 800,
-                          keyboardType: TextInputType.text,
-                          decoration: InputDecoration(
-                            filled: true,
-                            fillColor: const Color(0x0A3F51B5),
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(10),
-                              borderSide: const BorderSide(
-                                width: 1,
-                                style: BorderStyle.none,
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(0, 10, 0, 0),
+                        child: Center(
+                          child: Card(
+                            color: Colors.white,
+                            elevation: 2,
+                            shadowColor: Colors.white70,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(15.0),
+                            ),
+                            child: SizedBox(
+                              width: width * 0.9,
+                              height: null,
+                              child: Padding(
+                                padding:
+                                    const EdgeInsets.fromLTRB(22.0, 15, 22.0, 0),
+                                child: Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Padding(
+                                      padding: const EdgeInsets.fromLTRB(
+                                          0, 0, 0, 8),
+                                      child: Row(
+                                        children: [
+                                          const Icon(
+                                            Icons.accessibility_new_rounded,
+                                            size: 24,
+                                            color: Colors.indigo,
+                                          ),
+                                          Padding(
+                                            padding: const EdgeInsets.fromLTRB(5, 0, 5, 0),
+                                            child: Text(
+                                              'Movement',
+                                              style: GoogleFonts.nunito(
+                                                textStyle: const TextStyle(
+                                                color: Colors.indigo,
+                                                fontSize: 20,
+                                                  fontWeight: FontWeight.bold,
+                                              ),
+                                            ),
+                                          ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                    Flexible( //Overflow text pushes to next line
+                                      child: Text(
+                                      'Sitting with Back\nUnsupported Feet Supported'
+                                          '',
+                                      style: GoogleFonts.nunito(
+                                        textStyle: const TextStyle(
+                                          color: Colors.black,
+                                          fontSize: 22,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                    ),
+                                    ),
+
+                                    const Divider(
+                                      height: 25,
+                                      thickness: 1,
+                                      indent: 5,
+                                      endIndent: 5,
+                                      color: Color(0xffcececf),
+                                    ),
+
+                                    Padding(
+                                      padding: const EdgeInsets.fromLTRB(
+                                          0, 0, 0, 8),
+                                      child: Row(
+                                        children: [
+                                          const Icon(
+                                            CupertinoIcons.calendar,
+                                            size: 24,
+                                            color: Colors.indigo,
+                                          ),
+                                          Padding(
+                                            padding: const EdgeInsets.fromLTRB(5, 0, 5, 0),
+                                            child: Text(
+                                              'Date and Time',
+                                              style: GoogleFonts.nunito(
+                                                textStyle: const TextStyle(
+                                                  color: Colors.indigo,
+                                                  fontSize: 20,
+                                                  fontWeight: FontWeight.bold,
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                    Flexible( //Overflow text pushes to next line
+                                      child: Text(
+                                        'Jan 23, 2023 1:40 pm'
+                                            '',
+                                        style: GoogleFonts.nunito(
+                                          textStyle: const TextStyle(
+                                            color: Colors.black,
+                                            fontSize: 22,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+
+                                    const Divider(
+                                      height: 25,
+                                      thickness: 1,
+                                      indent: 5,
+                                      endIndent: 5,
+                                      color: Color(0xffcececf),
+                                    ),
+
+                                    Row(
+                                      children: [
+                                        Expanded(
+                                          child: Align(
+                                            alignment: Alignment.centerLeft,
+                                            child: Padding(
+                                              padding: const EdgeInsets.fromLTRB(5, 0, 5, 0),
+                                              child: Column(
+                                                mainAxisSize: MainAxisSize.min,
+                                                crossAxisAlignment: CrossAxisAlignment.start,                                                children: [
+                                              Padding(
+                                              padding: const EdgeInsets.fromLTRB(
+                                                  0, 0, 0, 8),
+                                              child: Row(
+                                                      children: [
+                                                        const Icon(
+                                                          CupertinoIcons.chart_bar_alt_fill,
+                                                          size: 24,
+                                                          color: Colors.indigo,
+                                                        ),
+                                                        Padding(
+                                                          padding: const EdgeInsets.fromLTRB(5, 0, 5, 0),
+                                                          child: Text(
+                                                            'Score',
+                                                            style: GoogleFonts.nunito(
+                                                              textStyle: const TextStyle(
+                                                                color: Colors.indigo,
+                                                                fontSize: 20,
+                                                                fontWeight: FontWeight.bold,
+                                                              ),
+                                                            ),
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
+                                              ),
+                                                    Row(
+                                                      children: [
+                                                        Text(
+                                                          '82',
+                                                          style: GoogleFonts.nunito(
+                                                            textStyle: const TextStyle(
+                                                              color: Colors.black,
+                                                              fontSize: 35,
+                                                              fontWeight: FontWeight.bold,
+                                                            ),
+                                                          ),
+                                                        ),
+                                                        Text(
+                                                          '%',
+                                                          style: GoogleFonts.nunito(
+                                                            textStyle: const TextStyle(
+                                                              color: Color(0xff777586)  ,
+                                                              fontSize: 20,
+                                                              fontWeight: FontWeight.bold,
+                                                            ),
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                ],
+                                                ),
+                                            ),
+                                          )
+                                        ),
+                                        Expanded(
+                                            child: Align(
+                                              alignment: Alignment.centerLeft,
+
+                                                child: Column(
+                                                  mainAxisSize: MainAxisSize.min,
+                                                  crossAxisAlignment: CrossAxisAlignment.start,                                                children: [
+                                                  Padding(
+                                                    padding: const EdgeInsets.fromLTRB(
+                                                        0, 0, 0, 8),
+                                                    child: FittedBox(
+                                                      fit: BoxFit.scaleDown,
+                                                      child: Row(
+                                                      children: [
+                                                        const Icon(
+                                                          Icons.timer_rounded,
+                                                          size: 24,
+                                                          color: Colors.indigo,
+                                                        ),
+                                                        Padding(
+                                                          padding: const EdgeInsets.fromLTRB(5, 0, 5, 0),
+                                                          child: Text(
+                                                            'Duration',
+                                                            style: GoogleFonts.nunito(
+                                                              textStyle: const TextStyle(
+                                                                color: Colors.indigo,
+                                                                fontSize: 20,
+                                                                fontWeight: FontWeight.bold,
+                                                              ),
+                                                            ),
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),),
+                                                  ),
+                                                  Row(
+                                                    children: [
+                                                      Text(
+                                                        '0:32',
+                                                        style: GoogleFonts.nunito(
+                                                          textStyle: const TextStyle(
+                                                            color: Colors.black,
+                                                            fontSize: 35,
+                                                            fontWeight: FontWeight.bold,
+                                                          ),
+                                                        ),
+                                                      ),
+                                                      Text(
+                                                        'min',
+                                                        style: GoogleFonts.nunito(
+                                                          textStyle: const TextStyle(
+                                                            color: Color(0xff777586),
+                                                            fontSize: 20,
+                                                            fontWeight: FontWeight.bold,
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ],
+                                                ),
+                                            )
+                                        ),
+                                      ],
+                                    ),
+
+                                    const Divider(
+                                      height: 15,
+                                      thickness: 1,
+                                      indent: 5,
+                                      endIndent: 5,
+                                      color: Colors.transparent,
+                                    ),
+                                  ],
+                                ),
                               ),
                             ),
-                            hintText: 'Enter Additional Notes...',
                           ),
                         ),
                       ),
                       Padding(
-                        padding: const EdgeInsets.fromLTRB(0, 15, 0, 0),
-                        child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              SizedBox(
-                                  height: 70,
-                                  width: 0.4 * width,
-                                  child: ElevatedButton(
-                                    onPressed: () {
-                                      Navigator.pop(context);
-                                    },
-                                    style: ElevatedButton.styleFrom(
-                                        elevation: 0,
-                                        backgroundColor:
-                                            const Color(0xffECEDF0),
-                                        shape: RoundedRectangleBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(8),
-                                          //border radius equal to or more than 50% of width
-                                        )),
-                                    child: const Icon(
-                                      CupertinoIcons.back,
-                                      size: 30,
-                                      color: Colors.black,
+                        padding: const EdgeInsets.fromLTRB(0, 10, 0, 0),
+                        child: Center(
+                          child: Card(
+                            color: Colors.white,
+                            elevation: 2,
+                            shadowColor: Colors.white70,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(15.0),
+                            ),
+                            child: SizedBox(
+                              width: width * 0.9,
+                              height: null,
+                              child: Padding(
+                                padding:
+                                const EdgeInsets.fromLTRB(22.0, 20, 22.0, 0),
+                                child: Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Padding(
+                                      padding: const EdgeInsets.fromLTRB(
+                                          0, 0, 0, 8),
+                                      child: Row(
+                                        children: [
+                                          const Icon(
+                                            CupertinoIcons.square_list,
+                                            size: 24,
+                                            color: Colors.indigo,
+                                          ),
+                                          Padding(
+                                            padding: const EdgeInsets.fromLTRB(5, 0, 5, 0),
+                                            child: Text(
+                                              'Notes',
+                                              style: GoogleFonts.nunito(
+                                                textStyle: const TextStyle(
+                                                  color: Colors.indigo,
+                                                  fontSize: 20,
+                                                  fontWeight: FontWeight.bold,
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
                                     ),
-                                  )),
-                              SizedBox(
-                                height: 70,
-                                width: 0.4 * width,
-                                child: ElevatedButton(
-                                    onPressed: sendData,
-                                    style: ElevatedButton.styleFrom(
-                                        backgroundColor: Colors.indigo,
-                                        elevation: 0,
-                                        shape: RoundedRectangleBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(8),
-                                          //border radius equal to or more than 50% of width
-                                        )),
-                                    child: const Icon(CupertinoIcons.paperplane_fill)),
+                                    Flexible( //Overflow text pushes to next line
+                                      child: Text(
+                                        'Toni cemuso hite ataneda tebe bigeric lu ire yama sorov! Gew dipebor natasum sikit afahar! Coticol xosieric uladu redes! Cedet ricak secadep bebeni yibas renacab rie: Badi let reri lareri bat asacubes paritur vagone iegarat! Nelalir cof odesie cipir sucomer si. Vaso foreca tunietec toconel ha gi ragi no! Leconug ida tewat febase arerotoh pit peceral. Figare temusa fig redo mesu nec neme wocies. Sef irahote sihelom. Ulurexi zepe na seniep enedico pop hohe renalis dicis.',
+                                        style: GoogleFonts.nunito(
+                                          textStyle: const TextStyle(
+                                            color: Colors.black,
+                                            fontSize: 18,
+                                            fontWeight: FontWeight.w600,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                    const Divider(
+                                      height: 20,
+                                      thickness: 1,
+                                      indent: 5,
+                                      endIndent: 5,
+                                      color: Colors.transparent,
+                                    ),
+                                  ],
+                                ),
                               ),
-                            ]),
+                            ),
+                          ),
+                        ),
                       ),
-                    ],
-                  ),
-                ),
-              ),
-            ),
-          ),
-        ]))));
+
+                      const Divider(
+                        height: 22,
+                        thickness: 1,
+                        indent: 5,
+                        endIndent: 5,
+                        color: Colors.transparent,
+                      ),
+                      Padding(
+                          padding: EdgeInsets.fromLTRB(0.05*width, 0, 0, 0),
+                          child: const Text(
+                        'Test Graphs',
+                        style: TextStyle(
+                            color: Colors.black,
+                            fontSize: 25,
+                            fontFamily: 'DMSans-Bold',
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(0, 5, 0, 0),
+                        child: Center(
+                          child: Card(
+                            color: Colors.white,
+                            elevation: 2,
+                            shadowColor: Colors.white70,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(15.0),
+                            ),
+                            child: SizedBox(
+                              width: width * 0.9,
+                              height: 600,
+                              child: Padding(
+                                padding:
+                                const EdgeInsets.fromLTRB(22.0, 20, 22.0, 0),
+                                child: Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: const [
+                                ]),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ])));
   }
 }

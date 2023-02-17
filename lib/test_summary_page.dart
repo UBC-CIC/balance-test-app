@@ -1,11 +1,12 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_ringtone_player/flutter_ringtone_player.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'dart:convert';
 import "package:http/http.dart" as http;
 import 'dart:math';
-import 'loading.dart';
+import 'loading_page.dart';
 import 'package:gaimon/gaimon.dart';
 
 import 'my_fading_scrollview.dart';
@@ -89,6 +90,12 @@ class _TestSummaryState extends State<TestSummary> {
     );
     postRequest().then((value) {
       Gaimon.success();
+      FlutterRingtonePlayer.play(
+        android: AndroidSounds.alarm,
+        ios: const IosSound(1407),
+        looping: false,
+        volume: 1.0,
+      );
       print("returned from post request");
       _showCheck.value = true;
       Future.delayed(const Duration(seconds: 2), () {
@@ -110,8 +117,8 @@ class _TestSummaryState extends State<TestSummary> {
     return "";
   }
 
-  Future<http.Response> postRequest() async {
-    // Future<void> postRequest() async {
+  // Future<http.Response> postRequest() async {
+    Future<void> postRequest() async {
     final Map<String, Map<String, Object>> jsonMap = {};
 
     int tsLength = widget.timeStampData.length;
@@ -162,6 +169,7 @@ class _TestSummaryState extends State<TestSummary> {
     List<int> jsonBytes = utf8.encode(body);
     double jsonSizeInMB = jsonBytes.length / pow(1024, 2);
     print('JSON size: $jsonSizeInMB MB');
+    print(widget.timeStampData[0]);
 
     // final Map<String, Object> arrayMap = {};
     // arrayMap["patient_id"] = "app-testing";
@@ -182,8 +190,8 @@ class _TestSummaryState extends State<TestSummary> {
     // double jsonSizeInMBarray = jsonBytesarray.length / pow(1024, 2);
     // print('JSON size: $jsonSizeInMBarray MB');
 
-    // await Future.delayed(const Duration(seconds: 2));
-    // return;
+    await Future.delayed(const Duration(seconds: 2));
+    return;
 
     int before = DateTime.now()
         .millisecondsSinceEpoch; // Used to show animation for >= 2 seconds
@@ -194,12 +202,11 @@ class _TestSummaryState extends State<TestSummary> {
         body: body);
     print("${response.statusCode}");
     print("${response.body}");
-
     int after = DateTime.now().millisecondsSinceEpoch;
     if (((after - before) / 1000) < 2) {
       await Future.delayed(Duration(milliseconds: (2000 - (after - before))));
     }
-    return response;
+    // return response;
   }
 
 //UI
@@ -361,7 +368,7 @@ class _TestSummaryState extends State<TestSummary> {
                         child: TextField(
                           maxLines: 13,
                           minLines: 13,
-                          maxLength: 800,
+                          maxLength: 500,
                           keyboardType: TextInputType.text,
                           decoration: InputDecoration(
                             filled: true,

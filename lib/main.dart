@@ -1,3 +1,4 @@
+import 'package:balance_test/account_page.dart';
 import 'package:balance_test/home_page.dart';
 import 'package:balance_test/past_tests.dart';
 import 'package:flutter/material.dart';
@@ -65,10 +66,7 @@ class _MyHomePageState extends State<MyHomePage> {
         size: 150,
       ),
       PastTests(parentCtx: context),
-      const Icon(
-        Icons.account_circle,
-        size: 150,
-      ),
+      AccountPage(parentCtx: context),
     ];
 
     const List<String> titles = <String>[
@@ -82,20 +80,21 @@ class _MyHomePageState extends State<MyHomePage> {
       home: Scaffold(
         backgroundColor: const Color(0xfff2f1f6),
         appBar: AppBar(
-          toolbarHeight: 0.1 * height,
-          centerTitle: false,
+          toolbarHeight: (_selectedIndex==3)? 0.06 * height : 0.1 * height,
+          centerTitle: (_selectedIndex==3)? true : false,
           systemOverlayStyle: const SystemUiOverlayStyle(
             statusBarBrightness: Brightness.light, // light for black status bar
           ),
           title: Padding(
-            padding: EdgeInsets.fromLTRB(0.05 * width, 0, 0, 0),
+            padding: EdgeInsets.fromLTRB((_selectedIndex==3)? 0 : 0.03 * width, (_selectedIndex==3)? 0 : 0.1*width, 0, 0),
             child: Text(
               titles.elementAt(_selectedIndex),
               style: TextStyle(
                 // color: Color.fromRGBO(141, 148, 162, 1.0),
                 color: Colors.black,
-                fontFamily: 'DMSans-Medium',
-                fontSize: 0.1*width,
+                fontFamily: 'DMSans-Regular',
+                fontSize: (_selectedIndex==3)? 0.06*width : 0.09*width,
+                fontWeight: FontWeight.w900,
               ),
             ),
           ),

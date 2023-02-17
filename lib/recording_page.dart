@@ -2,9 +2,12 @@ import 'dart:async';
 import 'dart:core';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_ringtone_player/flutter_ringtone_player.dart';
 import 'package:motion_sensors/motion_sensors.dart';
 import 'package:balance_test/test_summary_page.dart';
 import 'package:google_fonts/google_fonts.dart';
+
+import 'countdown_page.dart';
 
 class RecordingPage extends StatefulWidget {
   const RecordingPage({
@@ -68,7 +71,7 @@ class _RecordingPageState extends State<RecordingPage> {
   }
 
 //Starts the stopwatch and timer to update state every 1 second
-  void startTimer() {
+  void startTimer()  {
     stopwatch.reset();
     setState(() {
       stopwatch.start();
@@ -117,10 +120,23 @@ class _RecordingPageState extends State<RecordingPage> {
       stopwatch.stop();
       stopwatch.reset();
     });
+    print(timeStampData.length);
   }
 
   //Starts recording streams and stopwatch timer
-  startRecording() {
+  startRecording() async {
+      await showDialog(
+          context: context,
+          builder: (BuildContext context) {
+        return const CountDown(countdownDuration: 6,);
+      },
+    );
+    FlutterRingtonePlayer.play(
+      android: AndroidSounds.alarm,
+      ios: const IosSound(1110),
+      looping: false,
+      volume: 1.0,
+    );
     startTimer();
 
     clearLists();
@@ -229,7 +245,7 @@ class _RecordingPageState extends State<RecordingPage> {
                         style: ElevatedButton.styleFrom(
                             backgroundColor: const Color(0xffECEDF0),
                             shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(62.5),
+                              borderRadius: BorderRadius.circular(0.15*width),
                               //border radius equal to or more than 50% of width
                             )),
                         child: const Icon(
@@ -247,7 +263,7 @@ class _RecordingPageState extends State<RecordingPage> {
                           style: ElevatedButton.styleFrom(
                               backgroundColor: const Color(0xff006CC6),
                               shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(62.5),
+                                borderRadius: BorderRadius.circular(0.15*width),
                                 //border radius equal to or more than 50% of width
                               )),
                           child: const Icon(
@@ -264,6 +280,13 @@ class _RecordingPageState extends State<RecordingPage> {
                             for (final subscription in _streamSubscriptions) {
                               subscription.cancel();
                             }
+
+                            FlutterRingtonePlayer.play(
+                              android: AndroidSounds.alarm,
+                              ios: const IosSound(1112),
+                              looping: false,
+                              volume: 1.0,
+                            );
 
                             String timeElapsed =
                                 '${stopwatch.elapsed.inMinutes}:${(stopwatch.elapsed.inSeconds % 60).toString().padLeft(2, '0')}';
@@ -296,7 +319,7 @@ class _RecordingPageState extends State<RecordingPage> {
                           style: ElevatedButton.styleFrom(
                               backgroundColor: const Color(0xfffe3d30),
                               shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(62.5),
+                                borderRadius: BorderRadius.circular(0.15*width),
                                 //border radius equal to or more than 50% of width
                               )),
                           child: const Icon(

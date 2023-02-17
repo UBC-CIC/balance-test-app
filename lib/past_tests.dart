@@ -1,9 +1,11 @@
-import 'package:balance_test/TestDetails.dart';
+import 'package:balance_test/TestItem.dart';
+import 'package:balance_test/test_details_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:gaimon/gaimon.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
+import 'package:intl/intl.dart';
 
 class PastTests extends StatefulWidget {
   const PastTests({Key? key, required this.parentCtx}) : super(key: key);
@@ -26,54 +28,76 @@ class _PastTestsState extends State<PastTests> {
       {
         "testID": "1", //UUID format
         "movement": "sit-to-stand",
-        "dateTime": "Feb 3, 2023 1:40 pm",
-        "score": 78,
+        "dateTime": "2023-02-10 15:14:40.731703 -08:00",
+        "score": 72,
       },
       {
         "testID": "2", //UUID format
         "movement": "sit-to-stand",
-        "dateTime": "Jan 28, 2023 2:26 pm",
+        "dateTime": "2023-02-10 15:17:23.731703 -08:00",
         "score": 55,
       },
       {
         "testID": "3", //UUID format
         "movement": "sit-to-stand",
-        "dateTime": "Jan 26, 2023 12:45 pm",
+        "dateTime": "2023-02-18 00:12:32.731703 -08:00",
         "score": 88,
       },
       {
         "testID": "4", //UUID format
         "movement": "sit-to-stand",
-        "dateTime": "Jan 22, 2023 3:02 pm",
-        "score": 95,
+        "dateTime": "2022-12-19 12:12:41.731703 -08:00",
+        "score": 92,
       },
       {
         "testID": "5", //UUID format
         "movement": "sit-to-stand",
-        "dateTime": "Jan 18, 2023 4:30 pm",
+        "dateTime": "2022-10-19 11:12:40.731703 -08:00",
         "score": 92,
       },
       {
         "testID": "6", //UUID format
         "movement": "sit-to-stand",
-        "dateTime": "Jan 14, 2023 12:02 pm",
-        "score": 42,
+        "dateTime": "2022-08-12 01:12:22.731703 -08:00",
+        "score": 38,
       },
       {
         "testID": "7", //UUID format
         "movement": "sit-to-stand",
-        "dateTime": "Jan 12, 2023 10:29 am",
+        "dateTime": "2022-08-12 01:12:13.731703 -08:00",
         "score": 53,
       },
       {
         "testID": "8", //UUID format
         "movement": "sit-to-stand",
-        "dateTime": "Jan 8, 2023 11:02 am",
+        "dateTime": "2023-01-08 01:19:45.731703 -08:00",
         "score": 85,
       },
     ];
 
-    return data.map<Test>(Test.fromJson).toList();
+    List<Test> testList = data.map<Test>(Test.fromJson).toList();
+    testList.sort((a, b) => a.dateTime.compareTo(b.dateTime));
+    testList = List.from(testList.reversed);
+    return testList;
+  }
+
+  void sortList(String? value) {
+    if (value == 'Most Recent') {
+      testList.sort((a, b) => a.dateTime.compareTo(b.dateTime));
+      testList = List.from(testList.reversed);
+    } else if (value == 'Oldest') {
+      testList.sort((a, b) => a.dateTime.compareTo(b.dateTime));
+    } else if (value == 'Score: Low to High') {
+      testList.sort((a, b) => a.score.compareTo(b.score));
+    } else if (value == 'Score: High to Low') {
+      testList.sort((a, b) => a.score.compareTo(b.score));
+      testList = List.from(testList.reversed);
+    } else if (value == 'Movement Name: Z to Z') {
+      testList.sort((a, b) => a.movement.compareTo(b.movement));
+    } else if (value == 'Movement Name: A to Z') {
+      testList.sort((a, b) => a.movement.compareTo(b.movement));
+      testList = List.from(testList.reversed);
+    }
   }
 
   //Dropdown options
@@ -135,6 +159,22 @@ class _PastTestsState extends State<PastTests> {
     return itemsHeights;
   }
 
+  //returns Hex color based on score
+  Color getScoreColor(int score) {
+    if (score < 40) {
+      return const Color(0xffAD2234);
+    } else if (score < 65) {
+      return Colors.deepOrange;
+    } else if (score < 75) {
+      return Colors.black;
+    } else if (score < 90) {
+      // return const Color(0xff009E9D);
+      return Colors.black;
+    } else {
+      // return const Color(0xff05A985);
+      return Colors.black;
+    }
+  }
 
   //UI
 
@@ -180,9 +220,7 @@ class _PastTestsState extends State<PastTests> {
                     value: selectedValue,
                     onChanged: (value) {
                       setState(() {
-                        // Shows selected item as label
-
-                        // selectedValue = value as String;
+                        sortList(value);
                       });
                     },
                     icon: const Icon(
@@ -216,21 +254,31 @@ class _PastTestsState extends State<PastTests> {
                     scrollbarRadius: const Radius.circular(40),
                     scrollbarThickness: 6,
                     scrollbarAlwaysShow: true,
-                    offset: Offset(-0.225*width, 0),
+                    offset: Offset(-0.225 * width, 0),
                   ),
                 ),
               ),
             );
           } else {
-
             final test = tests[index - 1];
-            final bool dangerScore = test.score<60; //to choose color of score
-            return Padding(
-                padding: const EdgeInsets.fromLTRB(0, 2, 0, 2),
+
+            return GestureDetector(
+              onTap: () {
+                Gaimon.selection();
+                Navigator.push(
+                    widget.parentCtx,
+                    //Used to pop to main page instead of home
+                    MaterialPageRoute(
+                        builder: (context) => TestDetailsPage(
+                          testID: test.testID,
+                        )));
+              },
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(0, 1, 0, 1),
                 child: Center(
                   child: Card(
                     color: const Color(0xffffffff),
-                    elevation: 2,
+                    elevation: 0,
                     shadowColor: Colors.white70,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(15.0),
@@ -259,7 +307,7 @@ class _PastTestsState extends State<PastTests> {
                                           test.score.toString(),
                                           style: GoogleFonts.nunito(
                                             textStyle: TextStyle(
-                                             color: dangerScore? Colors.deepOrange : Colors.black,
+                                              color: getScoreColor(test.score),
                                               fontFamily: 'DMSans-Medium',
                                               fontSize: 35,
                                               fontWeight: FontWeight.w700,
@@ -295,12 +343,12 @@ class _PastTestsState extends State<PastTests> {
                                       child: FittedBox(
                                         fit: BoxFit.scaleDown,
                                         child: Text(
-                                          convertMovementName(test.movement),
+                                          formatMovementName(test.movement),
                                           style: GoogleFonts.nunito(
                                             textStyle: const TextStyle(
                                               color: Color(0xff2A2A2A),
-                                              fontSize: 28,
-                                              fontWeight: FontWeight.w600,
+                                              fontSize: 26,
+                                              fontWeight: FontWeight.w700,
                                             ),
                                           ),
                                         ),
@@ -327,15 +375,13 @@ class _PastTestsState extends State<PastTests> {
                                                     const EdgeInsets.fromLTRB(
                                                         6, 0, 0, 0),
                                                 child: Text(
-                                                  test.dateTime,
+                                                  formatDateTime(test.dateTime),
                                                   style: GoogleFonts.nunito(
                                                     textStyle: const TextStyle(
                                                       color: Color(0xff006CC6),
-                                                      fontFamily:
-                                                          'DMSans-Medium',
                                                       fontSize: 16,
                                                       fontWeight:
-                                                          FontWeight.w600,
+                                                          FontWeight.w700,
                                                     ),
                                                   ),
                                                 ),
@@ -355,45 +401,38 @@ class _PastTestsState extends State<PastTests> {
                             child: SizedBox(
                               height: 0.13 * width,
                               width: 0.13 * width,
-                              child: ElevatedButton(
-                                onPressed: () {
-                                  Gaimon.selection();
-                                },
-                                style: ElevatedButton.styleFrom(
-                                    padding: const EdgeInsets.all(0),
-                                    elevation: 0,
-                                    backgroundColor: const Color(0xff006CC6),
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius:
-                                          BorderRadius.circular(0.08 * width),
-                                      //border radius equal to or more than 50% of width
-                                    )),
-                                child: Icon(
-                                  Icons.arrow_forward_rounded,
-                                  size: 0.07 * width,
+                               child: Icon(
+                                  CupertinoIcons.forward,
+                                  color: const Color(0xff777586),
+                                  size: 0.06 * width,
                                 ),
-                              ),
+
                             ),
                           ),
                         ],
                       ),
                     ),
                   ),
-                ));
+                ),
+              ),
+            );
           }
         });
 
-    return Expanded(
-          child: buildTestList(testList)
-    );
+    return Expanded(child: buildTestList(testList));
   }
 
-  String convertMovementName(String movement) {
+  String formatMovementName(String movement) {
     if (movement == "sit-to-stand") {
       // return "Sitting with\nBack Unsupported\nFeet Supported";
       return "Sit to Stand";
     } else {
       return "movement";
     }
+  }
+
+  String formatDateTime(String dateTimeStr) {
+    DateTime newDateTimeObj = DateTime.parse(dateTimeStr);
+    return DateFormat("MMM d, y h:mm a").format(newDateTimeObj);
   }
 }

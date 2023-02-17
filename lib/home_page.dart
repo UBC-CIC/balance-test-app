@@ -31,7 +31,7 @@ class _HomePageState extends State<HomePage> {
         child: SingleChildScrollView(
           controller: controller,
           child: Padding(
-              padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
+              padding: EdgeInsets.fromLTRB(0, 0.05 * width, 0, 0),
               child:
                   Column(mainAxisAlignment: MainAxisAlignment.start, children: [
                 Padding(
@@ -39,7 +39,7 @@ class _HomePageState extends State<HomePage> {
                   child: Center(
                     child: Card(
                       color: const Color(0xffffffff),
-                      elevation: 2,
+                      elevation: 1,
                       shadowColor: Colors.white70,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(15.0),
@@ -128,21 +128,22 @@ class _HomePageState extends State<HomePage> {
                                     child: FittedBox(
                                       fit: BoxFit.scaleDown,
                                       child: Row(
-                                      children: [
-                                        Text(
-                                          'Start',
-                                          style: GoogleFonts.nunito(
-                                            textStyle: const TextStyle(
-                                              color: Colors.white,
-                                              fontFamily: 'DMSans-Medium',
-                                              fontSize: 25,
-                                              fontWeight: FontWeight.w500,
+                                        children: [
+                                          Text(
+                                            'Start',
+                                            style: GoogleFonts.nunito(
+                                              textStyle: const TextStyle(
+                                                color: Colors.white,
+                                                fontFamily: 'DMSans-Medium',
+                                                fontSize: 25,
+                                                fontWeight: FontWeight.w500,
+                                              ),
                                             ),
                                           ),
-                                        ),
-                                        const Icon(Icons.play_arrow_rounded)
-                                      ],
-                                    ),),
+                                          const Icon(Icons.play_arrow_rounded)
+                                        ],
+                                      ),
+                                    ),
                                   ),
                                 ),
                               ),
@@ -158,7 +159,7 @@ class _HomePageState extends State<HomePage> {
                   child: Center(
                     child: Card(
                       color: const Color(0xffffffff),
-                      elevation: 2,
+                      elevation: 1,
                       shadowColor: Colors.white70,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(15.0),
@@ -177,6 +178,7 @@ class _HomePageState extends State<HomePage> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
+                                    // 'Sitting with\nBack Unsupported\nFeet Supported',
                                     'Sit to Stand',
                                     style: GoogleFonts.nunito(
                                       textStyle: const TextStyle(
@@ -217,44 +219,50 @@ class _HomePageState extends State<HomePage> {
                             ),
                             Padding(
                               padding: const EdgeInsets.fromLTRB(0, 0, 20, 0),
-                              child: SizedBox(
-                                height: 70,
-                                width: 0.28 * width,
-                                child: ElevatedButton(
-                                  onPressed: () {
-                                    Navigator.push(
-                                        widget.parentCtx,
-                                        //Used to pop to main page instead of home
-                                        MaterialPageRoute(
-                                            builder: (context) =>
-                                                const RecordingPage(
-                                                  movementType: "Sit to Stand",
-                                                )));
-                                  },
-                                  style: ElevatedButton.styleFrom(
-                                      elevation: 0,
-                                      backgroundColor: const Color(0xff006CC6),
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(20),
-                                        //border radius equal to or more than 50% of width
-                                      )),
-                                  child: FittedBox(
-                                    fit: BoxFit.scaleDown,
-                                    child: Row(
-                                      children: [
-                                        Text(
-                                          'Start',
-                                          style: GoogleFonts.nunito(
-                                            textStyle: const TextStyle(
-                                              color: Colors.white,
-                                              fontFamily: 'DMSans-Medium',
-                                              fontSize: 25,
-                                              fontWeight: FontWeight.w500,
+                              child: FittedBox(
+                                fit: BoxFit.scaleDown,
+                                child: SizedBox(
+                                  height: 70,
+                                  width: 0.28 * width,
+                                  child: ElevatedButton(
+                                    onPressed: () {
+                                      Navigator.push(
+                                          widget.parentCtx,
+                                          //Used to pop to main page instead of home
+                                          MaterialPageRoute(
+                                              builder: (context) =>
+                                                  const RecordingPage(
+                                                    movementType:
+                                                        "Sit to Stand",
+                                                  )));
+                                    },
+                                    style: ElevatedButton.styleFrom(
+                                        elevation: 0,
+                                        backgroundColor:
+                                            const Color(0xff006CC6),
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(20),
+                                          //border radius equal to or more than 50% of width
+                                        )),
+                                    child: FittedBox(
+                                      fit: BoxFit.scaleDown,
+                                      child: Row(
+                                        children: [
+                                          Text(
+                                            'Start',
+                                            style: GoogleFonts.nunito(
+                                              textStyle: const TextStyle(
+                                                color: Colors.white,
+                                                fontFamily: 'DMSans-Medium',
+                                                fontSize: 25,
+                                                fontWeight: FontWeight.w500,
+                                              ),
                                             ),
                                           ),
-                                        ),
-                                        const Icon(Icons.play_arrow_rounded)
-                                      ],
+                                          const Icon(Icons.play_arrow_rounded)
+                                        ],
+                                      ),
                                     ),
                                   ),
                                 ),
@@ -271,7 +279,7 @@ class _HomePageState extends State<HomePage> {
                   child: Center(
                     child: Card(
                       color: const Color(0xffffffff),
-                      elevation: 2,
+                      elevation: 1,
                       shadowColor: Colors.white70,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(15.0),
@@ -290,6 +298,7 @@ class _HomePageState extends State<HomePage> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
+                                    // 'Sitting with\nBack Unsupported\nFeet Supported',
                                     'Sit to Stand',
                                     style: GoogleFonts.nunito(
                                       textStyle: const TextStyle(
@@ -330,44 +339,50 @@ class _HomePageState extends State<HomePage> {
                             ),
                             Padding(
                               padding: const EdgeInsets.fromLTRB(0, 0, 20, 0),
-                              child: SizedBox(
-                                height: 70,
-                                width: 0.28 * width,
-                                child: ElevatedButton(
-                                  onPressed: () {
-                                    Navigator.push(
-                                        widget.parentCtx,
-                                        //Used to pop to main page instead of home
-                                        MaterialPageRoute(
-                                            builder: (context) =>
-                                                const RecordingPage(
-                                                  movementType: "Sit to Stand",
-                                                )));
-                                  },
-                                  style: ElevatedButton.styleFrom(
-                                      elevation: 0,
-                                      backgroundColor: const Color(0xff006CC6),
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(20),
-                                        //border radius equal to or more than 50% of width
-                                      )),
-                                  child: FittedBox(
-                                    fit: BoxFit.scaleDown,
-                                    child: Row(
-                                      children: [
-                                        Text(
-                                          'Start',
-                                          style: GoogleFonts.nunito(
-                                            textStyle: const TextStyle(
-                                              color: Colors.white,
-                                              fontFamily: 'DMSans-Medium',
-                                              fontSize: 25,
-                                              fontWeight: FontWeight.w500,
+                              child: FittedBox(
+                                fit: BoxFit.scaleDown,
+                                child: SizedBox(
+                                  height: 70,
+                                  width: 0.28 * width,
+                                  child: ElevatedButton(
+                                    onPressed: () {
+                                      Navigator.push(
+                                          widget.parentCtx,
+                                          //Used to pop to main page instead of home
+                                          MaterialPageRoute(
+                                              builder: (context) =>
+                                                  const RecordingPage(
+                                                    movementType:
+                                                        "Sit to Stand",
+                                                  )));
+                                    },
+                                    style: ElevatedButton.styleFrom(
+                                        elevation: 0,
+                                        backgroundColor:
+                                            const Color(0xff006CC6),
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(20),
+                                          //border radius equal to or more than 50% of width
+                                        )),
+                                    child: FittedBox(
+                                      fit: BoxFit.scaleDown,
+                                      child: Row(
+                                        children: [
+                                          Text(
+                                            'Start',
+                                            style: GoogleFonts.nunito(
+                                              textStyle: const TextStyle(
+                                                color: Colors.white,
+                                                fontFamily: 'DMSans-Medium',
+                                                fontSize: 25,
+                                                fontWeight: FontWeight.w500,
+                                              ),
                                             ),
                                           ),
-                                        ),
-                                        const Icon(Icons.play_arrow_rounded)
-                                      ],
+                                          const Icon(Icons.play_arrow_rounded)
+                                        ],
+                                      ),
                                     ),
                                   ),
                                 ),
@@ -384,7 +399,7 @@ class _HomePageState extends State<HomePage> {
                   child: Center(
                     child: Card(
                       color: const Color(0xffffffff),
-                      elevation: 2,
+                      elevation: 1,
                       shadowColor: Colors.white70,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(15.0),
@@ -403,6 +418,7 @@ class _HomePageState extends State<HomePage> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
+                                    // 'Sitting with\nBack Unsupported\nFeet Supported',
                                     'Sit to Stand',
                                     style: GoogleFonts.nunito(
                                       textStyle: const TextStyle(
@@ -443,44 +459,50 @@ class _HomePageState extends State<HomePage> {
                             ),
                             Padding(
                               padding: const EdgeInsets.fromLTRB(0, 0, 20, 0),
-                              child: SizedBox(
-                                height: 70,
-                                width: 0.28 * width,
-                                child: ElevatedButton(
-                                  onPressed: () {
-                                    Navigator.push(
-                                        widget.parentCtx,
-                                        //Used to pop to main page instead of home
-                                        MaterialPageRoute(
-                                            builder: (context) =>
-                                                const RecordingPage(
-                                                  movementType: "Sit to Stand",
-                                                )));
-                                  },
-                                  style: ElevatedButton.styleFrom(
-                                      elevation: 0,
-                                      backgroundColor: const Color(0xff006CC6),
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(20),
-                                        //border radius equal to or more than 50% of width
-                                      )),
-                                  child: FittedBox(
-                                    fit: BoxFit.scaleDown,
-                                    child: Row(
-                                      children: [
-                                        Text(
-                                          'Start',
-                                          style: GoogleFonts.nunito(
-                                            textStyle: const TextStyle(
-                                              color: Colors.white,
-                                              fontFamily: 'DMSans-Medium',
-                                              fontSize: 25,
-                                              fontWeight: FontWeight.w500,
+                              child: FittedBox(
+                                fit: BoxFit.scaleDown,
+                                child: SizedBox(
+                                  height: 70,
+                                  width: 0.28 * width,
+                                  child: ElevatedButton(
+                                    onPressed: () {
+                                      Navigator.push(
+                                          widget.parentCtx,
+                                          //Used to pop to main page instead of home
+                                          MaterialPageRoute(
+                                              builder: (context) =>
+                                                  const RecordingPage(
+                                                    movementType:
+                                                        "Sit to Stand",
+                                                  )));
+                                    },
+                                    style: ElevatedButton.styleFrom(
+                                        elevation: 0,
+                                        backgroundColor:
+                                            const Color(0xff006CC6),
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(20),
+                                          //border radius equal to or more than 50% of width
+                                        )),
+                                    child: FittedBox(
+                                      fit: BoxFit.scaleDown,
+                                      child: Row(
+                                        children: [
+                                          Text(
+                                            'Start',
+                                            style: GoogleFonts.nunito(
+                                              textStyle: const TextStyle(
+                                                color: Colors.white,
+                                                fontFamily: 'DMSans-Medium',
+                                                fontSize: 25,
+                                                fontWeight: FontWeight.w500,
+                                              ),
                                             ),
                                           ),
-                                        ),
-                                        const Icon(Icons.play_arrow_rounded)
-                                      ],
+                                          const Icon(Icons.play_arrow_rounded)
+                                        ],
+                                      ),
                                     ),
                                   ),
                                 ),
@@ -497,7 +519,7 @@ class _HomePageState extends State<HomePage> {
                   child: Center(
                     child: Card(
                       color: const Color(0xffffffff),
-                      elevation: 2,
+                      elevation: 1,
                       shadowColor: Colors.white70,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(15.0),
@@ -516,6 +538,7 @@ class _HomePageState extends State<HomePage> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
+                                    // 'Sitting with\nBack Unsupported\nFeet Supported',
                                     'Sit to Stand',
                                     style: GoogleFonts.nunito(
                                       textStyle: const TextStyle(
@@ -556,44 +579,50 @@ class _HomePageState extends State<HomePage> {
                             ),
                             Padding(
                               padding: const EdgeInsets.fromLTRB(0, 0, 20, 0),
-                              child: SizedBox(
-                                height: 70,
-                                width: 0.28 * width,
-                                child: ElevatedButton(
-                                  onPressed: () {
-                                    Navigator.push(
-                                        widget.parentCtx,
-                                        //Used to pop to main page instead of home
-                                        MaterialPageRoute(
-                                            builder: (context) =>
-                                                const RecordingPage(
-                                                  movementType: "Sit to Stand",
-                                                )));
-                                  },
-                                  style: ElevatedButton.styleFrom(
-                                      elevation: 0,
-                                      backgroundColor: const Color(0xff006CC6),
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(20),
-                                        //border radius equal to or more than 50% of width
-                                      )),
-                                  child: FittedBox(
-                                    fit: BoxFit.scaleDown,
-                                    child: Row(
-                                      children: [
-                                        Text(
-                                          'Start',
-                                          style: GoogleFonts.nunito(
-                                            textStyle: const TextStyle(
-                                              color: Colors.white,
-                                              fontFamily: 'DMSans-Medium',
-                                              fontSize: 25,
-                                              fontWeight: FontWeight.w500,
+                              child: FittedBox(
+                                fit: BoxFit.scaleDown,
+                                child: SizedBox(
+                                  height: 70,
+                                  width: 0.28 * width,
+                                  child: ElevatedButton(
+                                    onPressed: () {
+                                      Navigator.push(
+                                          widget.parentCtx,
+                                          //Used to pop to main page instead of home
+                                          MaterialPageRoute(
+                                              builder: (context) =>
+                                                  const RecordingPage(
+                                                    movementType:
+                                                        "Sit to Stand",
+                                                  )));
+                                    },
+                                    style: ElevatedButton.styleFrom(
+                                        elevation: 0,
+                                        backgroundColor:
+                                            const Color(0xff006CC6),
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(20),
+                                          //border radius equal to or more than 50% of width
+                                        )),
+                                    child: FittedBox(
+                                      fit: BoxFit.scaleDown,
+                                      child: Row(
+                                        children: [
+                                          Text(
+                                            'Start',
+                                            style: GoogleFonts.nunito(
+                                              textStyle: const TextStyle(
+                                                color: Colors.white,
+                                                fontFamily: 'DMSans-Medium',
+                                                fontSize: 25,
+                                                fontWeight: FontWeight.w500,
+                                              ),
                                             ),
                                           ),
-                                        ),
-                                        const Icon(Icons.play_arrow_rounded)
-                                      ],
+                                          const Icon(Icons.play_arrow_rounded)
+                                        ],
+                                      ),
                                     ),
                                   ),
                                 ),

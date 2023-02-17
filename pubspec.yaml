@@ -31,7 +31,6 @@ dependencies:
   flutter:
     sdk: flutter
   motion_sensors: ^0.1.0
-  vector_math: ^2.1.4
   http: ^0.13.5
   flutter_spinkit: ^5.1.0
   animated_check: ^1.0.0
@@ -39,6 +38,10 @@ dependencies:
   google_fonts: ^4.0.3
   gaimon: ^1.1.1+1
   dropdown_button2: ^1.9.2
+  intl: ^0.18.0   # To format/parse date time
+  circular_countdown_timer: ^0.2.3
+  flutter_ringtone_player: ^3.2.0
+
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
