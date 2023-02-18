@@ -1,4 +1,4 @@
-import 'package:balance_test/TestItem.dart';
+import 'package:balance_test/TestDetailsItems.dart';
 import 'package:balance_test/test_details_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -21,9 +21,9 @@ class _PastTestsState extends State<PastTests> {
 
   final controller = ScrollController();
 
-  List<Test> testList = getTests();
+  List<TestDetailsItem> testList = getTests();
 
-  static List<Test> getTests() {
+  static List<TestDetailsItem> getTests() {
     const data = [
       {
         "testID": "1", //UUID format
@@ -75,7 +75,7 @@ class _PastTestsState extends State<PastTests> {
       },
     ];
 
-    List<Test> testList = data.map<Test>(Test.fromJson).toList();
+    List<TestDetailsItem> testList = data.map<TestDetailsItem>(TestDetailsItem.fromJson).toList();
     testList.sort((a, b) => a.dateTime.compareTo(b.dateTime));
     testList = List.from(testList.reversed);
     return testList;
@@ -183,7 +183,7 @@ class _PastTestsState extends State<PastTests> {
     double height = MediaQuery.of(context).size.height;
     double width = MediaQuery.of(context).size.width;
 
-    Widget buildTestList(List<Test> tests) => ListView.builder(
+    Widget buildTestList(List<TestDetailsItem> tests) => ListView.builder(
         itemCount: tests.length + 1, // To include dropdown as 1st element
         itemBuilder: (context, index) {
           if (index == 0) {
@@ -347,7 +347,7 @@ class _PastTestsState extends State<PastTests> {
                                           style: GoogleFonts.nunito(
                                             textStyle: const TextStyle(
                                               color: Color(0xff2A2A2A),
-                                              fontSize: 26,
+                                              fontSize: 24,
                                               fontWeight: FontWeight.w700,
                                             ),
                                           ),

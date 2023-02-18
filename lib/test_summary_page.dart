@@ -258,7 +258,7 @@ class _TestSummaryState extends State<TestSummary> {
                 ),
                 child: SizedBox(
                   width: width * 0.9,
-                  height: 600,
+                  height: null,
                   child: Column(
                     //crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -385,7 +385,7 @@ class _TestSummaryState extends State<TestSummary> {
                         ),
                       ),
                       Padding(
-                        padding: const EdgeInsets.fromLTRB(0, 15, 0, 0),
+                        padding: const EdgeInsets.fromLTRB(0, 15, 0, 20),
                         child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                             crossAxisAlignment: CrossAxisAlignment.center,

@@ -86,7 +86,7 @@ class _MyHomePageState extends State<MyHomePage> {
             statusBarBrightness: Brightness.light, // light for black status bar
           ),
           title: Padding(
-            padding: EdgeInsets.fromLTRB((_selectedIndex==3)? 0 : 0.03 * width, (_selectedIndex==3)? 0 : 0.1*width, 0, 0),
+            padding: EdgeInsets.fromLTRB((_selectedIndex==3)? 0 : 0.01 * width, (_selectedIndex==3)? 0 : 0.1*width, 0, 0),
             child: Text(
               titles.elementAt(_selectedIndex),
               style: TextStyle(

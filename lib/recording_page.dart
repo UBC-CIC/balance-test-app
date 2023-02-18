@@ -71,7 +71,7 @@ class _RecordingPageState extends State<RecordingPage> {
   }
 
 //Starts the stopwatch and timer to update state every 1 second
-  void startTimer()  {
+  void startTimer() {
     stopwatch.reset();
     setState(() {
       stopwatch.start();
@@ -125,10 +125,12 @@ class _RecordingPageState extends State<RecordingPage> {
 
   //Starts recording streams and stopwatch timer
   startRecording() async {
-      await showDialog(
-          context: context,
-          builder: (BuildContext context) {
-        return const CountDown(countdownDuration: 6,);
+    await showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return const CountDown(
+          countdownDuration: 6,
+        );
       },
     );
     FlutterRingtonePlayer.play(
@@ -195,17 +197,24 @@ class _RecordingPageState extends State<RecordingPage> {
           toolbarHeight: 0.1 * height,
           title: Padding(
             padding: const EdgeInsets.fromLTRB(0, 10, 0, 0),
-            child: Text(
-              title,
-              textAlign: TextAlign.center,
-              style: GoogleFonts.nunito(
-    textStyle: const TextStyle(
-                // color: Color.fromRGBO(141, 148, 162, 1.0),
-                color: Colors.black,
-                // fontFamily: 'DMSans-Regular',
-                fontSize: 32,
+            child: SizedBox(
+              width: width,
+              height: 0.1 * height,
+              child: FittedBox(
+                fit: BoxFit.scaleDown,
+                child: Text(
+                  title,
+                  textAlign: TextAlign.center,
+                  style: GoogleFonts.nunito(
+                    textStyle: const TextStyle(
+                      // color: Color.fromRGBO(141, 148, 162, 1.0),
+                      color: Colors.black,
+                      // fontFamily: 'DMSans-Regular',
+                      fontSize: 32,
+                    ),
+                  ),
+                ),
               ),
-            ),
             ),
           ),
           elevation: 0,
@@ -232,8 +241,8 @@ class _RecordingPageState extends State<RecordingPage> {
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   SizedBox(
-                      height: 0.3*width,
-                      width: 0.3*width,
+                      height: 0.3 * width,
+                      width: 0.3 * width,
                       child: ElevatedButton(
                         onPressed: () {
                           stopTimer();
@@ -245,7 +254,7 @@ class _RecordingPageState extends State<RecordingPage> {
                         style: ElevatedButton.styleFrom(
                             backgroundColor: const Color(0xffECEDF0),
                             shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(0.15*width),
+                              borderRadius: BorderRadius.circular(0.15 * width),
                               //border radius equal to or more than 50% of width
                             )),
                         child: const Icon(
@@ -256,14 +265,15 @@ class _RecordingPageState extends State<RecordingPage> {
                       )),
                   if (!recordingStarted)
                     SizedBox(
-                        height: 0.3*width,
-                        width: 0.3*width,
+                        height: 0.3 * width,
+                        width: 0.3 * width,
                         child: ElevatedButton(
                           onPressed: startRecording,
                           style: ElevatedButton.styleFrom(
                               backgroundColor: const Color(0xff006CC6),
                               shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(0.15*width),
+                                borderRadius:
+                                    BorderRadius.circular(0.15 * width),
                                 //border radius equal to or more than 50% of width
                               )),
                           child: const Icon(
@@ -273,8 +283,8 @@ class _RecordingPageState extends State<RecordingPage> {
                         )),
                   if (recordingStarted)
                     SizedBox(
-                        height: 0.3*width,
-                        width: 0.3*width,
+                        height: 0.3 * width,
+                        width: 0.3 * width,
                         child: ElevatedButton(
                           onPressed: () {
                             for (final subscription in _streamSubscriptions) {
@@ -319,7 +329,8 @@ class _RecordingPageState extends State<RecordingPage> {
                           style: ElevatedButton.styleFrom(
                               backgroundColor: const Color(0xfffe3d30),
                               shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(0.15*width),
+                                borderRadius:
+                                    BorderRadius.circular(0.15 * width),
                                 //border radius equal to or more than 50% of width
                               )),
                           child: const Icon(

@@ -129,8 +129,7 @@ class _TestDetailsPageState extends State<TestDetailsPage> {
                                     ),
                                     Flexible( //Overflow text pushes to next line
                                       child: Text(
-                                      'Sitting with Back\nUnsupported Feet Supported'
-                                          '',
+                                      'Sitting with Back\nUnsupported Feet Supported',
                                       style: GoogleFonts.nunito(
                                         textStyle: const TextStyle(
                                           color: Colors.black,
@@ -448,8 +447,7 @@ class _TestDetailsPageState extends State<TestDetailsPage> {
                               width: width * 0.9,
                               height: 600,
                               child: Padding(
-                                padding:
-                                const EdgeInsets.fromLTRB(22.0, 20, 22.0, 0),
+                                padding: const EdgeInsets.fromLTRB(22.0, 20, 22.0, 0),
                                 child: Column(
                                   mainAxisSize: MainAxisSize.min,
                                   crossAxisAlignment: CrossAxisAlignment.start,
