@@ -38,9 +38,12 @@ dependencies:
   google_fonts: ^4.0.3
   gaimon: ^1.1.1+1
   dropdown_button2: ^1.9.2
-  intl: ^0.18.0   # To format/parse date time
+  intl: ^0.17.0   # To format/parse date time
   circular_countdown_timer: ^0.2.3
   flutter_ringtone_player: ^3.2.0
+  amplify_flutter: ^0.6.0
+  amplify_auth_cognito: ^0.6.0
+  amplify_authenticator: ^0.2.0
 
 
   # The following adds the Cupertino Icons font to your application.

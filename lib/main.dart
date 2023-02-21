@@ -1,8 +1,13 @@
+import 'package:amplify_auth_cognito/amplify_auth_cognito.dart';
+import 'package:amplify_authenticator/amplify_authenticator.dart';
+import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:balance_test/account_page.dart';
 import 'package:balance_test/home_page.dart';
 import 'package:balance_test/past_tests.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+
+import 'amplifyconfiguration.dart';
 
 
 void main() {
@@ -42,10 +47,26 @@ class _MyHomePageState extends State<MyHomePage> {
 
   //FUNCTIONS
 
+  @override
+  void initState() {
+    super.initState();
+    _configureAmplify();
+  }
+
   void _onItemTapped(int index) {
     setState(() {
       _selectedIndex = index;
     });
+  }
+
+  void _configureAmplify() async {
+    try {
+      await Amplify.addPlugin(AmplifyAuthCognito());
+      await Amplify.configure(amplifyconfig);
+      print('Successfully configured');
+    } on Exception catch (e) {
+      print('Error configuring Amplify: $e');
+    }
   }
 
   //UI
@@ -76,8 +97,10 @@ class _MyHomePageState extends State<MyHomePage> {
       'Account',
     ];
 
-    return MaterialApp(
-      home: Scaffold(
+    return Authenticator(
+        child: MaterialApp(
+          builder: Authenticator.builder(),
+          home: Scaffold(
         backgroundColor: const Color(0xfff2f1f6),
         appBar: AppBar(
           toolbarHeight: (_selectedIndex==3)? 0.06 * height : 0.1 * height,
@@ -140,6 +163,6 @@ class _MyHomePageState extends State<MyHomePage> {
           ],
         ),
       ),
-    );
+    ));
   }
 }

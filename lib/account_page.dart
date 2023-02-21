@@ -1,3 +1,4 @@
+import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:balance_test/recording_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -19,6 +20,27 @@ class _AccountPageState extends State<AccountPage> {
 
   //Controller for fading scroll view
   final controller = ScrollController();
+  AmplifyException? _error;
+  String authState = 'User not signed in';
+  String displayState = '';
+
+  //FUNCTIONS
+  void showResult(_authState) async {
+    setState(() {
+      _error = null;
+      authState = _authState;
+    });
+    print(authState);
+  }
+
+  void changeDisplay(_displayState) async {
+    setState(() {
+      _error = null;
+      displayState = _displayState;
+    });
+    print(displayState);
+  }
+
 
   //UI
 
@@ -97,6 +119,55 @@ class _AccountPageState extends State<AccountPage> {
               ),
             ),
           ),
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(0, 0, 20, 0),
+                    child: FittedBox(
+                      fit: BoxFit.scaleDown,
+                      child: SizedBox(
+                        height: 60,
+                        width: 0.28 * width,
+                        child: ElevatedButton(
+                          onPressed: () async {
+                            try {
+                              await Amplify.Auth.signOut();
+                              showResult('Signed Out');
+                              changeDisplay('SHOW_SIGN_IN');
+                            } on AmplifyException catch (e) {
+                              setState(() {
+                                _error = e;
+                              });
+                              print(e);
+                            }
+                          },
+                          style: ElevatedButton.styleFrom(
+                              elevation: 0,
+                              backgroundColor: const Color(0xff006CC6),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(20),
+                                //border radius equal to or more than 50% of width
+                              )),
+                          child: FittedBox(
+                            fit: BoxFit.scaleDown,
+                            child: Row(
+                              children: [
+                                Text(
+                                  'Sign Out',
+                                  style: GoogleFonts.nunito(
+                                    textStyle: const TextStyle(
+                                      color: Colors.white,
+                                      fontFamily: 'DMSans-Medium',
+                                      fontSize: 25,
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
 
                 ])),
       ),
