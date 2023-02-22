@@ -1,10 +1,9 @@
 import 'package:amplify_flutter/amplify_flutter.dart';
-import 'package:balance_test/recording_page.dart';
+import 'package:balance_test/countdown_selection_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-
-import 'my_fading_scrollview.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class AccountPage extends StatefulWidget {
   const AccountPage({Key? key, required this.parentCtx}) : super(key: key);
@@ -18,13 +17,26 @@ class AccountPage extends StatefulWidget {
 class _AccountPageState extends State<AccountPage> {
   //VARIABLES
 
+  final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
+  late Future<int> _countdownTime;
+  
   //Controller for fading scroll view
   final controller = ScrollController();
+  
   AmplifyException? _error;
   String authState = 'User not signed in';
   String displayState = '';
 
   //FUNCTIONS
+
+  @override
+  void initState() {
+    super.initState();
+    _countdownTime = _prefs.then((SharedPreferences prefs) {
+      return prefs.getInt('countdown') ?? 5;   //default countdown
+    });
+  }
+
   void showResult(_authState) async {
     setState(() {
       _error = null;
@@ -40,7 +52,6 @@ class _AccountPageState extends State<AccountPage> {
     });
     print(displayState);
   }
-
 
   //UI
 
@@ -92,33 +103,78 @@ class _AccountPageState extends State<AccountPage> {
                       ],
                     ),
                   ),
-          SafeArea(
-            child: SingleChildScrollView(
-              child: CupertinoListSection.insetGrouped(
-                children: const [
+                  SafeArea(
+                    child: SingleChildScrollView(
+                      child: CupertinoListSection.insetGrouped(
+                        children: const [
+                          CupertinoListTile(title: Text('Simple tile')),
+                          CupertinoListTile(
+                            title: Text('Title of the tile'),
+                            subtitle: Text('Subtitle of the tile'),
+                          ),
+                          CupertinoListTile(
+                            title: Text('With additional info'),
+                            additionalInfo: Text('Info'),
+                          ),
+                          CupertinoListTile(
+                            title: Text('With leading & trailing'),
+                            leading: Icon(CupertinoIcons.add_circled_solid),
+                            trailing: Icon(CupertinoIcons.chevron_forward),
+                          ),
+                          CupertinoListTile(
+                            title: Text('Different background color'),
+                            backgroundColor: CupertinoColors.activeGreen,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  SafeArea(
+                    child: SingleChildScrollView(
+                      child: CupertinoListSection.insetGrouped(
+                        children: [
+                          CupertinoListTile(
+                            title: const Text('Recording Countdown'),
+                            additionalInfo: FutureBuilder<int>(
+                                future: _countdownTime,
+                                builder: (BuildContext context, AsyncSnapshot<int> snapshot) {
+                                  switch (snapshot.connectionState) {
+                                    case ConnectionState.none:
+                                    case ConnectionState.waiting:
+                                    case ConnectionState.active:
+                                    case ConnectionState.done:
+                                      if (snapshot.hasError) {
+                                        return Text('Error: ${snapshot.error}');
+                                      } else {
+                                        return Text(
+                                          '${snapshot.data} seconds');
+                                      }
+                                  }
+                                }),
+                            trailing: const Icon(
+                              CupertinoIcons.forward,
+                              color: Color(0xffc4c4c6),
+                              size: 20,
+                            ),
+                            onTap: () {
+                              Navigator.push(
+                                  widget.parentCtx,
+                                  //Used to pop to main page instead of home
+                                  MaterialPageRoute(
+                                      builder: (context) => const CountdownSelectionPage())).then((value) {
+                                        setState(() {
+                                          _countdownTime = _prefs.then((SharedPreferences prefs) {
+                                            return prefs.getInt('countdown') ?? 5;   //default countdown
+                                          });
+                                        });
 
-                  CupertinoListTile(title: Text('Simple tile')),
-                  CupertinoListTile(
-                    title: Text('Title of the tile'),
-                    subtitle: Text('Subtitle of the tile'),
+                              });
+                            },
+                          ),
+                        ],
+                      ),
+                    ),
                   ),
-                  CupertinoListTile(
-                    title: Text('With additional info'),
-                    additionalInfo: Text('Info'),
-                  ),
-                  CupertinoListTile(
-                    title: Text('With leading & trailing'),
-                    leading: Icon(CupertinoIcons.add_circled_solid),
-                    trailing: Icon(CupertinoIcons.chevron_forward),
-                  ),
-                  CupertinoListTile(
-                    title: Text('Different background color'),
-                    backgroundColor: CupertinoColors.activeGreen,
-                  ),
-                ],
-              ),
-            ),
-          ),
                   Padding(
                     padding: const EdgeInsets.fromLTRB(0, 0, 20, 0),
                     child: FittedBox(
@@ -168,7 +224,6 @@ class _AccountPageState extends State<AccountPage> {
                       ),
                     ),
                   ),
-
                 ])),
       ),
     );

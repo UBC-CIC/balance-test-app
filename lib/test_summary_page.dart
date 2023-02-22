@@ -52,37 +52,9 @@ class _TestSummaryState extends State<TestSummary> {
 
   //METHODS
 
-  showLoaderDialog(BuildContext context) {
-    var height = MediaQuery.of(context).size.height;
-    var width = MediaQuery.of(context).size.width;
-    AlertDialog alert = AlertDialog(
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(10.0),
-      ),
-      content: Container(
-        width: 230,
-        height: 230,
-        child: Row(
-          children: [
-            const CircularProgressIndicator(),
-            Container(
-                margin: const EdgeInsets.only(left: 7),
-                child: const Text("Loading...")),
-          ],
-        ),
-      ),
-    );
-    showDialog(
-      barrierDismissible: false,
-      context: context,
-      builder: (BuildContext context) {
-        return alert;
-      },
-    );
-  }
-
   void sendData() {
     showDialog(
+      barrierDismissible: false,
       context: context,
       builder: (BuildContext context) {
         return Loading(showCheckmark: _showCheck);

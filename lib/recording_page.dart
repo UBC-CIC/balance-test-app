@@ -6,6 +6,7 @@ import 'package:flutter_ringtone_player/flutter_ringtone_player.dart';
 import 'package:motion_sensors/motion_sensors.dart';
 import 'package:balance_test/test_summary_page.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'countdown_page.dart';
 
@@ -125,45 +126,51 @@ class _RecordingPageState extends State<RecordingPage> {
 
   //Starts recording streams and stopwatch timer
   startRecording() async {
-    await showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return const CountDown(
-          countdownDuration: 6,
-        );
-      },
-    );
-    FlutterRingtonePlayer.play(
-      android: AndroidSounds.alarm,
-      ios: const IosSound(1110),
-      looping: false,
-      volume: 1.0,
-    );
-    startTimer();
+    SharedPreferences.getInstance().then((prefs) {
+      final countdown = prefs.getInt('countdown') ?? 5;
 
-    clearLists();
-    _streamSubscriptions
-        .add(motionSensors.accelerometer.listen((AccelerometerEvent event) {
-      timeStampData.add("${DateTime.now().toLocal().toString()} "
-          "${formattedTimeZoneOffset(DateTime.now())}");
-      accelerometerDataX.add(event.x);
-      accelerometerDataY.add(event.y);
-      accelerometerDataZ.add(event.z);
-    }));
-    _streamSubscriptions
-        .add(motionSensors.gyroscope.listen((GyroscopeEvent event) {
-      gyroscopeDataX.add(event.x);
-      gyroscopeDataY.add(event.y);
-      gyroscopeDataZ.add(event.z);
-    }));
-    _streamSubscriptions
-        .add(motionSensors.magnetometer.listen((MagnetometerEvent event) {
-      magnetometerDataX.add(event.x);
-      magnetometerDataY.add(event.y);
-      magnetometerDataZ.add(event.z);
-    }));
-    setState(() {
-      recordingStarted = true;
+      showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (BuildContext context) {
+          return CountDown(
+            countdownDuration: countdown,
+          );
+        },
+      ).then((value) {
+        FlutterRingtonePlayer.play(
+          android: AndroidSounds.alarm,
+          ios: const IosSound(1110),
+          looping: false,
+          volume: 1.0,
+        );
+        startTimer();
+
+        clearLists();
+        _streamSubscriptions
+            .add(motionSensors.accelerometer.listen((AccelerometerEvent event) {
+          timeStampData.add("${DateTime.now().toLocal().toString()} "
+              "${formattedTimeZoneOffset(DateTime.now())}");
+          accelerometerDataX.add(event.x);
+          accelerometerDataY.add(event.y);
+          accelerometerDataZ.add(event.z);
+        }));
+        _streamSubscriptions
+            .add(motionSensors.gyroscope.listen((GyroscopeEvent event) {
+          gyroscopeDataX.add(event.x);
+          gyroscopeDataY.add(event.y);
+          gyroscopeDataZ.add(event.z);
+        }));
+        _streamSubscriptions
+            .add(motionSensors.magnetometer.listen((MagnetometerEvent event) {
+          magnetometerDataX.add(event.x);
+          magnetometerDataY.add(event.y);
+          magnetometerDataZ.add(event.z);
+        }));
+        setState(() {
+          recordingStarted = true;
+        });
+      });
     });
   }
 

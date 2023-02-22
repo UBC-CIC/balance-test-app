@@ -164,7 +164,7 @@ class _PastTestsState extends State<PastTests> {
     if (score < 40) {
       return const Color(0xffAD2234);
     } else if (score < 65) {
-      return Colors.deepOrange;
+      return const Color(0xffEB5D63);
     } else if (score < 75) {
       return Colors.black;
     } else if (score < 90) {
@@ -403,7 +403,7 @@ class _PastTestsState extends State<PastTests> {
                               width: 0.13 * width,
                                child: Icon(
                                   CupertinoIcons.forward,
-                                  color: const Color(0xff777586),
+                                  color: const Color(0xffc4c4c6),
                                   size: 0.06 * width,
                                 ),
 
