@@ -12,9 +12,7 @@ import 'package:gaimon/gaimon.dart';
 import 'my_fading_scrollview.dart';
 
 class CountdownSelectionPage extends StatefulWidget {
-  const CountdownSelectionPage({Key? key})
-      : super(key: key);
-
+  const CountdownSelectionPage({Key? key}) : super(key: key);
 
   @override
   State<CountdownSelectionPage> createState() => _CountdownSelectionPageState();
@@ -46,7 +44,6 @@ class _CountdownSelectionPageState extends State<CountdownSelectionPage> {
     });
   }
 
-
 //UI
 
   @override
@@ -69,7 +66,7 @@ class _CountdownSelectionPageState extends State<CountdownSelectionPage> {
                   ),
                 ]),
             onTap: () {
-                Navigator.pop(context);
+              Navigator.pop(context);
             },
           ),
           iconTheme: const IconThemeData(
@@ -79,7 +76,7 @@ class _CountdownSelectionPageState extends State<CountdownSelectionPage> {
           title: Padding(
             padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
             child: Text(
-              'Recording Countdown',
+              'Countdown',
               textAlign: TextAlign.center,
               style: GoogleFonts.nunito(
                 textStyle: const TextStyle(
@@ -102,10 +99,10 @@ class _CountdownSelectionPageState extends State<CountdownSelectionPage> {
                 children: [
                   SafeArea(
                     child: SingleChildScrollView(
-                      child:
-                      FutureBuilder<int>(
+                      child: FutureBuilder<int>(
                           future: _countdownTime,
-                          builder: (BuildContext context, AsyncSnapshot<int> snapshot) {
+                          builder: (BuildContext context,
+                              AsyncSnapshot<int> snapshot) {
                             switch (snapshot.connectionState) {
                               case ConnectionState.none:
                               case ConnectionState.waiting:
@@ -115,12 +112,51 @@ class _CountdownSelectionPageState extends State<CountdownSelectionPage> {
                                   return Text('Error: ${snapshot.error}');
                                 } else {
                                   return CupertinoListSection.insetGrouped(
+                                    footer: Padding(
+                                      padding: EdgeInsets.fromLTRB(
+                                          0.02 * width, 0, 0.02 * width, 0),
+                                      child: Row(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: const [
+                                            Padding(
+                                                padding: EdgeInsets.fromLTRB(
+                                                    0, 0, 3, 0),
+                                                child: Icon(
+                                                  CupertinoIcons.info,
+                                                  size: 16,
+                                                  color: Color(0xffa4a3aa),
+                                                )),
+                                            Flexible(
+                                              child: Text(
+                                                'Tap on the countdown timer in the recording page to skip the countdown',
+                                                style: TextStyle(
+                                                    fontSize: 15,
+                                                    color: Color(0xffa4a3aa)),
+                                              ),
+                                            )
+                                          ]),
+                                    ),
                                     children: [
-                                      ...[5, 10, 15, 20, 30, 45, 60].map((time) {
+                                      ...[5, 10, 15, 20, 30, 45, 60, 120]
+                                          .map((time) {
+                                        int minutes = (time / 60).round();
+                                        String minuteFormat;
+                                        if (minutes == 1) {
+                                          minuteFormat = 'minute';
+                                        } else {
+                                          minuteFormat = 'minutes';
+                                        }
                                         return CupertinoListTile(
-                                          title: Text('$time seconds'),
-                                          trailing: snapshot.data == time ? const Icon(CupertinoIcons.check_mark,
-                                            color: Color(0xff007AFF),) : null,
+                                          title: (time > 59)
+                                              ? Text('$minutes $minuteFormat')
+                                              : Text('$time seconds'),
+                                          trailing: snapshot.data == time
+                                              ? const Icon(
+                                                  CupertinoIcons.check_mark,
+                                                  color: Color(0xff007AFF),
+                                                )
+                                              : null,
                                           onTap: () {
                                             setState(() {
                                               setCountdown(time);
@@ -133,10 +169,6 @@ class _CountdownSelectionPageState extends State<CountdownSelectionPage> {
                                 }
                             }
                           }),
-
-
-
-
                     ),
                   ),
                 ])));

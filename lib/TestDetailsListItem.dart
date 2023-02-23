@@ -1,19 +1,19 @@
-import 'package:intl/intl.dart';
 
-class TestDetailsItem {
+
+class TestDetails {
   final String testID;
   final String movement;
   final String dateTime;
   final int score;
 
-  const TestDetailsItem({
+  const TestDetails({
     required this.testID,
     required this.movement,
     required this.dateTime,
     required this.score,
   });
 
-  static TestDetailsItem fromJson(json) => TestDetailsItem(
+  static TestDetails fromJson(json) => TestDetails(
         testID: json['testID'],
         movement: json['movement'],
         dateTime: json['dateTime'],

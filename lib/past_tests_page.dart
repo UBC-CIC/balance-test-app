@@ -1,4 +1,4 @@
-import 'package:balance_test/TestDetailsItems.dart';
+import 'package:balance_test/TestDetailsListItem.dart';
 import 'package:balance_test/test_details_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -7,10 +7,12 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:intl/intl.dart';
 
+
 class PastTests extends StatefulWidget {
-  const PastTests({Key? key, required this.parentCtx}) : super(key: key);
+  const PastTests({Key? key, required this.parentCtx, required this.userID}) : super(key: key);
 
   final BuildContext parentCtx;
+  final String userID;
 
   @override
   State<PastTests> createState() => _PastTestsState();
@@ -21,9 +23,9 @@ class _PastTestsState extends State<PastTests> {
 
   final controller = ScrollController();
 
-  List<TestDetailsItem> testList = getTests();
+  List<TestDetails> testList = getTests();
 
-  static List<TestDetailsItem> getTests() {
+  static List<TestDetails> getTests() {
     const data = [
       {
         "testID": "1", //UUID format
@@ -75,7 +77,7 @@ class _PastTestsState extends State<PastTests> {
       },
     ];
 
-    List<TestDetailsItem> testList = data.map<TestDetailsItem>(TestDetailsItem.fromJson).toList();
+    List<TestDetails> testList = data.map<TestDetails>(TestDetails.fromJson).toList();
     testList.sort((a, b) => a.dateTime.compareTo(b.dateTime));
     testList = List.from(testList.reversed);
     return testList;
@@ -183,7 +185,7 @@ class _PastTestsState extends State<PastTests> {
     double height = MediaQuery.of(context).size.height;
     double width = MediaQuery.of(context).size.width;
 
-    Widget buildTestList(List<TestDetailsItem> tests) => ListView.builder(
+    Widget buildTestList(List<TestDetails> tests) => ListView.builder(
         itemCount: tests.length + 1, // To include dropdown as 1st element
         itemBuilder: (context, index) {
           if (index == 0) {

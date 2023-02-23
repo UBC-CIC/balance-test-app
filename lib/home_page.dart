@@ -3,12 +3,12 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import 'TestItem.dart';
-import 'my_fading_scrollview.dart';
 
 class HomePage extends StatefulWidget {
-  const HomePage({Key? key, required this.parentCtx}) : super(key: key);
+  const HomePage({Key? key, required this.parentCtx, required this.userID}) : super(key: key);
 
   final BuildContext parentCtx;
+  final String userID;
 
   @override
   State<HomePage> createState() => _HomePageState();
@@ -18,50 +18,92 @@ class _HomePageState extends State<HomePage> {
   //VARIABLES
 
   //Controller for fading scroll view
-  final controller = ScrollController();
 
   List<TestItem> testList = getTests();
 
   static List<TestItem> getTests() {
     const data = [
       {
-        "movement": "sit-to-stasdlijfaosijdfodijnd",
-      },
-      {
         "movement": "sit-to-stand",
       },
       {
-        "movement": "sit-to-stand",
+        "movement": "stand-unsupported",
       },
       {
-        "movement": "sit-to-stand",
+        "movement": "stand-to-sit",
       },
       {
-        "movement": "sit-to-stand",
+        "movement": "transfers",
       },
       {
-        "movement": "sit-to-stand",
+        "movement": "stand-eyes-closed",
       },
       {
-        "movement": "sit-to-stand",
+        "movement": "stand-feet-together",
       },
       {
-        "movement": "sit-to-stand",
+        "movement": "stand-reaching-forward",
+      },
+      {
+        "movement": "pick-up-object",
+      },
+      {
+        "movement": "look-behind-shoulders",
+      },
+      {
+        "movement": "360-turn",
+      },
+      {
+        "movement": "alternate-foot",
+      },
+      {
+        "movement": "one-foot-in-front",
+      },
+      {
+        "movement": "stand-one-leg",
       },
     ];
 
     List<TestItem> testList = data.map<TestItem>(TestItem.fromJson).toList();
-    testList.sort((a, b) => a.movement.compareTo(b.movement));
+    testList.sort((a, b) => convertMovementName(a.movement).compareTo(convertMovementName(b.movement)));
     return testList;
   }
 
-  String convertMovementName(String movement) {
+  static String convertMovementName(String movement) {
     if (movement == 'sit-to-stand') {
       return 'Sit to Stand';
-    } else {
+    } else if (movement == 'stand-unsupported') {
+      return 'Stand\nUnsupported';
+    } else if (movement == 'sit-back-unsupported') {
       return 'Sitting with\nBack Unsupported\nFeet Supported';
+    } else if (movement == 'stand-to-sit') {
+      return 'Stand to Sit';
+    } else if (movement == 'transfers') {
+      return 'Transfers';
+    } else if (movement == 'stand-eyes-closed') {
+      return 'Stand with\nEyes Closed';
+    } else if (movement == 'stand-feet-together') {
+      return 'Stand with\nFeet Together';
+    } else if (movement == 'stand-reaching-forward') {
+      return 'Stand while\nReaching Forward';
+    } else if (movement == 'pick-up-object') {
+      return 'Pick Up\nObject';
+    } else if (movement == 'look-behind-shoulders') {
+      return 'Look Behind\nShoulders';
+    } else if (movement == '360-turn') {
+      return 'Turn\n360 Degrees';
+    } else if (movement == 'alternate-foot') {
+      return 'Alternate Foot\nOn Step or Stool';
+    } else if (movement == 'one-foot-in-front') {
+      return 'Stand with\nOne Foot In Front';
+    } else if (movement == 'stand-one-leg') {
+      return 'Stand with\nOne Leg';
+    } else {
+      return 'Unknown';
     }
   }
+
+
 
   //UI
 
@@ -124,7 +166,7 @@ class _HomePageState extends State<HomePage> {
                                       textStyle: const TextStyle(
                                         color: Color(0xff2A2A2A),
                                         // fontFamily: 'DMSans-Bold',
-                                        fontSize: 30,
+                                        fontSize: 25,
                                         fontWeight: FontWeight.bold,
                                       ),
                                     ),
