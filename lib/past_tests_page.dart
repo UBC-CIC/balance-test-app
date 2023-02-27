@@ -166,7 +166,7 @@ class _PastTestsState extends State<PastTests> {
     if (score < 40) {
       return const Color(0xffAD2234);
     } else if (score < 65) {
-      return const Color(0xffEB5D63);
+      return Colors.deepOrange;
     } else if (score < 75) {
       return Colors.black;
     } else if (score < 90) {
@@ -272,7 +272,10 @@ class _PastTestsState extends State<PastTests> {
                     //Used to pop to main page instead of home
                     MaterialPageRoute(
                         builder: (context) => TestDetailsPage(
-                          testID: test.testID,
+                          testID: test.testID, 
+                          movementName: formatMovementName(test.movement), 
+                          dateFormatted: formatDateTime(test.dateTime), 
+                          score: test.score,
                         )));
               },
               child: Padding(
@@ -349,7 +352,7 @@ class _PastTestsState extends State<PastTests> {
                                           style: GoogleFonts.nunito(
                                             textStyle: const TextStyle(
                                               color: Color(0xff2A2A2A),
-                                              fontSize: 24,
+                                              fontSize: 26,
                                               fontWeight: FontWeight.w700,
                                             ),
                                           ),
@@ -383,7 +386,7 @@ class _PastTestsState extends State<PastTests> {
                                                       color: Color(0xff006CC6),
                                                       fontSize: 16,
                                                       fontWeight:
-                                                          FontWeight.w700,
+                                                          FontWeight.w600,
                                                     ),
                                                   ),
                                                 ),

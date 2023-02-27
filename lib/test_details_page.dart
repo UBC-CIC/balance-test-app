@@ -2,11 +2,21 @@ import 'package:balance_test/TestDetail.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:intl/intl.dart';
 
 class TestDetailsPage extends StatefulWidget {
-  const TestDetailsPage({Key? key, required this.testID}) : super(key: key);
+  const TestDetailsPage(
+      {Key? key,
+      required this.testID,
+      required this.movementName,
+      required this.dateFormatted,
+      required this.score})
+      : super(key: key);
 
   final String testID;
+  final String movementName;
+  final String dateFormatted;
+  final int score;
 
   @override
   State<TestDetailsPage> createState() => _TestDetailsPageState();
@@ -24,13 +34,26 @@ class _TestDetailsPageState extends State<TestDetailsPage> {
       "movement": "sit-to-stand",
       "dateTime": "2023-02-10 15:14:40.731703 -08:00",
       "score": 72,
+      "duration": 87,
+      "notes":
+          'Toni cemuso hite ataneda tebe bigeric lu ire yama sorov! Gew dipebor natasum sikit afahar! Coticol xosieric uladu redes! Cedet ricak secadep bebeni yibas renacab rie: Badi let reri lareri bat asacubes paritur vagone iegarat! Nelalir cof odesie cipir sucomer si. Vaso foreca tunietec toconel ha gi ragi no! Leconug ida tewat febase arerotoh pit peceral. Figare temusa fig redo mesu nec neme wocies. Sef irahote sihelom. Ulurexi zepe na seniep enedico pop hohe renalis dicis.',
     };
     return TestDetails.fromJson(data);
   }
 
   //METHODS
 
-//UI
+  String formatDuration(int totalSeconds) {
+    final duration = Duration(seconds: totalSeconds);
+    final minutes = duration.inMinutes;
+    final seconds = totalSeconds % 60;
+
+    final minutesString = '$minutes'.padLeft(1, '0');
+    final secondsString = '$seconds'.padLeft(2, '0');
+    return '$minutesString:$secondsString';
+  }
+
+  //UI
 
   @override
   Widget build(BuildContext context) {
@@ -41,22 +64,17 @@ class _TestDetailsPageState extends State<TestDetailsPage> {
         extendBodyBehindAppBar: true,
         backgroundColor: const Color(0xfff2f1f6),
         appBar: AppBar(
-          leading: GestureDetector(
-            child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: const [
-                  Icon(
-                    Icons.arrow_back_rounded,
-                    color: Colors.black,
-                    size: 32,
-                  ),
-                ]),
-            onTap: () {
+          leading: IconButton(
+            splashColor: Colors.transparent,
+            highlightColor: Colors.transparent,
+            icon: Icon(
+              CupertinoIcons.chevron_back,
+              color: Colors.black,
+              size: 0.03 * height,
+            ),
+            onPressed: () {
               Navigator.pop(context);
             },
-          ),
-          iconTheme: const IconThemeData(
-            color: Colors.black, //change your color here
           ),
           toolbarHeight: 0.06 * height,
           title: Padding(
@@ -68,7 +86,7 @@ class _TestDetailsPageState extends State<TestDetailsPage> {
                 textStyle: const TextStyle(
                   // color: Color.fromRGBO(141, 148, 162, 1.0),
                   color: Colors.black,
-                  fontWeight: FontWeight.bold,
+                  fontWeight: FontWeight.w500,
                   fontSize: 24,
                 ),
               ),
@@ -140,7 +158,7 @@ class _TestDetailsPageState extends State<TestDetailsPage> {
                                 Flexible(
                                   //Overflow text pushes to next line
                                   child: Text(
-                                    'Sitting with Back\nUnsupported Feet Supported',
+                                    widget.movementName,
                                     style: GoogleFonts.nunito(
                                       textStyle: const TextStyle(
                                         color: Colors.black,
@@ -187,8 +205,7 @@ class _TestDetailsPageState extends State<TestDetailsPage> {
                                 Flexible(
                                   //Overflow text pushes to next line
                                   child: Text(
-                                    'Jan 23, 2023 1:40 pm'
-                                    '',
+                                    widget.dateFormatted,
                                     style: GoogleFonts.nunito(
                                       textStyle: const TextStyle(
                                         color: Colors.black,
@@ -252,7 +269,7 @@ class _TestDetailsPageState extends State<TestDetailsPage> {
                                             Row(
                                               children: [
                                                 Text(
-                                                  '82',
+                                                  widget.score.toString(),
                                                   style: GoogleFonts.nunito(
                                                     textStyle: const TextStyle(
                                                       color: Colors.black,
@@ -322,7 +339,8 @@ class _TestDetailsPageState extends State<TestDetailsPage> {
                                           Row(
                                             children: [
                                               Text(
-                                                '0:32',
+                                                formatDuration(
+                                                    testDetails.duration),
                                                 style: GoogleFonts.nunito(
                                                   textStyle: const TextStyle(
                                                     color: Colors.black,
@@ -412,7 +430,7 @@ class _TestDetailsPageState extends State<TestDetailsPage> {
                                 Flexible(
                                   //Overflow text pushes to next line
                                   child: Text(
-                                    'Toni cemuso hite ataneda tebe bigeric lu ire yama sorov! Gew dipebor natasum sikit afahar! Coticol xosieric uladu redes! Cedet ricak secadep bebeni yibas renacab rie: Badi let reri lareri bat asacubes paritur vagone iegarat! Nelalir cof odesie cipir sucomer si. Vaso foreca tunietec toconel ha gi ragi no! Leconug ida tewat febase arerotoh pit peceral. Figare temusa fig redo mesu nec neme wocies. Sef irahote sihelom. Ulurexi zepe na seniep enedico pop hohe renalis dicis.',
+                                    testDetails.notes,
                                     style: GoogleFonts.nunito(
                                       textStyle: const TextStyle(
                                         color: Colors.black,

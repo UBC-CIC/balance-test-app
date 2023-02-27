@@ -154,7 +154,7 @@ class _CountdownSelectionPageState extends State<CountdownSelectionPage> {
                                           trailing: snapshot.data == time
                                               ? const Icon(
                                                   CupertinoIcons.check_mark,
-                                                  color: Color(0xff007AFF),
+                                                  color: Color(0xff006CC6),
                                                 )
                                               : null,
                                           onTap: () {

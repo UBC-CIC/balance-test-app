@@ -1,5 +1,7 @@
 import 'package:balance_test/recording_page.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:gaimon/gaimon.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import 'TestItem.dart';
@@ -25,42 +27,59 @@ class _HomePageState extends State<HomePage> {
     const data = [
       {
         "movement": "sit-to-stand",
+        "estimated-duration": 30,
       },
       {
         "movement": "stand-unsupported",
+        "estimated-duration": 40,
+      },
+      {
+        "movement": "sit-back-unsupported",
+        "estimated-duration": 90,
       },
       {
         "movement": "stand-to-sit",
+        "estimated-duration": 30,
       },
       {
         "movement": "transfers",
+        "estimated-duration": 45,
       },
       {
         "movement": "stand-eyes-closed",
+        "estimated-duration": 74,
       },
       {
         "movement": "stand-feet-together",
+        "estimated-duration": 10,
       },
       {
         "movement": "stand-reaching-forward",
+        "estimated-duration": 10,
       },
       {
         "movement": "pick-up-object",
+        "estimated-duration": 15,
       },
       {
         "movement": "look-behind-shoulders",
+        "estimated-duration": 30,
       },
       {
         "movement": "360-turn",
+        "estimated-duration": 30,
       },
       {
         "movement": "alternate-foot",
+        "estimated-duration": 60,
       },
       {
         "movement": "one-foot-in-front",
+        "estimated-duration": 60,
       },
       {
         "movement": "stand-one-leg",
+        "estimated-duration": 70,
       },
     ];
 
@@ -75,7 +94,7 @@ class _HomePageState extends State<HomePage> {
     } else if (movement == 'stand-unsupported') {
       return 'Stand\nUnsupported';
     } else if (movement == 'sit-back-unsupported') {
-      return 'Sitting with\nBack Unsupported\nFeet Supported';
+      return 'Sit with Back\nUnsupported';
     } else if (movement == 'stand-to-sit') {
       return 'Stand to Sit';
     } else if (movement == 'transfers') {
@@ -103,6 +122,21 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
+
+  String formatDuration(int totalSeconds) {
+    if (totalSeconds > 59) {
+      int minutes = (totalSeconds / 60).round();
+      String mintueFormat;
+      if (minutes == 1) {
+        mintueFormat = 'minute';
+      } else {
+        mintueFormat = 'minutes';
+      }
+      return '$minutes $mintueFormat';
+    } else {
+      return '$totalSeconds seconds';
+    }
+  }
 
 
   //UI
@@ -143,7 +177,7 @@ class _HomePageState extends State<HomePage> {
                   ),
                   child: SizedBox(
                     width: width * 0.90,
-                    height: 155,
+                    height: 140,
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       crossAxisAlignment: CrossAxisAlignment.center,
@@ -154,7 +188,7 @@ class _HomePageState extends State<HomePage> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               SizedBox(
-                                height: 85,
+                                height: 70,
                                 width: 0.5 * width,
                                 child: FittedBox(
                                   alignment: Alignment.centerLeft,
@@ -183,7 +217,7 @@ class _HomePageState extends State<HomePage> {
                                       padding:
                                           const EdgeInsets.fromLTRB(8, 0, 0, 0),
                                       child: Text(
-                                        '1 Minute',
+                                        formatDuration(test.duration),
                                         style: GoogleFonts.nunito(
                                           textStyle: const TextStyle(
                                             color: Color(0xff006CC6),
@@ -204,11 +238,13 @@ class _HomePageState extends State<HomePage> {
                           padding: const EdgeInsets.fromLTRB(0, 0, 20, 0),
                           child: FittedBox(
                             fit: BoxFit.scaleDown,
-                            child: SizedBox(
-                              height: 70,
-                              width: 0.28 * width,
+                            child:
+                            SizedBox(
+                              height: 55,
+                              width: 0.26*width,
                               child: ElevatedButton(
                                 onPressed: () {
+                                  Gaimon.selection();
                                   Navigator.push(
                                       widget.parentCtx,
                                       //Used to pop to main page instead of home
@@ -223,25 +259,29 @@ class _HomePageState extends State<HomePage> {
                                     elevation: 0,
                                     backgroundColor: const Color(0xff006CC6),
                                     shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(20),
+                                      borderRadius: BorderRadius.circular(30),
                                       //border radius equal to or more than 50% of width
                                     )),
                                 child: FittedBox(
                                   fit: BoxFit.scaleDown,
                                   child: Row(
                                     children: [
-                                      Text(
+                                      Padding(
+                                        padding: const EdgeInsets.fromLTRB(0, 0, 3, 0),
+                                  child: Text(
                                         'Start',
                                         style: GoogleFonts.nunito(
                                           textStyle: const TextStyle(
                                             color: Colors.white,
                                             fontFamily: 'DMSans-Medium',
-                                            fontSize: 25,
+                                            fontSize: 22,
                                             fontWeight: FontWeight.w500,
                                           ),
                                         ),
                                       ),
-                                      const Icon(Icons.play_arrow_rounded)
+                                      ),
+                                      const Icon(CupertinoIcons.chevron_right,
+                                      size: 20,)
                                     ],
                                   ),
                                 ),

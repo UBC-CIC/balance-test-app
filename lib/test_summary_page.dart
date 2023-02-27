@@ -196,7 +196,7 @@ class _TestSummaryState extends State<TestSummary> {
         backgroundColor: const Color(0xfff2f1f6),
         appBar: AppBar(
           automaticallyImplyLeading: false,   // Removes back button from appbar
-          toolbarHeight: 0.1 * height,
+          toolbarHeight: 0.05 * height,
           systemOverlayStyle: const SystemUiOverlayStyle(
             statusBarBrightness: Brightness.light, // light for black status bar
           ),
@@ -207,7 +207,7 @@ class _TestSummaryState extends State<TestSummary> {
                 // color: Color.fromRGBO(141, 148, 162, 1.0),
                 color: Colors.black,
                 fontFamily: 'DMSans-Regular',
-                fontSize: 32,
+                fontSize: 26,
               ),
             ),
           ),
@@ -235,7 +235,7 @@ class _TestSummaryState extends State<TestSummary> {
                     //crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Padding(
-                        padding: const EdgeInsets.fromLTRB(26.0, 20, 0, 0),
+                        padding: const EdgeInsets.fromLTRB(26.0, 20, 26, 0),
                         child: Column(
                           children: [
                             Padding(
@@ -334,6 +334,7 @@ class _TestSummaryState extends State<TestSummary> {
                           ],
                         ),
                       ),
+
                       SizedBox(
                         height: 270,
                         width: 0.82 * width,
