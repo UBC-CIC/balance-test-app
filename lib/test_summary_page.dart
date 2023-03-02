@@ -1,3 +1,6 @@
+import 'dart:math';
+
+import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -5,9 +8,11 @@ import 'package:flutter_ringtone_player/flutter_ringtone_player.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'dart:convert';
 import "package:http/http.dart" as http;
-import 'dart:math';
 import 'loading_page.dart';
 import 'package:gaimon/gaimon.dart';
+import 'package:path_provider/path_provider.dart';
+import 'dart:io';
+import 'package:uuid/uuid.dart';
 
 import 'my_fading_scrollview.dart';
 
@@ -24,8 +29,10 @@ class TestSummary extends StatefulWidget {
     required this.magnetometerDataX,
     required this.magnetometerDataY,
     required this.magnetometerDataZ,
+    required this.formattedMovementType,
     required this.movementType,
     required this.timeElapsed,
+    required this.userID,
   }) : super(key: key);
 
   final List<String> timeStampData;
@@ -38,8 +45,10 @@ class TestSummary extends StatefulWidget {
   final List<double> magnetometerDataX;
   final List<double> magnetometerDataY;
   final List<double> magnetometerDataZ;
+  final String formattedMovementType;
   final String movementType;
   final String timeElapsed;
+  final String userID;
 
   @override
   State<TestSummary> createState() => _TestSummaryState();
@@ -49,6 +58,8 @@ class _TestSummaryState extends State<TestSummary> {
   //VARIABLES
   final _showCheck = ValueNotifier<bool>(false);
   final controller = ScrollController();
+
+  var uuid = Uuid();
 
   //METHODS
 
@@ -81,103 +92,156 @@ class _TestSummaryState extends State<TestSummary> {
     });
   }
 
-  // Converts movement title name to api format
-  String convertMovementType() {
-    if (widget.movementType == "Sit to Stand") {
-      return "sit-to-stand";
-    }
-    return "";
-  }
-
   // Future<http.Response> postRequest() async {
-    Future<void> postRequest() async {
-    final Map<String, Map<String, Object>> jsonMap = {};
+  Future<void> postRequest() async {
+    String testID = uuid.v4();
 
-    int tsLength = widget.timeStampData.length;
-    int axLength = widget.accelerometerDataX.length;
-    int ayLength = widget.accelerometerDataY.length;
-    int azLength = widget.accelerometerDataZ.length;
-    int gxLength = widget.gyroscopeDataX.length;
-    int gyLength = widget.gyroscopeDataY.length;
-    int gzLength = widget.gyroscopeDataZ.length;
-    int mxLength = widget.magnetometerDataX.length;
-    int myLength = widget.magnetometerDataY.length;
-    int mzLength = widget.magnetometerDataZ.length;
-
-    int minLen = [
-      tsLength,
-      axLength,
-      ayLength,
-      azLength,
-      gxLength,
-      gyLength,
-      gzLength,
-      mxLength,
-      myLength,
-      mzLength
-    ].reduce(min);
-
-    print(minLen);
-
-    for (var i = 0; i < minLen; i++) {
-      Map<String, Object> dataPointMap = {};
-      dataPointMap["patient_id"] = "app-testing";
-      dataPointMap["movement"] = convertMovementType();
-      dataPointMap["ts"] = widget.timeStampData[i + tsLength - minLen];
-      dataPointMap["ax"] = widget.accelerometerDataX[i + axLength - minLen];
-      dataPointMap["ay"] = widget.accelerometerDataY[i + ayLength - minLen];
-      dataPointMap["az"] = widget.accelerometerDataZ[i + azLength - minLen];
-      dataPointMap["gx"] = widget.gyroscopeDataX[i + gxLength - minLen];
-      dataPointMap["gy"] = widget.gyroscopeDataY[i + gyLength - minLen];
-      dataPointMap["gz"] = widget.gyroscopeDataZ[i + gzLength - minLen];
-      dataPointMap["mx"] = widget.magnetometerDataX[i + mxLength - minLen];
-      dataPointMap["my"] = widget.magnetometerDataY[i + myLength - minLen];
-      dataPointMap["mz"] = widget.magnetometerDataZ[i + mzLength - minLen];
-      jsonMap[i.toString()] = dataPointMap;
-    }
-
-    String body = json.encode(jsonMap);
-
-    List<int> jsonBytes = utf8.encode(body);
-    double jsonSizeInMB = jsonBytes.length / pow(1024, 2);
-    print('JSON size: $jsonSizeInMB MB');
-    print(widget.timeStampData[0]);
-
-    // final Map<String, Object> arrayMap = {};
-    // arrayMap["patient_id"] = "app-testing";
-    // arrayMap["movement"] = "sit-to-stand";
-    // arrayMap["ts"] = widget.timeStampData;
-    // arrayMap["ax"] = widget.accelerometerDataX;
-    // arrayMap["ay"] = widget.accelerometerDataY;
-    // arrayMap["az"] = widget.accelerometerDataZ;
-    // arrayMap["gx"] = widget.gyroscopeDataX;
-    // arrayMap["gy"] = widget.gyroscopeDataY;
-    // arrayMap["gz"] = widget.gyroscopeDataZ;
-    // arrayMap["mx"] = widget.magnetometerDataX;
-    // arrayMap["my"] = widget.magnetometerDataY;
-    // arrayMap["mz"] = widget.magnetometerDataZ;
+    // final Map<String, Map<String, Object>> jsonMap = {};
     //
-    // String arrayJson = json.encode(arrayMap);
-    // List<int> jsonBytesarray = utf8.encode(arrayJson);
-    // double jsonSizeInMBarray = jsonBytesarray.length / pow(1024, 2);
-    // print('JSON size: $jsonSizeInMBarray MB');
+    // int tsLength = widget.timeStampData.length;
+    // int axLength = widget.accelerometerDataX.length;
+    // int ayLength = widget.accelerometerDataY.length;
+    // int azLength = widget.accelerometerDataZ.length;
+    // int gxLength = widget.gyroscopeDataX.length;
+    // int gyLength = widget.gyroscopeDataY.length;
+    // int gzLength = widget.gyroscopeDataZ.length;
+    // int mxLength = widget.magnetometerDataX.length;
+    // int myLength = widget.magnetometerDataY.length;
+    // int mzLength = widget.magnetometerDataZ.length;
+    //
+    // int minLen = [
+    //   tsLength,
+    //   axLength,
+    //   ayLength,
+    //   azLength,
+    //   gxLength,
+    //   gyLength,
+    //   gzLength,
+    //   mxLength,
+    //   myLength,
+    //   mzLength
+    // ].reduce(min);
+    //
+    // print(minLen);
+    //
+    // for (var i = 0; i < minLen; i++) {
+    //   Map<String, Object> dataPointMap = {};
+    //   dataPointMap["patient_id"] = "app-testing";
+    //   dataPointMap["movement"] = widget.formattedMovementType;
+    //   dataPointMap["ts"] = widget.timeStampData[i + tsLength - minLen];
+    //   dataPointMap["ax"] = widget.accelerometerDataX[i + axLength - minLen];
+    //   dataPointMap["ay"] = widget.accelerometerDataY[i + ayLength - minLen];
+    //   dataPointMap["az"] = widget.accelerometerDataZ[i + azLength - minLen];
+    //   dataPointMap["gx"] = widget.gyroscopeDataX[i + gxLength - minLen];
+    //   dataPointMap["gy"] = widget.gyroscopeDataY[i + gyLength - minLen];
+    //   dataPointMap["gz"] = widget.gyroscopeDataZ[i + gzLength - minLen];
+    //   dataPointMap["mx"] = widget.magnetometerDataX[i + mxLength - minLen];
+    //   dataPointMap["my"] = widget.magnetometerDataY[i + myLength - minLen];
+    //   dataPointMap["mz"] = widget.magnetometerDataZ[i + mzLength - minLen];
+    //   jsonMap[i.toString()] = dataPointMap;
+    // }
+    //
+    // String body = json.encode(jsonMap);
 
-    await Future.delayed(const Duration(seconds: 2));
-    return;
+    int shortestLength = [
+      widget.timeStampData,
+      widget.accelerometerDataX,
+      widget.accelerometerDataY,
+      widget.accelerometerDataZ,
+      widget.gyroscopeDataX,
+      widget.gyroscopeDataY,
+      widget.gyroscopeDataZ,
+      widget.magnetometerDataX,
+      widget.magnetometerDataY,
+      widget.magnetometerDataZ]
+        .map((list) => list.length)
+        .reduce(min);
 
-    int before = DateTime.now()
-        .millisecondsSinceEpoch; // Used to show animation for >= 2 seconds
-    var url = Uri.https('ox515vr0t5.execute-api.ca-central-1.amazonaws.com',
-        '/data-workflow-beta/data_input/json');
-    var response = await http.post(url,
-        //headers: {"Content-Type": "application/json"},
-        body: body);
-    print("${response.statusCode}");
-    print("${response.body}");
-    int after = DateTime.now().millisecondsSinceEpoch;
-    if (((after - before) / 1000) < 2) {
-      await Future.delayed(Duration(milliseconds: (2000 - (after - before))));
+    //Trim start of lists so they are the same lengths
+    List<String> timeStampDataTrim = widget.timeStampData.sublist(widget.timeStampData.length - shortestLength);
+    List<double> accelerometerDataXTrim = widget.accelerometerDataX.sublist(widget.accelerometerDataX.length - shortestLength);
+    List<double> accelerometerDataYTrim = widget.accelerometerDataY.sublist(widget.accelerometerDataY.length - shortestLength);
+    List<double> accelerometerDataZTrim = widget.accelerometerDataZ.sublist(widget.accelerometerDataZ.length - shortestLength);
+    List<double> gyroscopeDataXTrim = widget.gyroscopeDataX.sublist(widget.gyroscopeDataX.length - shortestLength);
+    List<double> gyroscopeDataYTrim = widget.gyroscopeDataY.sublist(widget.gyroscopeDataY.length - shortestLength);
+    List<double> gyroscopeDataZTrim = widget.gyroscopeDataZ.sublist(widget.gyroscopeDataZ.length - shortestLength);
+    List<double> magnetometerDataXTrim = widget.magnetometerDataX.sublist(widget.magnetometerDataX.length - shortestLength);
+    List<double> magnetometerDataYTrim = widget.magnetometerDataY.sublist(widget.magnetometerDataY.length - shortestLength);
+    List<double> magnetometerDataZTrim = widget.magnetometerDataZ.sublist(widget.magnetometerDataZ.length - shortestLength);
+
+    final Map<String, Object> arrayMap = {};
+    arrayMap["patient_id"] = "app-testing";
+    arrayMap["movement"] = "sit-to-stand";
+    arrayMap["testID"] = testID;
+    arrayMap["ts"] = timeStampDataTrim;
+    arrayMap["ax"] = accelerometerDataXTrim;
+    arrayMap["ay"] = accelerometerDataYTrim;
+    arrayMap["az"] = accelerometerDataZTrim;
+    arrayMap["gx"] = gyroscopeDataXTrim;
+    arrayMap["gy"] = gyroscopeDataYTrim;
+    arrayMap["gz"] = gyroscopeDataZTrim;
+    arrayMap["mx"] = magnetometerDataXTrim;
+    arrayMap["my"] = magnetometerDataYTrim;
+    arrayMap["mz"] = magnetometerDataZTrim;
+
+    print("START");
+    print(timeStampDataTrim.length);
+    print(accelerometerDataXTrim.length);
+    print(accelerometerDataYTrim.length);
+    print(accelerometerDataZTrim.length);
+    print(gyroscopeDataXTrim.length);
+    print(gyroscopeDataYTrim.length);
+    print(gyroscopeDataZTrim.length);
+    print(magnetometerDataXTrim.length);
+    print(magnetometerDataYTrim.length);
+    print(magnetometerDataZTrim.length);
+    print(widget.movementType);
+
+
+    String body = json.encode(arrayMap);
+
+    DateTime now = DateTime.now();
+
+    String key =
+        'user_id/${widget.userID}/${widget.movementType}/${now.year.toString()}/${now.month.toString()}/${now.day.toString()}/$testID.json';
+
+    final tempDir = await getTemporaryDirectory();
+    final tempFile = File(tempDir.path + '/recording.json')
+      ..createSync()
+      ..writeAsStringSync(body);
+
+    // Upload the file to S3
+    try {
+      final UploadFileResult result = await Amplify.Storage.uploadFile(
+          local: tempFile,
+          options: UploadFileOptions(
+            accessLevel: StorageAccessLevel.private,
+          ),
+          key: key,
+          onProgress: (progress) {
+            safePrint('Fraction completed: ${progress.getFractionCompleted()}');
+          });
+      safePrint('Successfully uploaded file: ${result.key}');
+    } on StorageException catch (e) {
+      safePrint('Error uploading file: $e');
     }
+
+    // await Future.delayed(const Duration(seconds: 2));
+    // return;
+
+    // int before = DateTime.now()
+    //     .millisecondsSinceEpoch; // Used to show animation for >= 2 seconds
+    // var url = Uri.https('ox515vr0t5.execute-api.ca-central-1.amazonaws.com',
+    //     '/data-workflow-beta/data_input/json');
+    // var response = await http.post(url,
+    //     //headers: {"Content-Type": "application/json"},
+    //     body: body);
+    // print("${response.statusCode}");
+    // print("${response.body}");
+    // int after = DateTime.now().millisecondsSinceEpoch;
+    // if (((after - before) / 1000) < 2) {
+    //   await Future.delayed(Duration(milliseconds: (2000 - (after - before))));
+    // }
     // return response;
   }
 
@@ -188,14 +252,15 @@ class _TestSummaryState extends State<TestSummary> {
     double height = MediaQuery.of(context).size.height;
     double width = MediaQuery.of(context).size.width;
 
-    String movementType = widget.movementType;
+    String movementType = widget.formattedMovementType;
 
     String timeElapsed = widget.timeElapsed;
 
     return Scaffold(
         backgroundColor: const Color(0xfff2f1f6),
         appBar: AppBar(
-          automaticallyImplyLeading: false,   // Removes back button from appbar
+          automaticallyImplyLeading: false,
+          // Removes back button from appbar
           toolbarHeight: 0.05 * height,
           systemOverlayStyle: const SystemUiOverlayStyle(
             statusBarBrightness: Brightness.light, // light for black status bar
@@ -215,199 +280,224 @@ class _TestSummaryState extends State<TestSummary> {
           backgroundColor: Colors.transparent,
         ),
         body: FadingEdgeScrollView.fromSingleChildScrollView(
-    child: SingleChildScrollView(
-        controller: controller,
-        child: Column(mainAxisAlignment: MainAxisAlignment.start, children: [
-          Padding(
-            padding: const EdgeInsets.fromLTRB(0, 30, 0, 0),
-            child: Center(
-              child: Card(
-                color: Colors.white,
-                elevation: 10,
-                shadowColor: Colors.white70,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(15.0),
-                ),
-                child: SizedBox(
-                  width: width * 0.9,
-                  height: null,
-                  child: Column(
-                    //crossAxisAlignment: CrossAxisAlignment.start,
+            child: SingleChildScrollView(
+                controller: controller,
+                child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
                     children: [
                       Padding(
-                        padding: const EdgeInsets.fromLTRB(26.0, 20, 26, 0),
-                        child: Column(
-                          children: [
-                            Padding(
-                              padding: const EdgeInsets.fromLTRB(0, 0, 0, 10),
-                              child: Row(
-                                children: const [
-                                  Text(
-                                    'Summary',
-                                    style: TextStyle(
-                                      color: Color(0xff2A2A2A),
-                                      fontFamily: 'DMSans-Medium',
-                                      fontSize: 32,
-                                    ),
-                                  ),
-                                ],
-                              ),
+                        padding: const EdgeInsets.fromLTRB(0, 30, 0, 0),
+                        child: Center(
+                          child: Card(
+                            color: Colors.white,
+                            elevation: 10,
+                            shadowColor: Colors.white70,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(15.0),
                             ),
-                            Padding(
-                              padding: const EdgeInsets.fromLTRB(0, 7, 0, 7),
-                              child: Row(
-                                crossAxisAlignment: CrossAxisAlignment.center,
+                            child: SizedBox(
+                              width: width * 0.9,
+                              height: null,
+                              child: Column(
+                                //crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  const Icon(
-                                    Icons.accessibility_new_rounded,
-                                    size: 55,
-                                    color: Colors.indigo,
-                                  ),
                                   Padding(
-                                    padding:
-                                        const EdgeInsets.fromLTRB(25, 0, 0, 0),
+                                    padding: const EdgeInsets.fromLTRB(
+                                        26.0, 20, 26, 0),
                                     child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
                                       children: [
-                                        const Text(
-                                          'Movement',
-                                          style: TextStyle(
-                                            color: Colors.indigo,
-                                            fontFamily: 'DMSans-Medium',
-                                            fontSize: 18,
+                                        Padding(
+                                          padding: const EdgeInsets.fromLTRB(
+                                              0, 0, 0, 10),
+                                          child: Row(
+                                            children: const [
+                                              Text(
+                                                'Summary',
+                                                style: TextStyle(
+                                                  color: Color(0xff2A2A2A),
+                                                  fontFamily: 'DMSans-Medium',
+                                                  fontSize: 32,
+                                                ),
+                                              ),
+                                            ],
                                           ),
                                         ),
-                                        Text(
-                                          movementType,
-                                          style: const TextStyle(
-                                            color: Color(0xff2A2A2A),
-                                            fontFamily: 'DMSans-Medium',
-                                            fontSize: 26,
+                                        Padding(
+                                          padding: const EdgeInsets.fromLTRB(
+                                              0, 7, 0, 7),
+                                          child: Row(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.center,
+                                            children: [
+                                              const Icon(
+                                                Icons.accessibility_new_rounded,
+                                                size: 55,
+                                                color: Colors.indigo,
+                                              ),
+                                              Padding(
+                                                padding:
+                                                    const EdgeInsets.fromLTRB(
+                                                        25, 0, 0, 0),
+                                                child: Column(
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.start,
+                                                  children: [
+                                                    const Text(
+                                                      'Movement',
+                                                      style: TextStyle(
+                                                        color: Colors.indigo,
+                                                        fontFamily:
+                                                            'DMSans-Medium',
+                                                        fontSize: 18,
+                                                      ),
+                                                    ),
+                                                    Text(
+                                                      movementType,
+                                                      style: const TextStyle(
+                                                        color:
+                                                            Color(0xff2A2A2A),
+                                                        fontFamily:
+                                                            'DMSans-Medium',
+                                                        fontSize: 26,
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                        Padding(
+                                          padding: const EdgeInsets.fromLTRB(
+                                              0, 7, 0, 18),
+                                          child: Row(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.center,
+                                            children: [
+                                              const Icon(
+                                                Icons.access_time_rounded,
+                                                size: 55,
+                                                color: Colors.indigo,
+                                              ),
+                                              Padding(
+                                                padding:
+                                                    const EdgeInsets.fromLTRB(
+                                                        25, 0, 0, 0),
+                                                child: Column(
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.start,
+                                                  children: [
+                                                    const Text(
+                                                      'Test Duration',
+                                                      style: TextStyle(
+                                                        color: Colors.indigo,
+                                                        fontFamily:
+                                                            'DMSans-Medium',
+                                                        fontSize: 18,
+                                                      ),
+                                                    ),
+                                                    Text(
+                                                      '$timeElapsed min',
+                                                      style: const TextStyle(
+                                                        color:
+                                                            Color(0xff2A2A2A),
+                                                        fontFamily:
+                                                            'DMSans-Medium',
+                                                        fontSize: 26,
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                            ],
                                           ),
                                         ),
                                       ],
                                     ),
                                   ),
-                                ],
-                              ),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.fromLTRB(0, 7, 0, 18),
-                              child: Row(
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: [
-                                  const Icon(
-                                    Icons.access_time_rounded,
-                                    size: 55,
-                                    color: Colors.indigo,
+                                  SizedBox(
+                                    height: 270,
+                                    width: 0.82 * width,
+                                    child: TextField(
+                                      maxLines: 13,
+                                      minLines: 13,
+                                      maxLength: 500,
+                                      keyboardType: TextInputType.text,
+                                      decoration: InputDecoration(
+                                        filled: true,
+                                        fillColor: const Color(0x0A3F51B5),
+                                        border: OutlineInputBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(10),
+                                          borderSide: const BorderSide(
+                                            width: 1,
+                                            style: BorderStyle.none,
+                                          ),
+                                        ),
+                                        hintText: 'Enter Additional Notes...',
+                                      ),
+                                    ),
                                   ),
                                   Padding(
                                     padding:
-                                        const EdgeInsets.fromLTRB(25, 0, 0, 0),
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        const Text(
-                                          'Test Duration',
-                                          style: TextStyle(
-                                            color: Colors.indigo,
-                                            fontFamily: 'DMSans-Medium',
-                                            fontSize: 18,
+                                        const EdgeInsets.fromLTRB(0, 15, 0, 20),
+                                    child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceEvenly,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.center,
+                                        children: [
+                                          SizedBox(
+                                              height: 70,
+                                              width: 0.4 * width,
+                                              child: ElevatedButton(
+                                                onPressed: () {
+                                                  Navigator.pop(context);
+                                                },
+                                                style: ElevatedButton.styleFrom(
+                                                    elevation: 0,
+                                                    backgroundColor:
+                                                        const Color(0xffECEDF0),
+                                                    shape:
+                                                        RoundedRectangleBorder(
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              8),
+                                                      //border radius equal to or more than 50% of width
+                                                    )),
+                                                child: const Icon(
+                                                  CupertinoIcons.back,
+                                                  size: 30,
+                                                  color: Colors.black,
+                                                ),
+                                              )),
+                                          SizedBox(
+                                            height: 70,
+                                            width: 0.4 * width,
+                                            child: ElevatedButton(
+                                                onPressed: sendData,
+                                                style: ElevatedButton.styleFrom(
+                                                    backgroundColor:
+                                                        Colors.indigo,
+                                                    elevation: 0,
+                                                    shape:
+                                                        RoundedRectangleBorder(
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              8),
+                                                      //border radius equal to or more than 50% of width
+                                                    )),
+                                                child: const Icon(CupertinoIcons
+                                                    .paperplane_fill)),
                                           ),
-                                        ),
-                                        Text(
-                                          '$timeElapsed min',
-                                          style: const TextStyle(
-                                            color: Color(0xff2A2A2A),
-                                            fontFamily: 'DMSans-Medium',
-                                            fontSize: 26,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
+                                        ]),
                                   ),
                                 ],
                               ),
                             ),
-                          ],
-                        ),
-                      ),
-
-                      SizedBox(
-                        height: 270,
-                        width: 0.82 * width,
-                        child: TextField(
-                          maxLines: 13,
-                          minLines: 13,
-                          maxLength: 500,
-                          keyboardType: TextInputType.text,
-                          decoration: InputDecoration(
-                            filled: true,
-                            fillColor: const Color(0x0A3F51B5),
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(10),
-                              borderSide: const BorderSide(
-                                width: 1,
-                                style: BorderStyle.none,
-                              ),
-                            ),
-                            hintText: 'Enter Additional Notes...',
                           ),
                         ),
                       ),
-                      Padding(
-                        padding: const EdgeInsets.fromLTRB(0, 15, 0, 20),
-                        child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              SizedBox(
-                                  height: 70,
-                                  width: 0.4 * width,
-                                  child: ElevatedButton(
-                                    onPressed: () {
-                                      Navigator.pop(context);
-                                    },
-                                    style: ElevatedButton.styleFrom(
-                                        elevation: 0,
-                                        backgroundColor:
-                                            const Color(0xffECEDF0),
-                                        shape: RoundedRectangleBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(8),
-                                          //border radius equal to or more than 50% of width
-                                        )),
-                                    child: const Icon(
-                                      CupertinoIcons.back,
-                                      size: 30,
-                                      color: Colors.black,
-                                    ),
-                                  )),
-                              SizedBox(
-                                height: 70,
-                                width: 0.4 * width,
-                                child: ElevatedButton(
-                                    onPressed: sendData,
-                                    style: ElevatedButton.styleFrom(
-                                        backgroundColor: Colors.indigo,
-                                        elevation: 0,
-                                        shape: RoundedRectangleBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(8),
-                                          //border radius equal to or more than 50% of width
-                                        )),
-                                    child: const Icon(CupertinoIcons.paperplane_fill)),
-                              ),
-                            ]),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ),
-          ),
-        ]))));
+                    ]))));
   }
 }

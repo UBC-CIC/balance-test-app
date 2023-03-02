@@ -1,6 +1,24 @@
 {
+  "api": {
+    "balancetest": {
+      "dependsOn": [],
+      "output": {
+        "authConfig": {
+          "additionalAuthenticationProviders": [],
+          "defaultAuthentication": {
+            "apiKeyConfig": {
+              "apiKeyExpirationDays": 7
+            },
+            "authenticationType": "API_KEY"
+          }
+        }
+      },
+      "providerPlugin": "awscloudformation",
+      "service": "AppSync"
+    }
+  },
   "auth": {
-    "balancetest1b7f439d": {
+    "balancetest6a22503d": {
       "customAuth": false,
       "dependsOn": [],
       "providerPlugin": "awscloudformation",
@@ -9,37 +27,133 @@
     }
   },
   "parameters": {
-    "AMPLIFY_auth_balancetest1b7f439d_nativeClientId": {
+    "AMPLIFY_auth_balancetest6a22503d_allowUnauthenticatedIdentities": {
       "usedBy": [
         {
           "category": "auth",
-          "resourceName": "balancetest1b7f439d"
+          "resourceName": "balancetest6a22503d"
         }
       ]
     },
-    "AMPLIFY_auth_balancetest1b7f439d_userPoolId": {
+    "AMPLIFY_auth_balancetest6a22503d_authRoleArn": {
       "usedBy": [
         {
           "category": "auth",
-          "resourceName": "balancetest1b7f439d"
+          "resourceName": "balancetest6a22503d"
         }
       ]
     },
-    "AMPLIFY_auth_balancetest1b7f439d_userPoolName": {
+    "AMPLIFY_auth_balancetest6a22503d_authRoleName": {
       "usedBy": [
         {
           "category": "auth",
-          "resourceName": "balancetest1b7f439d"
+          "resourceName": "balancetest6a22503d"
         }
       ]
     },
-    "AMPLIFY_auth_balancetest1b7f439d_webClientId": {
+    "AMPLIFY_auth_balancetest6a22503d_identityPoolId": {
       "usedBy": [
         {
           "category": "auth",
-          "resourceName": "balancetest1b7f439d"
+          "resourceName": "balancetest6a22503d"
         }
       ]
+    },
+    "AMPLIFY_auth_balancetest6a22503d_identityPoolName": {
+      "usedBy": [
+        {
+          "category": "auth",
+          "resourceName": "balancetest6a22503d"
+        }
+      ]
+    },
+    "AMPLIFY_auth_balancetest6a22503d_nativeClientId": {
+      "usedBy": [
+        {
+          "category": "auth",
+          "resourceName": "balancetest6a22503d"
+        }
+      ]
+    },
+    "AMPLIFY_auth_balancetest6a22503d_unauthRoleArn": {
+      "usedBy": [
+        {
+          "category": "auth",
+          "resourceName": "balancetest6a22503d"
+        }
+      ]
+    },
+    "AMPLIFY_auth_balancetest6a22503d_unauthRoleName": {
+      "usedBy": [
+        {
+          "category": "auth",
+          "resourceName": "balancetest6a22503d"
+        }
+      ]
+    },
+    "AMPLIFY_auth_balancetest6a22503d_userPoolId": {
+      "usedBy": [
+        {
+          "category": "auth",
+          "resourceName": "balancetest6a22503d"
+        }
+      ]
+    },
+    "AMPLIFY_auth_balancetest6a22503d_userPoolName": {
+      "usedBy": [
+        {
+          "category": "auth",
+          "resourceName": "balancetest6a22503d"
+        }
+      ]
+    },
+    "AMPLIFY_auth_balancetest6a22503d_webClientId": {
+      "usedBy": [
+        {
+          "category": "auth",
+          "resourceName": "balancetest6a22503d"
+        }
+      ]
+    },
+    "AMPLIFY_storage_balancetest89613ef5_bucketName": {
+      "usedBy": [
+        {
+          "category": "storage",
+          "resourceName": "balancetest89613ef5"
+        }
+      ]
+    },
+    "AMPLIFY_storage_balancetest89613ef5_region": {
+      "usedBy": [
+        {
+          "category": "storage",
+          "resourceName": "balancetest89613ef5"
+        }
+      ]
+    },
+    "AMPLIFY_storage_balancetestc8bd10f9_bucketName": {
+      "usedBy": [
+        {
+          "category": "storage",
+          "resourceName": "balancetestc8bd10f9"
+        }
+      ]
+    },
+    "AMPLIFY_storage_balancetestc8bd10f9_region": {
+      "usedBy": [
+        {
+          "category": "storage",
+          "resourceName": "balancetestc8bd10f9"
+        }
+      ]
+    }
+  },
+  "storage": {
+    "balancetest89613ef5": {
+      "dependsOn": [],
+      "providerPlugin": "awscloudformation",
+      "service": "S3",
+      "serviceType": "imported"
     }
   }
 }

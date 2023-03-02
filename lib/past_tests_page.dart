@@ -168,13 +168,13 @@ class _PastTestsState extends State<PastTests> {
     } else if (score < 65) {
       return Colors.deepOrange;
     } else if (score < 75) {
-      return Colors.black;
+      return Colors.indigo;
     } else if (score < 90) {
       // return const Color(0xff009E9D);
-      return Colors.black;
+      return Colors.indigo;
     } else {
       // return const Color(0xff05A985);
-      return Colors.black;
+      return Colors.indigo;
     }
   }
 
@@ -208,7 +208,7 @@ class _PastTestsState extends State<PastTests> {
                               'Sort By',
                               style: TextStyle(
                                 fontSize: 0.0435 * width,
-                                color: const Color(0xff006CC6),
+                                color: Colors.indigo,
                                 fontFamily: 'DM-Sans-Medium',
                               ),
                               overflow: TextOverflow.ellipsis,
@@ -229,7 +229,7 @@ class _PastTestsState extends State<PastTests> {
                       CupertinoIcons.down_arrow,
                     ),
                     iconSize: 0.0435 * width,
-                    iconEnabledColor: const Color(0xff006CC6),
+                    iconEnabledColor: Colors.indigo,
                     iconDisabledColor: Colors.grey,
                     buttonHeight: 0.0966 * width,
                     buttonWidth: 0.26 * width,
@@ -279,14 +279,14 @@ class _PastTestsState extends State<PastTests> {
                         )));
               },
               child: Padding(
-                padding: const EdgeInsets.fromLTRB(0, 1, 0, 1),
+                padding: const EdgeInsets.fromLTRB(0, 4, 0, 4),
                 child: Center(
                   child: Card(
                     color: const Color(0xffffffff),
-                    elevation: 0,
+                    elevation: 2,
                     shadowColor: Colors.white70,
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(15.0),
+                      borderRadius: BorderRadius.circular(20.0),
                     ),
                     child: SizedBox(
                       width: width * 0.90,
@@ -297,15 +297,21 @@ class _PastTestsState extends State<PastTests> {
                         children: [
                           Row(
                             children: [
-                              Container(
+                              Padding(padding: EdgeInsets.fromLTRB(0.04*width, 0, 0, 0),
+                                child:
+                                Container(
+                                  decoration: BoxDecoration(
+                                    color: const Color(0xffedf0f9),
+                                    borderRadius: BorderRadius.all(Radius.circular(0.06*width)),
+                                  ),
                                 alignment: Alignment.center,
-                                width: 0.18 * width,
-                                height: 70,
+                                width: 0.17 * width,
+                                height: 0.17 * width,
                                 child: FittedBox(
                                   fit: BoxFit.scaleDown,
                                   child: Padding(
                                     padding: const EdgeInsets.fromLTRB(
-                                        20.0, 0, 0, 0),
+                                        0, 0, 0, 0),
                                     child: Row(
                                       children: [
                                         Text(
@@ -314,37 +320,38 @@ class _PastTestsState extends State<PastTests> {
                                             textStyle: TextStyle(
                                               color: getScoreColor(test.score),
                                               fontFamily: 'DMSans-Medium',
-                                              fontSize: 35,
+                                              fontSize: 0.067*width,
                                               fontWeight: FontWeight.w700,
                                             ),
                                           ),
                                         ),
-                                        Text(
-                                          '%',
-                                          style: GoogleFonts.nunito(
-                                            textStyle: const TextStyle(
-                                              color: Color(0xff777586),
-                                              fontFamily: 'DMSans-Medium',
-                                              fontSize: 20,
-                                              fontWeight: FontWeight.bold,
-                                            ),
-                                          ),
-                                        ),
+                                        // Text(
+                                        //   '%',
+                                        //   style: GoogleFonts.nunito(
+                                        //     textStyle: const TextStyle(
+                                        //       color: Color(0xff777586),
+                                        //       fontFamily: 'DMSans-Medium',
+                                        //       fontSize: 14,
+                                        //       fontWeight: FontWeight.bold,
+                                        //     ),
+                                        //   ),
+                                        // ),
                                       ],
                                     ),
                                   ),
                                 ),
                               ),
+                    ),
                               Padding(
                                 padding:
-                                    const EdgeInsets.fromLTRB(14.0, 10, 0, 0),
+                                  EdgeInsets.fromLTRB(0.06*width, 10, 0, 0),
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Container(
                                       alignment: Alignment.centerLeft,
-                                      width: 0.42 * width,
-                                      height: 60,
+                                      width: 0.46 * width,
+                                      height: 55,
                                       child: FittedBox(
                                         fit: BoxFit.scaleDown,
                                         child: Text(
@@ -352,7 +359,7 @@ class _PastTestsState extends State<PastTests> {
                                           style: GoogleFonts.nunito(
                                             textStyle: const TextStyle(
                                               color: Color(0xff2A2A2A),
-                                              fontSize: 26,
+                                              fontSize: 24,
                                               fontWeight: FontWeight.w700,
                                             ),
                                           ),
@@ -372,7 +379,7 @@ class _PastTestsState extends State<PastTests> {
                                             children: [
                                               const Icon(
                                                 CupertinoIcons.calendar,
-                                                color: Color(0xff006CC6),
+                                                color: Colors.indigo,
                                                 size: 20,
                                               ),
                                               Padding(
@@ -383,7 +390,7 @@ class _PastTestsState extends State<PastTests> {
                                                   formatDateTime(test.dateTime),
                                                   style: GoogleFonts.nunito(
                                                     textStyle: const TextStyle(
-                                                      color: Color(0xff006CC6),
+                                                      color: Colors.indigo,
                                                       fontSize: 16,
                                                       fontWeight:
                                                           FontWeight.w600,
@@ -402,7 +409,7 @@ class _PastTestsState extends State<PastTests> {
                             ],
                           ),
                           Padding(
-                            padding: const EdgeInsets.fromLTRB(0, 0, 15, 0),
+                            padding: const EdgeInsets.fromLTRB(0, 0, 5, 0),
                             child: SizedBox(
                               height: 0.13 * width,
                               width: 0.13 * width,

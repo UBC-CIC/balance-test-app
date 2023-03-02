@@ -12,13 +12,33 @@
       "AmplifyAppId": "dve23vuhma119"
     },
     "categories": {
+      "storage": {
+        "balancetestc8bd10f9": {
+          "bucketName": "json-to-parquet-poc-bucket",
+          "region": "ca-central-1"
+        },
+        "balancetest89613ef5": {
+          "bucketName": "json-to-parquet-poc-bucket",
+          "region": "ca-central-1"
+        }
+      },
       "auth": {
-        "balancetest1b7f439d": {
+        "balancetest6a22503d": {
           "userPoolId": "ca-central-1_qBJ3I7w8V",
           "userPoolName": "Btest-test-user-pool",
           "webClientId": "5lfno130a5ohv1tv1trl7b4s2u",
-          "nativeClientId": "5lfno130a5ohv1tv1trl7b4s2u"
+          "nativeClientId": "5lfno130a5ohv1tv1trl7b4s2u",
+          "identityPoolId": "ca-central-1:966e3d18-034c-451a-a396-e8df41963374",
+          "identityPoolName": "balance_test_identity_pool",
+          "allowUnauthenticatedIdentities": false,
+          "authRoleArn": "arn:aws:iam::684904187051:role/Cognito_balance_test_identity_poolAuth_Role",
+          "authRoleName": "Cognito_balance_test_identity_poolAuth_Role",
+          "unauthRoleArn": "arn:aws:iam::684904187051:role/Cognito_balance_test_identity_poolUnauth_Role",
+          "unauthRoleName": "Cognito_balance_test_identity_poolUnauth_Role"
         }
+      },
+      "api": {
+        "balancetest": {}
       }
     }
   }

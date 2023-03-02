@@ -113,7 +113,7 @@ class _TestDetailsPageState extends State<TestDetailsPage> {
                     child: Center(
                       child: Card(
                         color: Colors.white,
-                        elevation: 2,
+                        elevation: 1,
                         shadowColor: Colors.white70,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(15.0),
@@ -385,7 +385,7 @@ class _TestDetailsPageState extends State<TestDetailsPage> {
                     child: Center(
                       child: Card(
                         color: Colors.white,
-                        elevation: 2,
+                        elevation: 1,
                         shadowColor: Colors.white70,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(15.0),
@@ -478,7 +478,7 @@ class _TestDetailsPageState extends State<TestDetailsPage> {
                     child: Center(
                       child: Card(
                         color: Colors.white,
-                        elevation: 2,
+                        elevation: 1,
                         shadowColor: Colors.white70,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(15.0),

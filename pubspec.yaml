@@ -43,11 +43,17 @@ dependencies:
   flutter_ringtone_player: ^3.2.0
   shared_preferences: ^2.0.17
 #  flutter_beep: ^1.0.0    Alternative notification sound player
+  path_provider: ^2.0.13
+  uuid: ^3.0.6
+  azlistview: ^2.0.0
+
 
 
   amplify_flutter: ^0.6.0
   amplify_auth_cognito: ^0.6.0
-  amplify_authenticator: ^0.2.0
+  amplify_authenticator: ^0.2.4
+  amplify_storage_s3: ^0.6.0
+  amplify_api: ^0.6.0
 
 
   # The following adds the Cupertino Icons font to your application.

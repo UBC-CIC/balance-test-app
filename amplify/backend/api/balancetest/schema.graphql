@@ -1,0 +1,79 @@
+type Patient {
+  patient_id: String!
+  name: String
+  email: String
+}
+
+type CareProvider {
+  care_provider_id: String!
+  email: String
+}
+
+type PatientCareprovider {
+  patient_id: String!
+  care_provider_id: String!
+}
+
+type Query {
+  # getters
+  getCareproviderById(care_provider_id: String!): CareProvider
+  getPatientById(patient_id: String!): Patient
+  getPatients(care_provider_id: String!): [Patient]
+  getTestEvents(
+    patient_id: String!
+    test_type: String
+    start_time: AWSDateTime
+    end_time: AWSDateTime
+    if_completed: Boolean
+    sort: SortDirection
+    count: Int
+  ): [TestEvent]
+  # analytics
+  getWeeklyAverageBalanceScore(patientId: String!): Int
+}
+
+type Mutation {
+  createPatient(patient_id: String!, email: String, name: String): Patient
+  createCareProvider(care_provider_id: String!, email: String!): CareProvider
+  addPatientToCareProvider(
+    care_provider_id: String!
+    patient_id: String!
+  ): PatientCareprovider
+  createAndAssignTest(
+    test_event_id: String!
+    patient_id: String!
+    test_type: String!
+    notes: String
+  ): TestEvent
+  putTestResult(
+    test_event_id: String!
+    test_type: String
+    balance_score: Int
+    doctor_score: Int
+    start_time: AWSDateTime
+    end_time: AWSDateTime
+    if_completed: Boolean
+  ): TestEvent
+}
+
+type TestEvent {
+  test_event_id: String!
+  patient_id: String!
+  test_type: String!
+  if_completed: Boolean!
+  balance_score: Int
+  doctor_score: Int
+  notes: String
+  start_time: AWSDateTime
+  end_time: AWSDateTime
+}
+
+enum SortDirection {
+  asc
+  desc
+}
+
+schema {
+  query: Query
+  mutation: Mutation
+}

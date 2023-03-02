@@ -6,17 +6,17 @@ import 'package:google_fonts/google_fonts.dart';
 
 import 'TestItem.dart';
 
-class HomePage extends StatefulWidget {
-  const HomePage({Key? key, required this.parentCtx, required this.userID}) : super(key: key);
+class PatientHomePage extends StatefulWidget {
+  const PatientHomePage({Key? key, required this.parentCtx, required this.userID}) : super(key: key);
 
   final BuildContext parentCtx;
   final String userID;
 
   @override
-  State<HomePage> createState() => _HomePageState();
+  State<PatientHomePage> createState() => _PatientHomePageState();
 }
 
-class _HomePageState extends State<HomePage> {
+class _PatientHomePageState extends State<PatientHomePage> {
   //VARIABLES
 
   //Controller for fading scroll view
@@ -157,8 +157,9 @@ class _HomePageState extends State<HomePage> {
                 style: TextStyle(
                   // color: Color.fromRGBO(141, 148, 162, 1.0),
                   color: Colors.black,
-                  fontFamily: 'DMSans-Bold',
-                  fontSize: 0.055 * width,
+                  fontFamily: 'DMSans-Medium',
+                  fontWeight: FontWeight.w900,
+                  fontSize: 0.052 * width,
                 ),
               ),
             );
@@ -166,14 +167,14 @@ class _HomePageState extends State<HomePage> {
             final test = tests[index - 1];
 
             return Padding(
-              padding: const EdgeInsets.fromLTRB(0, 2, 0, 2),
+              padding: const EdgeInsets.fromLTRB(0, 3, 0, 3),
               child: Center(
                 child: Card(
                   color: const Color(0xffffffff),
-                  elevation: 1,
+                  elevation: 2,
                   shadowColor: Colors.white70,
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(15.0),
+                    borderRadius: BorderRadius.circular(16.0),
                   ),
                   child: SizedBox(
                     width: width * 0.90,
@@ -200,7 +201,7 @@ class _HomePageState extends State<HomePage> {
                                       textStyle: const TextStyle(
                                         color: Color(0xff2A2A2A),
                                         // fontFamily: 'DMSans-Bold',
-                                        fontSize: 25,
+                                        fontSize: 23,
                                         fontWeight: FontWeight.bold,
                                       ),
                                     ),
@@ -212,7 +213,9 @@ class _HomePageState extends State<HomePage> {
                                 child: Row(
                                   children: [
                                     const Icon(Icons.access_time_rounded,
-                                        color: Color(0xff006CC6)),
+                                        color: Color(0xff006CC6),
+                                      size: 20,
+                                    ),
                                     Padding(
                                       padding:
                                           const EdgeInsets.fromLTRB(8, 0, 0, 0),
@@ -222,7 +225,7 @@ class _HomePageState extends State<HomePage> {
                                           textStyle: const TextStyle(
                                             color: Color(0xff006CC6),
                                             fontFamily: 'DMSans-Medium',
-                                            fontSize: 20,
+                                            fontSize: 19,
                                             fontWeight: FontWeight.w600,
                                           ),
                                         ),
@@ -250,9 +253,10 @@ class _HomePageState extends State<HomePage> {
                                       //Used to pop to main page instead of home
                                       MaterialPageRoute(
                                           builder: (context) => RecordingPage(
-                                                movementType:
-                                                    convertMovementName(
-                                                        test.movement),
+                                                movementType: test.movement,
+                                                userID: widget.userID,
+                                                formattedMovementType: convertMovementName(
+                                                    test.movement),
                                               )));
                                 },
                                 style: ElevatedButton.styleFrom(

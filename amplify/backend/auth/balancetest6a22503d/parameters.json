@@ -1,6 +1,6 @@
 {
-  "authSelections": "userPoolOnly",
-  "resourceName": "balancetest1b7f439d",
+  "authSelections": "identityPoolAndUserPool",
+  "resourceName": "balancetest6a22503d",
   "serviceType": "imported",
   "region": "ca-central-1",
   "usernameAttributes": [

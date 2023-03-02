@@ -14,9 +14,13 @@ class RecordingPage extends StatefulWidget {
   const RecordingPage({
     Key? key,
     required this.movementType,
+    required this.formattedMovementType,
+    required this.userID,
   }) : super(key: key);
 
   final String movementType;
+  final String formattedMovementType;
+  final String userID;
 
   @override
   State<RecordingPage> createState() => _RecordingPageState();
@@ -93,6 +97,7 @@ class _RecordingPageState extends State<RecordingPage> {
             context,
             MaterialPageRoute(
                 builder: (context) => TestSummary(
+                      formattedMovementType: widget.formattedMovementType,
                       movementType: widget.movementType,
                       timeStampData: timeStampData,
                       accelerometerDataX: accelerometerDataX,
@@ -105,6 +110,7 @@ class _RecordingPageState extends State<RecordingPage> {
                       magnetometerDataY: magnetometerDataY,
                       magnetometerDataZ: magnetometerDataZ,
                       timeElapsed: timeElapsed,
+                      userID: widget.userID,
                     )),
           );
           setState(() {
@@ -201,16 +207,16 @@ class _RecordingPageState extends State<RecordingPage> {
       home: Scaffold(
         backgroundColor: const Color(0xfff2f1f6),
         appBar: AppBar(
-          toolbarHeight: 0.1 * height,
+          toolbarHeight: 0.12 * height,
           title: Padding(
-            padding: const EdgeInsets.fromLTRB(0, 10, 0, 0),
+            padding: const EdgeInsets.fromLTRB(0, 15, 0, 0),
             child: SizedBox(
               width: width,
               height: 0.1 * height,
               child: FittedBox(
                 fit: BoxFit.scaleDown,
                 child: Text(
-                  title,
+                  widget.formattedMovementType,
                   textAlign: TextAlign.center,
                   style: GoogleFonts.nunito(
                     textStyle: const TextStyle(
@@ -231,7 +237,7 @@ class _RecordingPageState extends State<RecordingPage> {
           mainAxisAlignment: MainAxisAlignment.start,
           children: <Widget>[
             Padding(
-              padding: EdgeInsets.fromLTRB(0, 0.15 * height, 0, 0.05 * height),
+              padding: EdgeInsets.fromLTRB(0, 0.12 * height, 0, 0.05 * height),
               child: Text(
                 '${stopwatch.elapsed.inMinutes.toString().padLeft(2, '0')}:${(stopwatch.elapsed.inSeconds % 60).toString().padLeft(2, '0')}',
                 style: GoogleFonts.varelaRound(
@@ -315,7 +321,9 @@ class _RecordingPageState extends State<RecordingPage> {
                               context,
                               MaterialPageRoute(
                                   builder: (context) => TestSummary(
-                                        movementType: title,
+                                        formattedMovementType:
+                                            widget.formattedMovementType,
+                                        movementType: widget.movementType,
                                         timeStampData: timeStampData,
                                         accelerometerDataX: accelerometerDataX,
                                         accelerometerDataY: accelerometerDataY,
@@ -327,6 +335,7 @@ class _RecordingPageState extends State<RecordingPage> {
                                         magnetometerDataY: magnetometerDataY,
                                         magnetometerDataZ: magnetometerDataZ,
                                         timeElapsed: timeElapsed,
+                                        userID: widget.userID,
                                       )),
                             );
                             setState(() {
