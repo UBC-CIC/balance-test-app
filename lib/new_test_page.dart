@@ -1,4 +1,5 @@
 import 'package:balance_test/recording_page.dart';
+import 'package:balance_test/test_instructions_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:gaimon/gaimon.dart';
@@ -6,17 +7,17 @@ import 'package:google_fonts/google_fonts.dart';
 
 import 'TestItem.dart';
 
-class PatientHomePage extends StatefulWidget {
-  const PatientHomePage({Key? key, required this.parentCtx, required this.userID}) : super(key: key);
+class NewTestPage extends StatefulWidget {
+  const NewTestPage({Key? key, required this.parentCtx, required this.userID}) : super(key: key);
 
   final BuildContext parentCtx;
   final String userID;
 
   @override
-  State<PatientHomePage> createState() => _PatientHomePageState();
+  State<NewTestPage> createState() => _NewTestPageState();
 }
 
-class _PatientHomePageState extends State<PatientHomePage> {
+class _NewTestPageState extends State<NewTestPage> {
   //VARIABLES
 
   //Controller for fading scroll view
@@ -28,58 +29,72 @@ class _PatientHomePageState extends State<PatientHomePage> {
       {
         "movement": "sit-to-stand",
         "estimated-duration": 30,
+        "instructions": "1. Toni cemuso hite ataneda tebe bigeric lu ire yama sorov! Gew dipebor natasum sikit afahar!\n2. Toni cemuso hite ataneda tebe bigeric lu ire yama sorov! Gew dipebor natasum sikit afahar!\n3. Toni cemuso hite ataneda tebe bigeric lu ire yama sorov! Gew dipebor natasum sikit afahar!",
       },
       {
         "movement": "stand-unsupported",
         "estimated-duration": 40,
+        "instructions": "1. Toni cemuso hite ataneda tebe bigeric lu ire yama sorov! Gew dipebor natasum sikit afahar!\n2. Toni cemuso hite ataneda tebe bigeric lu ire yama sorov! Gew dipebor natasum sikit afahar!\n3. Toni cemuso hite ataneda tebe bigeric lu ire yama sorov! Gew dipebor natasum sikit afahar!",
       },
       {
         "movement": "sit-back-unsupported",
         "estimated-duration": 90,
+        "instructions": "1. Toni cemuso hite ataneda tebe bigeric lu ire yama sorov! Gew dipebor natasum sikit afahar!\n2. Toni cemuso hite ataneda tebe bigeric lu ire yama sorov! Gew dipebor natasum sikit afahar!\n3. Toni cemuso hite ataneda tebe bigeric lu ire yama sorov! Gew dipebor natasum sikit afahar!",
       },
       {
         "movement": "stand-to-sit",
         "estimated-duration": 30,
+        "instructions": "1. Toni cemuso hite ataneda tebe bigeric lu ire yama sorov! Gew dipebor natasum sikit afahar!\n2. Toni cemuso hite ataneda tebe bigeric lu ire yama sorov! Gew dipebor natasum sikit afahar!\n3. Toni cemuso hite ataneda tebe bigeric lu ire yama sorov! Gew dipebor natasum sikit afahar!",
       },
       {
         "movement": "transfers",
         "estimated-duration": 45,
+        "instructions": "1. Toni cemuso hite ataneda tebe bigeric lu ire yama sorov! Gew dipebor natasum sikit afahar!\n2. Toni cemuso hite ataneda tebe bigeric lu ire yama sorov! Gew dipebor natasum sikit afahar!\n3. Toni cemuso hite ataneda tebe bigeric lu ire yama sorov! Gew dipebor natasum sikit afahar!",
       },
       {
         "movement": "stand-eyes-closed",
         "estimated-duration": 74,
+        "instructions": "1. Toni cemuso hite ataneda tebe bigeric lu ire yama sorov! Gew dipebor natasum sikit afahar!\n2. Toni cemuso hite ataneda tebe bigeric lu ire yama sorov! Gew dipebor natasum sikit afahar!\n3. Toni cemuso hite ataneda tebe bigeric lu ire yama sorov! Gew dipebor natasum sikit afahar!",
       },
       {
         "movement": "stand-feet-together",
         "estimated-duration": 10,
+        "instructions": "1. Toni cemuso hite ataneda tebe bigeric lu ire yama sorov! Gew dipebor natasum sikit afahar!\n2. Toni cemuso hite ataneda tebe bigeric lu ire yama sorov! Gew dipebor natasum sikit afahar!\n3. Toni cemuso hite ataneda tebe bigeric lu ire yama sorov! Gew dipebor natasum sikit afahar!",
       },
       {
         "movement": "stand-reaching-forward",
         "estimated-duration": 10,
+        "instructions": "1. Toni cemuso hite ataneda tebe bigeric lu ire yama sorov! Gew dipebor natasum sikit afahar!\n2. Toni cemuso hite ataneda tebe bigeric lu ire yama sorov! Gew dipebor natasum sikit afahar!\n3. Toni cemuso hite ataneda tebe bigeric lu ire yama sorov! Gew dipebor natasum sikit afahar!",
       },
       {
         "movement": "pick-up-object",
         "estimated-duration": 15,
+        "instructions": "1. Toni cemuso hite ataneda tebe bigeric lu ire yama sorov! Gew dipebor natasum sikit afahar!\n2. Toni cemuso hite ataneda tebe bigeric lu ire yama sorov! Gew dipebor natasum sikit afahar!\n3. Toni cemuso hite ataneda tebe bigeric lu ire yama sorov! Gew dipebor natasum sikit afahar!",
       },
       {
         "movement": "look-behind-shoulders",
         "estimated-duration": 30,
+        "instructions": "1. Toni cemuso hite ataneda tebe bigeric lu ire yama sorov! Gew dipebor natasum sikit afahar!\n2. Toni cemuso hite ataneda tebe bigeric lu ire yama sorov! Gew dipebor natasum sikit afahar!\n3. Toni cemuso hite ataneda tebe bigeric lu ire yama sorov! Gew dipebor natasum sikit afahar!",
       },
       {
         "movement": "360-turn",
         "estimated-duration": 30,
+        "instructions": "1. Toni cemuso hite ataneda tebe bigeric lu ire yama sorov! Gew dipebor natasum sikit afahar!\n2. Toni cemuso hite ataneda tebe bigeric lu ire yama sorov! Gew dipebor natasum sikit afahar!\n3. Toni cemuso hite ataneda tebe bigeric lu ire yama sorov! Gew dipebor natasum sikit afahar!",
       },
       {
         "movement": "alternate-foot",
         "estimated-duration": 60,
+        "instructions": "1. Toni cemuso hite ataneda tebe bigeric lu ire yama sorov! Gew dipebor natasum sikit afahar!\n2. Toni cemuso hite ataneda tebe bigeric lu ire yama sorov! Gew dipebor natasum sikit afahar!\n3. Toni cemuso hite ataneda tebe bigeric lu ire yama sorov! Gew dipebor natasum sikit afahar!",
       },
       {
         "movement": "one-foot-in-front",
         "estimated-duration": 60,
+        "instructions": "1. Toni cemuso hite ataneda tebe bigeric lu ire yama sorov! Gew dipebor natasum sikit afahar!\n2. Toni cemuso hite ataneda tebe bigeric lu ire yama sorov! Gew dipebor natasum sikit afahar!\n3. Toni cemuso hite ataneda tebe bigeric lu ire yama sorov! Gew dipebor natasum sikit afahar!",
       },
       {
         "movement": "stand-one-leg",
         "estimated-duration": 70,
+        "instructions": "1. Toni cemuso hite ataneda tebe bigeric lu ire yama sorov! Gew dipebor natasum sikit afahar!\n2. Toni cemuso hite ataneda tebe bigeric lu ire yama sorov! Gew dipebor natasum sikit afahar!\n3. Toni cemuso hite ataneda tebe bigeric lu ire yama sorov! Gew dipebor natasum sikit afahar!",
       },
     ];
 
@@ -252,11 +267,11 @@ class _PatientHomePageState extends State<PatientHomePage> {
                                       widget.parentCtx,
                                       //Used to pop to main page instead of home
                                       MaterialPageRoute(
-                                          builder: (context) => RecordingPage(
+                                          builder: (context) => TestInstructionsPage(
                                                 movementType: test.movement,
                                                 userID: widget.userID,
                                                 formattedMovementType: convertMovementName(
-                                                    test.movement),
+                                                    test.movement), instructions: test.instructions,
                                               )));
                                 },
                                 style: ElevatedButton.styleFrom(

@@ -4,7 +4,7 @@ import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:amplify_storage_s3/amplify_storage_s3.dart';
 import 'package:balance_test/account_page.dart';
 import 'package:balance_test/clinic_home_page.dart';
-import 'package:balance_test/patient_home_page.dart';
+import 'package:balance_test/new_test_page.dart';
 import 'package:balance_test/past_tests_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -121,7 +121,7 @@ class _PatientAppState extends State<PatientApp> {
           builder: (BuildContext context,
               AsyncSnapshot<Map<String, String>> snapshot) {
             print(snapshot.data);
-            return PatientHomePage(
+            return NewTestPage(
                 parentCtx: mainCtx,
                 userID: (snapshot.data != null) ? snapshot.data!['sub']! : "");
           }),

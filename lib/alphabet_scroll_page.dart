@@ -146,7 +146,7 @@ class _AlphabetScrollPageState extends State<AlphabetScrollPage> {
                                     children: [
                                       const Icon(
                                         Icons.account_circle,
-                                        color: Color(0xff004076),
+                                        color: Color(0xff006CC6),
                                         size: 16,
                                       ),
                                       Padding(

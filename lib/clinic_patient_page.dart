@@ -1,5 +1,5 @@
 import 'package:balance_test/past_tests_page.dart';
-import 'package:balance_test/patient_home_page.dart';
+import 'package:balance_test/new_test_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -34,7 +34,7 @@ class _ClinicPatientPageState extends State<ClinicPatientPage> {
 
     List<Widget> pages = <Widget>[
       PastTests(parentCtx: context, userID: widget.userID),
-      PatientHomePage(
+      NewTestPage(
         parentCtx: context,
         userID: widget.userID,
       ),
@@ -105,7 +105,7 @@ class _ClinicPatientPageState extends State<ClinicPatientPage> {
                 children: [
                   const Icon(
                     Icons.account_circle,
-                    color: Color(0xff004076),
+                    color: Color(0xff0061b2),
                     size: 18,
                   ),
                   Padding(
@@ -131,7 +131,7 @@ class _ClinicPatientPageState extends State<ClinicPatientPage> {
                 child: CupertinoSlidingSegmentedControl<int>(
                   backgroundColor: CupertinoColors.lightBackgroundGray,
                   thumbColor: CupertinoColors.extraLightBackgroundGray,
-                  padding: const EdgeInsets.all(3),
+                  padding: const EdgeInsets.fromLTRB(4,3,4,3),
                   groupValue: groupValue,
                   children: const {
                     0: Padding(
