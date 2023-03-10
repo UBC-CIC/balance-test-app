@@ -5,6 +5,7 @@ import 'package:balance_test/my_folding_cube.dart';
 import 'package:balance_test/test_details_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:gaimon/gaimon.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
@@ -29,15 +30,14 @@ class _PastTestsState extends State<PastTests> {
 
   final controller = ScrollController();
 
-  late Future<List<TestEvent?>> futureTestList;
-  List<TestEvent?> testList = [];
+  late Future<List<TestEvent>> futureTestList;
+  List<TestEvent> testList = [];
 
-  static Future<List<TestEvent?>> queryTestEvents() async {
+  Future<List<TestEvent>> queryTestEvents() async {
     try {
-      // final request = ModelQueries.(QueryPredicate())
       var query = '''
         query MyQuery {
-          getTestEvents(patient_id: "217016f5-3dbf-41b3-8438-b414c2a95f0d",  if_completed: true) {
+          getTestEvents(patient_id: "${widget.userID}") {
             balance_score
             doctor_score
             notes
@@ -49,13 +49,14 @@ class _PastTestsState extends State<PastTests> {
           }
         }
       ''';
+
       final response = await Amplify.API
           .query(request: GraphQLRequest<String>(document: query))
           .response;
 
       if (response.data == null) {
         print('errors: ${response.errors}');
-        return <TestEvent?>[];
+        return <TestEvent>[];
       } else {
         final testListJson = json.decode(response.data!);
 
@@ -65,12 +66,13 @@ class _PastTestsState extends State<PastTests> {
           tempList.add(TestEvent.fromJson(entry));
         });
 
+        tempList.sort((a, b) => b!.start_time!.compareTo(a!.start_time!));
         return tempList;
       }
     } on ApiException catch (e) {
       print('Query failed: $e');
     }
-    return <TestEvent?>[];
+    return <TestEvent>[];
   }
 
   @override
@@ -78,66 +80,6 @@ class _PastTestsState extends State<PastTests> {
     super.initState();
     futureTestList = queryTestEvents();
   }
-
-  // List<TestDetails> testList = getTests();
-  //
-  // static List<TestDetails> getTests() {
-  //   const data = [
-  //     {
-  //       "testID": "1", //UUID format
-  //       "movement": "sit-to-stand",
-  //       "dateTime": "2023-02-10 15:14:40.731703 -08:00",
-  //       "score": 72,
-  //     },
-  //     {
-  //       "testID": "2", //UUID format
-  //       "movement": "sit-to-stand",
-  //       "dateTime": "2023-02-10 15:17:23.731703 -08:00",
-  //       "score": 55,
-  //     },
-  //     {
-  //       "testID": "3", //UUID format
-  //       "movement": "sit-to-stand",
-  //       "dateTime": "2023-02-18 00:12:32.731703 -08:00",
-  //       "score": 88,
-  //     },
-  //     {
-  //       "testID": "4", //UUID format
-  //       "movement": "sit-to-stand",
-  //       "dateTime": "2022-12-19 12:12:41.731703 -08:00",
-  //       "score": 92,
-  //     },
-  //     {
-  //       "testID": "5", //UUID format
-  //       "movement": "sit-to-stand",
-  //       "dateTime": "2022-10-19 11:12:40.731703 -08:00",
-  //       "score": 92,
-  //     },
-  //     {
-  //       "testID": "6", //UUID format
-  //       "movement": "sit-to-stand",
-  //       "dateTime": "2022-08-12 01:12:22.731703 -08:00",
-  //       "score": 38,
-  //     },
-  //     {
-  //       "testID": "7", //UUID format
-  //       "movement": "sit-to-stand",
-  //       "dateTime": "2022-08-12 01:12:13.731703 -08:00",
-  //       "score": 53,
-  //     },
-  //     {
-  //       "testID": "8", //UUID format
-  //       "movement": "sit-to-stand",
-  //       "dateTime": "2023-01-08 01:19:45.731703 -08:00",
-  //       "score": 85,
-  //     },
-  //   ];
-  //
-  //   List<TestDetails> testList = data.map<TestDetails>(TestDetails.fromJson).toList();
-  //   testList.sort((a, b) => a.dateTime.compareTo(b.dateTime));
-  //   testList = List.from(testList.reversed);
-  //   return testList;
-  // }
 
   void sortList(String? value) {
     if (testList.isNotEmpty) {
@@ -235,18 +177,22 @@ class _PastTestsState extends State<PastTests> {
 
   //UI
 
-  Widget buildTestList(List<TestEvent?> tests) =>
-      ListView.builder(
+  Widget buildTestList(List<TestEvent> tests) {
+    double height = MediaQuery
+        .of(context)
+        .size
+        .height;
+    double width = MediaQuery
+        .of(context)
+        .size
+        .width;
+    if(tests.isEmpty) {
+      return const Center(child: Text('No Tests Found'));
+    } else {
+      return ListView.builder(
           itemCount: tests.length + 1, // To include dropdown as 1st element
           itemBuilder: (context, index) {
-            double height = MediaQuery
-                .of(context)
-                .size
-                .height;
-            double width = MediaQuery
-                .of(context)
-                .size
-                .width;
+
             if (index == 0) {
               return Padding(
                 padding: EdgeInsets.fromLTRB(0, 10, 0.05 * width, 0),
@@ -332,13 +278,13 @@ class _PastTestsState extends State<PastTests> {
                       MaterialPageRoute(
                           builder: (context) =>
                               TestDetailsPage(
-                                testID: test == null ? 'empty' : test
+                                testID: test == null? 'empty' : test
                                     .test_event_id,
                                 movementName: formatMovementName(
                                     test == null ? 'empty' : test.test_type),
-                                dateFormatted: ,
-                                //  formatDateTime(),
-                                score: test == null ? 204 : test.balance_score!,
+                                dateFormatted: formatDateTime(test == null ?  DateTime.utc(1000, 1, 1) : test.start_time!.getDateTimeInUtc()),
+                                score: test == null ? '204' : (test.balance_score==null? '-' : test.balance_score.toString()),
+                                notes: test.notes,
                               )));
                 },
                 child: Padding(
@@ -382,32 +328,19 @@ class _PastTestsState extends State<PastTests> {
                                             Text(
                                               test == null
                                                   ? 'err'
-                                                  : test.balance_score
-                                                  .toString(),
+                                                  : (test.balance_score==null? '-' : test.balance_score.toString()),
                                               style: GoogleFonts.nunito(
                                                 textStyle: TextStyle(
                                                   color: getScoreColor(
-                                                      test == null
-                                                          ? 404
-                                                          : test
-                                                          .balance_score!),
+                                                    test == null
+                                                        ? 100
+                                                        : (test.balance_score==null? 100 : test.balance_score!)),
                                                   fontFamily: 'DMSans-Medium',
                                                   fontSize: 0.067 * width,
                                                   fontWeight: FontWeight.w700,
                                                 ),
                                               ),
                                             ),
-                                            // Text(
-                                            //   '%',
-                                            //   style: GoogleFonts.nunito(
-                                            //     textStyle: const TextStyle(
-                                            //       color: Color(0xff777586),
-                                            //       fontFamily: 'DMSans-Medium',
-                                            //       fontSize: 14,
-                                            //       fontWeight: FontWeight.bold,
-                                            //     ),
-                                            //   ),
-                                            // ),
                                           ],
                                         ),
                                       ),
@@ -462,9 +395,7 @@ class _PastTestsState extends State<PastTests> {
                                                   const EdgeInsets.fromLTRB(
                                                       6, 0, 0, 0),
                                                   child: Text(
-                                                    'change later',
-                                                    // formatDateTime(test.dateTime),
-                                                    style: GoogleFonts.nunito(
+                                                    formatDateTime(test == null ?  DateTime.utc(1000, 1, 1) : test.start_time!.getDateTimeInUtc()),                                                    style: GoogleFonts.nunito(
                                                       textStyle: const TextStyle(
                                                         color: Colors.indigo,
                                                         fontSize: 16,
@@ -505,6 +436,8 @@ class _PastTestsState extends State<PastTests> {
               );
             }
           });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -518,7 +451,7 @@ class _PastTestsState extends State<PastTests> {
         .width;
 
     return Expanded(
-        child: FutureBuilder<List<TestEvent?>>(
+        child: FutureBuilder<List<TestEvent>>(
           future: futureTestList,
           builder: (context, snapshot) {
             if (snapshot.hasData) {
@@ -526,10 +459,10 @@ class _PastTestsState extends State<PastTests> {
 
               return buildTestList(testList);
             } else {
-              return const MyFoldingCube(
+              return const Center(child: SpinKitFadingGrid(
                 color: Colors.indigo,
                 size: 50.0,
-              );
+              ));
             }
           },
         ));
@@ -544,8 +477,7 @@ class _PastTestsState extends State<PastTests> {
     }
   }
 
-  String formatDateTime(String dateTimeStr) {
-    DateTime newDateTimeObj = DateTime.parse(dateTimeStr);
-    return DateFormat("MMM d, y h:mm a").format(newDateTimeObj);
+  String formatDateTime(DateTime dateTimeObj) {
+    return DateFormat("MMM d, y h:mm a").format(dateTimeObj);
   }
 }

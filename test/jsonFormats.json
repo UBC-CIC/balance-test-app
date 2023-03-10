@@ -1,5 +1,9 @@
 {
     "patient_id": "1",
+    "movement": "sit-to-stand",
+    //additional keys
+    .
+    .
     "ts": ["2022-12-09 11:24:52-08:00", ...],
     "ax": [-9.9818359375, ...],
     "ay": [-2.43026123046875, ...],
@@ -18,6 +22,7 @@
 [
     {
         "patient_id": "1",
+        "movement": "sit-to-stand",
         "ts": "2022-12-09 11:24:52-08:00",
         "ax": "-9.9818359375",
         "ay": "-2.43026123046875",
@@ -26,4 +31,159 @@
         "gy": "9.4451904296875",
         "gz": "-1.5106201171875"
     }
+    {
+        "patient_id": "1",
+        "movement": "sit-to-stand",
+        "ts": "2022-12-09 11:24:52-08:00",
+        "ax": "-9.9818359375",
+        "ay": "-2.43026123046875",
+        "az": "-1.44033203125",
+        "gx": "7.0343017578125",
+        "gy": "9.4451904296875",
+        "gz": "-1.5106201171875"
+    }
+]{
+        "patient_id": "1",
+        "movement": "sit-to-stand",
+        "ts": "2022-12-09 11:24:52-08:00",
+        "ax": "-9.9818359375",
+        "ay": "-2.43026123046875",
+        "az": "-1.44033203125",
+        "gx": "7.0343017578125",
+        "gy": "9.4451904296875",
+        "gz": "-1.5106201171875"
+    }
+
 ]
+
+
+
+
+
+
+Padding(
+                                      padding: const EdgeInsets.fromLTRB(
+                                          0, 0, 0, 8),
+                                      child: Row(
+                                        children: [
+                                          const Icon(
+                                            CupertinoIcons.square_list,
+                                            size: 24,
+                                            color: Colors.indigo,
+                                          ),
+                                          Padding(
+                                            padding: const EdgeInsets.fromLTRB(5, 0, 5, 0),
+                                            child: Text(
+                                              'Notes',
+                                              style: GoogleFonts.nunito(
+                                                textStyle: const TextStyle(
+                                                  color: Colors.indigo,
+                                                  fontSize: 20,
+                                                  fontWeight: FontWeight.bold,
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                              Flexible( //Overflow text pushes to next line
+                                      child: Text(
+                                        'Toni cemuso hite ataneda tebe bigeric lu ire yama sorov! Gew dipebor natasum sikit afahar! Coticol xosieric uladu redes! Cedet ricak secadep bebeni yibas renacab rie: Badi let reri lareri bat asacubes paritur vagone iegarat! Nelalir cof odesie cipir sucomer si. Vaso foreca tunietec toconel ha gi ragi no! Leconug ida tewat febase arerotoh pit peceral. Figare temusa fig redo mesu nec neme wocies. Sef irahote sihelom. Ulurexi zepe na seniep enedico pop hohe renalis dicis.',
+                                        style: GoogleFonts.nunito(
+                                          textStyle: const TextStyle(
+                                            color: Colors.black,
+                                            fontSize: 18,
+                                            fontWeight: FontWeight.w600,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                    const Divider(
+                                      height: 20,
+                                      thickness: 1,
+                                      indent: 5,
+                                      endIndent: 5,
+                                      color: Colors.transparent,
+                                    ),
+
+
+
+
+{
+    "assigned": [sit-to-stand, sitting-with-back-unsupported, ...]
+}
+
+
+const data = [
+  {
+    "movement": "sit-to-stand",
+    "estimated-duration": 30,
+    "instructions": "1. Toni cemuso hite ataneda tebe bigeric lu ire yama sorov! Gew dipebor natasum sikit afahar!\n2. Toni cemuso hite ataneda tebe bigeric lu ire yama sorov! Gew dipebor natasum sikit afahar!\n3. Toni cemuso hite ataneda tebe bigeric lu ire yama sorov! Gew dipebor natasum sikit afahar!",
+  },
+  {
+    "movement": "stand-unsupported",
+    "estimated-duration": 40,
+    "instructions": "1. Toni cemuso hite ataneda tebe bigeric lu ire yama sorov! Gew dipebor natasum sikit afahar!\n2. Toni cemuso hite ataneda tebe bigeric lu ire yama sorov! Gew dipebor natasum sikit afahar!\n3. Toni cemuso hite ataneda tebe bigeric lu ire yama sorov! Gew dipebor natasum sikit afahar!",
+  },
+  {
+    "movement": "sit-back-unsupported",
+    "estimated-duration": 90,
+    "instructions": "1. Toni cemuso hite ataneda tebe bigeric lu ire yama sorov! Gew dipebor natasum sikit afahar!\n2. Toni cemuso hite ataneda tebe bigeric lu ire yama sorov! Gew dipebor natasum sikit afahar!\n3. Toni cemuso hite ataneda tebe bigeric lu ire yama sorov! Gew dipebor natasum sikit afahar!",
+  },
+  {
+    "movement": "stand-to-sit",
+    "estimated-duration": 30,
+    "instructions": "1. Toni cemuso hite ataneda tebe bigeric lu ire yama sorov! Gew dipebor natasum sikit afahar!\n2. Toni cemuso hite ataneda tebe bigeric lu ire yama sorov! Gew dipebor natasum sikit afahar!\n3. Toni cemuso hite ataneda tebe bigeric lu ire yama sorov! Gew dipebor natasum sikit afahar!",
+  },
+  {
+    "movement": "transfers",
+    "estimated-duration": 45,
+    "instructions": "1. Toni cemuso hite ataneda tebe bigeric lu ire yama sorov! Gew dipebor natasum sikit afahar!\n2. Toni cemuso hite ataneda tebe bigeric lu ire yama sorov! Gew dipebor natasum sikit afahar!\n3. Toni cemuso hite ataneda tebe bigeric lu ire yama sorov! Gew dipebor natasum sikit afahar!",
+  },
+  {
+    "movement": "stand-eyes-closed",
+    "estimated-duration": 74,
+    "instructions": "1. Toni cemuso hite ataneda tebe bigeric lu ire yama sorov! Gew dipebor natasum sikit afahar!\n2. Toni cemuso hite ataneda tebe bigeric lu ire yama sorov! Gew dipebor natasum sikit afahar!\n3. Toni cemuso hite ataneda tebe bigeric lu ire yama sorov! Gew dipebor natasum sikit afahar!",
+  },
+  {
+    "movement": "stand-feet-together",
+    "estimated-duration": 10,
+    "instructions": "1. Toni cemuso hite ataneda tebe bigeric lu ire yama sorov! Gew dipebor natasum sikit afahar!\n2. Toni cemuso hite ataneda tebe bigeric lu ire yama sorov! Gew dipebor natasum sikit afahar!\n3. Toni cemuso hite ataneda tebe bigeric lu ire yama sorov! Gew dipebor natasum sikit afahar!",
+  },
+  {
+    "movement": "stand-reaching-forward",
+    "estimated-duration": 10,
+    "instructions": "1. Toni cemuso hite ataneda tebe bigeric lu ire yama sorov! Gew dipebor natasum sikit afahar!\n2. Toni cemuso hite ataneda tebe bigeric lu ire yama sorov! Gew dipebor natasum sikit afahar!\n3. Toni cemuso hite ataneda tebe bigeric lu ire yama sorov! Gew dipebor natasum sikit afahar!",
+  },
+  {
+    "movement": "pick-up-object",
+    "estimated-duration": 15,
+    "instructions": "1. Toni cemuso hite ataneda tebe bigeric lu ire yama sorov! Gew dipebor natasum sikit afahar!\n2. Toni cemuso hite ataneda tebe bigeric lu ire yama sorov! Gew dipebor natasum sikit afahar!\n3. Toni cemuso hite ataneda tebe bigeric lu ire yama sorov! Gew dipebor natasum sikit afahar!",
+  },
+  {
+    "movement": "look-behind-shoulders",
+    "estimated-duration": 30,
+    "instructions": "1. Toni cemuso hite ataneda tebe bigeric lu ire yama sorov! Gew dipebor natasum sikit afahar!\n2. Toni cemuso hite ataneda tebe bigeric lu ire yama sorov! Gew dipebor natasum sikit afahar!\n3. Toni cemuso hite ataneda tebe bigeric lu ire yama sorov! Gew dipebor natasum sikit afahar!",
+  },
+  {
+    "movement": "360-turn",
+    "estimated-duration": 30,
+    "instructions": "1. Toni cemuso hite ataneda tebe bigeric lu ire yama sorov! Gew dipebor natasum sikit afahar!\n2. Toni cemuso hite ataneda tebe bigeric lu ire yama sorov! Gew dipebor natasum sikit afahar!\n3. Toni cemuso hite ataneda tebe bigeric lu ire yama sorov! Gew dipebor natasum sikit afahar!",
+  },
+  {
+    "movement": "alternate-foot",
+    "estimated-duration": 60,
+    "instructions": "1. Toni cemuso hite ataneda tebe bigeric lu ire yama sorov! Gew dipebor natasum sikit afahar!\n2. Toni cemuso hite ataneda tebe bigeric lu ire yama sorov! Gew dipebor natasum sikit afahar!\n3. Toni cemuso hite ataneda tebe bigeric lu ire yama sorov! Gew dipebor natasum sikit afahar!",
+  },
+  {
+    "movement": "one-foot-in-front",
+    "estimated-duration": 60,
+    "instructions": "1. Toni cemuso hite ataneda tebe bigeric lu ire yama sorov! Gew dipebor natasum sikit afahar!\n2. Toni cemuso hite ataneda tebe bigeric lu ire yama sorov! Gew dipebor natasum sikit afahar!\n3. Toni cemuso hite ataneda tebe bigeric lu ire yama sorov! Gew dipebor natasum sikit afahar!",
+  },
+  {
+    "movement": "stand-one-leg",
+    "estimated-duration": 70,
+    "instructions": "1. Toni cemuso hite ataneda tebe bigeric lu ire yama sorov! Gew dipebor natasum sikit afahar!\n2. Toni cemuso hite ataneda tebe bigeric lu ire yama sorov! Gew dipebor natasum sikit afahar!\n3. Toni cemuso hite ataneda tebe bigeric lu ire yama sorov! Gew dipebor natasum sikit afahar!",
+  },
+];

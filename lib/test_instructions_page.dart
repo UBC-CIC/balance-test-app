@@ -13,12 +13,14 @@ class TestInstructionsPage extends StatefulWidget {
     required this.formattedMovementType,
     required this.userID,
     required this.instructions,
+    required this.isClinicApp,
   }) : super(key: key);
 
   final String movementType;
   final String formattedMovementType;
   final String userID;
   final String instructions;
+  final bool isClinicApp;
 
   @override
   State<TestInstructionsPage> createState() => _TestInstructionsPageState();
@@ -171,7 +173,7 @@ class _TestInstructionsPageState extends State<TestInstructionsPage> {
                                                         widget.movementType,
                                                         userID: widget.userID,
                                                         formattedMovementType: widget
-                                                            .formattedMovementType,
+                                                            .formattedMovementType, isClinicApp: widget.isClinicApp,
                                                       )));
                                         },
                                         style: ElevatedButton.styleFrom(

@@ -10,17 +10,17 @@ import 'package:google_fonts/google_fonts.dart';
 
 import 'package:balance_test/models/Test.dart';
 
-class NewTestPage extends StatefulWidget {
-  const NewTestPage({Key? key, required this.parentCtx, required this.userID}) : super(key: key);
+class NewTestPageClinic extends StatefulWidget {
+  const NewTestPageClinic({Key? key, required this.parentCtx, required this.userID}) : super(key: key);
 
   final BuildContext parentCtx;
   final String userID;
 
   @override
-  State<NewTestPage> createState() => _NewTestPageState();
+  State<NewTestPageClinic> createState() => _NewTestPageClinicState();
 }
 
-class _NewTestPageState extends State<NewTestPage> {
+class _NewTestPageClinicState extends State<NewTestPageClinic> {
   //VARIABLES
 
   //Controller for fading scroll view
@@ -34,9 +34,9 @@ class _NewTestPageState extends State<NewTestPage> {
     try {
       var query = '''
         query MyQuery {
-          getPatientAssignedTests(patient_id: "${widget.userID}") {
-            instructions
+          getAllAvailableTests {
             duration_in_seconds
+            instructions
             test_type
           }
         }
@@ -54,7 +54,7 @@ class _NewTestPageState extends State<NewTestPage> {
 
         List<Test> tempList = [];
 
-        testListJson["getPatientAssignedTests"].forEach((entry) {
+        testListJson["getAllAvailableTests"].forEach((entry) {
           tempList.add(Test.fromJson(entry));
         });
 

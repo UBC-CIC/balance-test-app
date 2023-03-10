@@ -48,7 +48,7 @@ class _AlphabetScrollPageState extends State<AlphabetScrollPage> {
             name: item.name,
             email: item.email,
             userID: item.userID,
-            tag: item.name.isNotEmpty? item.name[0].toUpperCase() : "",
+            tag: item.name.isNotEmpty? item.name.substring(item.name.indexOf(" ") + 1, item.name.indexOf(" ") + 2).toUpperCase() : "",
           ),
         )
         .toList();
@@ -206,7 +206,7 @@ class _AlphabetScrollPageState extends State<AlphabetScrollPage> {
     child: Padding(
       padding: EdgeInsets.fromLTRB(0.06* MediaQuery.of(context).size.width, 15, 0, 0),
       child: Text(
-      '$tag',
+      tag,
       softWrap: false,
       style: const TextStyle(
           color: Color(0xff929292),

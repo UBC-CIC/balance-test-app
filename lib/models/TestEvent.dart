@@ -43,12 +43,12 @@ class TestEvent {
       throw new AmplifyCodeGenModelException(
           AmplifyExceptionMessages.codeGenRequiredFieldForceCastExceptionMessage,
           recoverySuggestion:
-            AmplifyExceptionMessages.codeGenRequiredFieldForceCastRecoverySuggestion,
+          AmplifyExceptionMessages.codeGenRequiredFieldForceCastRecoverySuggestion,
           underlyingException: e.toString()
-          );
+      );
     }
   }
-  
+
   String get patient_id {
     try {
       return _patient_id!;
@@ -56,12 +56,12 @@ class TestEvent {
       throw new AmplifyCodeGenModelException(
           AmplifyExceptionMessages.codeGenRequiredFieldForceCastExceptionMessage,
           recoverySuggestion:
-            AmplifyExceptionMessages.codeGenRequiredFieldForceCastRecoverySuggestion,
+          AmplifyExceptionMessages.codeGenRequiredFieldForceCastRecoverySuggestion,
           underlyingException: e.toString()
-          );
+      );
     }
   }
-  
+
   String get test_type {
     try {
       return _test_type!;
@@ -69,12 +69,12 @@ class TestEvent {
       throw new AmplifyCodeGenModelException(
           AmplifyExceptionMessages.codeGenRequiredFieldForceCastExceptionMessage,
           recoverySuggestion:
-            AmplifyExceptionMessages.codeGenRequiredFieldForceCastRecoverySuggestion,
+          AmplifyExceptionMessages.codeGenRequiredFieldForceCastRecoverySuggestion,
           underlyingException: e.toString()
-          );
+      );
     }
   }
-  
+
   bool get if_completed {
     try {
       return _if_completed!;
@@ -82,73 +82,73 @@ class TestEvent {
       throw new AmplifyCodeGenModelException(
           AmplifyExceptionMessages.codeGenRequiredFieldForceCastExceptionMessage,
           recoverySuggestion:
-            AmplifyExceptionMessages.codeGenRequiredFieldForceCastRecoverySuggestion,
+          AmplifyExceptionMessages.codeGenRequiredFieldForceCastRecoverySuggestion,
           underlyingException: e.toString()
-          );
+      );
     }
   }
-  
+
   int? get balance_score {
     return _balance_score;
   }
-  
+
   int? get doctor_score {
     return _doctor_score;
   }
-  
+
   String? get notes {
     return _notes;
   }
-  
+
   TemporalDateTime? get start_time {
     return _start_time;
   }
-  
+
   TemporalDateTime? get end_time {
     return _end_time;
   }
-  
+
   const TestEvent._internal({required test_event_id, required patient_id, required test_type, required if_completed, balance_score, doctor_score, notes, start_time, end_time}): _test_event_id = test_event_id, _patient_id = patient_id, _test_type = test_type, _if_completed = if_completed, _balance_score = balance_score, _doctor_score = doctor_score, _notes = notes, _start_time = start_time, _end_time = end_time;
-  
+
   factory TestEvent({required String test_event_id, required String patient_id, required String test_type, required bool if_completed, int? balance_score, int? doctor_score, String? notes, TemporalDateTime? start_time, TemporalDateTime? end_time}) {
     return TestEvent._internal(
-      test_event_id: test_event_id,
-      patient_id: patient_id,
-      test_type: test_type,
-      if_completed: if_completed,
-      balance_score: balance_score,
-      doctor_score: doctor_score,
-      notes: notes,
-      start_time: start_time,
-      end_time: end_time);
+        test_event_id: test_event_id,
+        patient_id: patient_id,
+        test_type: test_type,
+        if_completed: if_completed,
+        balance_score: balance_score,
+        doctor_score: doctor_score,
+        notes: notes,
+        start_time: start_time,
+        end_time: end_time);
   }
-  
+
   bool equals(Object other) {
     return this == other;
   }
-  
+
   @override
   bool operator ==(Object other) {
     if (identical(other, this)) return true;
     return other is TestEvent &&
-      _test_event_id == other._test_event_id &&
-      _patient_id == other._patient_id &&
-      _test_type == other._test_type &&
-      _if_completed == other._if_completed &&
-      _balance_score == other._balance_score &&
-      _doctor_score == other._doctor_score &&
-      _notes == other._notes &&
-      _start_time == other._start_time &&
-      _end_time == other._end_time;
+        _test_event_id == other._test_event_id &&
+        _patient_id == other._patient_id &&
+        _test_type == other._test_type &&
+        _if_completed == other._if_completed &&
+        _balance_score == other._balance_score &&
+        _doctor_score == other._doctor_score &&
+        _notes == other._notes &&
+        _start_time == other._start_time &&
+        _end_time == other._end_time;
   }
-  
+
   @override
   int get hashCode => toString().hashCode;
-  
+
   @override
   String toString() {
     var buffer = new StringBuffer();
-    
+
     buffer.write("TestEvent {");
     buffer.write("test_event_id=" + "$_test_event_id" + ", ");
     buffer.write("patient_id=" + "$_patient_id" + ", ");
@@ -160,38 +160,38 @@ class TestEvent {
     buffer.write("start_time=" + (_start_time != null ? _start_time!.format() : "null") + ", ");
     buffer.write("end_time=" + (_end_time != null ? _end_time!.format() : "null"));
     buffer.write("}");
-    
+
     return buffer.toString();
   }
-  
+
   TestEvent copyWith({String? test_event_id, String? patient_id, String? test_type, bool? if_completed, int? balance_score, int? doctor_score, String? notes, TemporalDateTime? start_time, TemporalDateTime? end_time}) {
     return TestEvent._internal(
-      test_event_id: test_event_id ?? this.test_event_id,
-      patient_id: patient_id ?? this.patient_id,
-      test_type: test_type ?? this.test_type,
-      if_completed: if_completed ?? this.if_completed,
-      balance_score: balance_score ?? this.balance_score,
-      doctor_score: doctor_score ?? this.doctor_score,
-      notes: notes ?? this.notes,
-      start_time: start_time ?? this.start_time,
-      end_time: end_time ?? this.end_time);
+        test_event_id: test_event_id ?? this.test_event_id,
+        patient_id: patient_id ?? this.patient_id,
+        test_type: test_type ?? this.test_type,
+        if_completed: if_completed ?? this.if_completed,
+        balance_score: balance_score ?? this.balance_score,
+        doctor_score: doctor_score ?? this.doctor_score,
+        notes: notes ?? this.notes,
+        start_time: start_time ?? this.start_time,
+        end_time: end_time ?? this.end_time);
   }
-  
-  TestEvent.fromJson(Map<String, dynamic> json)  
-    : _test_event_id = json['test_event_id'],
-      _patient_id = json['patient_id'],
-      _test_type = json['test_type'],
-      _if_completed = json['if_completed'],
-      _balance_score = (json['balance_score'] as num?)?.toInt(),
-      _doctor_score = (json['doctor_score'] as num?)?.toInt(),
-      _notes = json['notes'],
-      _start_time = json['start_time'] != null ? TemporalDateTime.fromString(json['start_time']) : null,
-      _end_time = json['end_time'] != null ? TemporalDateTime.fromString(json['end_time']) : null;
-  
+
+  TestEvent.fromJson(Map<String, dynamic> json)
+      : _test_event_id = json['test_event_id'],
+        _patient_id = json['patient_id'],
+        _test_type = json['test_type'],
+        _if_completed = json['if_completed'],
+        _balance_score = (json['balance_score'] as num?)?.toInt(),
+        _doctor_score = (json['doctor_score'] as num?)?.toInt(),
+        _notes = json['notes'],
+        _start_time = json['start_time'] != null ? TemporalDateTime.fromString(json['start_time']) : null,
+        _end_time = json['end_time'] != null ? TemporalDateTime.fromString(json['end_time']) : null;
+
   Map<String, dynamic> toJson() => {
     'test_event_id': _test_event_id, 'patient_id': _patient_id, 'test_type': _test_type, 'if_completed': _if_completed, 'balance_score': _balance_score, 'doctor_score': _doctor_score, 'notes': _notes, 'start_time': _start_time?.format(), 'end_time': _end_time?.format()
   };
-  
+
   Map<String, Object?> toMap() => {
     'test_event_id': _test_event_id, 'patient_id': _patient_id, 'test_type': _test_type, 'if_completed': _if_completed, 'balance_score': _balance_score, 'doctor_score': _doctor_score, 'notes': _notes, 'start_time': _start_time, 'end_time': _end_time
   };
@@ -199,59 +199,59 @@ class TestEvent {
   static var schema = Model.defineSchema(define: (ModelSchemaDefinition modelSchemaDefinition) {
     modelSchemaDefinition.name = "TestEvent";
     modelSchemaDefinition.pluralName = "TestEvents";
-    
+
     modelSchemaDefinition.addField(ModelFieldDefinition.customTypeField(
-      fieldName: 'test_event_id',
-      isRequired: true,
-      ofType: ModelFieldType(ModelFieldTypeEnum.string)
+        fieldName: 'test_event_id',
+        isRequired: true,
+        ofType: ModelFieldType(ModelFieldTypeEnum.string)
     ));
-    
+
     modelSchemaDefinition.addField(ModelFieldDefinition.customTypeField(
-      fieldName: 'patient_id',
-      isRequired: true,
-      ofType: ModelFieldType(ModelFieldTypeEnum.string)
+        fieldName: 'patient_id',
+        isRequired: true,
+        ofType: ModelFieldType(ModelFieldTypeEnum.string)
     ));
-    
+
     modelSchemaDefinition.addField(ModelFieldDefinition.customTypeField(
-      fieldName: 'test_type',
-      isRequired: true,
-      ofType: ModelFieldType(ModelFieldTypeEnum.string)
+        fieldName: 'test_type',
+        isRequired: true,
+        ofType: ModelFieldType(ModelFieldTypeEnum.string)
     ));
-    
+
     modelSchemaDefinition.addField(ModelFieldDefinition.customTypeField(
-      fieldName: 'if_completed',
-      isRequired: true,
-      ofType: ModelFieldType(ModelFieldTypeEnum.bool)
+        fieldName: 'if_completed',
+        isRequired: true,
+        ofType: ModelFieldType(ModelFieldTypeEnum.bool)
     ));
-    
+
     modelSchemaDefinition.addField(ModelFieldDefinition.customTypeField(
-      fieldName: 'balance_score',
-      isRequired: false,
-      ofType: ModelFieldType(ModelFieldTypeEnum.int)
+        fieldName: 'balance_score',
+        isRequired: false,
+        ofType: ModelFieldType(ModelFieldTypeEnum.int)
     ));
-    
+
     modelSchemaDefinition.addField(ModelFieldDefinition.customTypeField(
-      fieldName: 'doctor_score',
-      isRequired: false,
-      ofType: ModelFieldType(ModelFieldTypeEnum.int)
+        fieldName: 'doctor_score',
+        isRequired: false,
+        ofType: ModelFieldType(ModelFieldTypeEnum.int)
     ));
-    
+
     modelSchemaDefinition.addField(ModelFieldDefinition.customTypeField(
-      fieldName: 'notes',
-      isRequired: false,
-      ofType: ModelFieldType(ModelFieldTypeEnum.string)
+        fieldName: 'notes',
+        isRequired: false,
+        ofType: ModelFieldType(ModelFieldTypeEnum.string)
     ));
-    
+
     modelSchemaDefinition.addField(ModelFieldDefinition.customTypeField(
-      fieldName: 'start_time',
-      isRequired: false,
-      ofType: ModelFieldType(ModelFieldTypeEnum.dateTime)
+        fieldName: 'start_time',
+        isRequired: false,
+        ofType: ModelFieldType(ModelFieldTypeEnum.dateTime)
     ));
-    
+
     modelSchemaDefinition.addField(ModelFieldDefinition.customTypeField(
-      fieldName: 'end_time',
-      isRequired: false,
-      ofType: ModelFieldType(ModelFieldTypeEnum.dateTime)
+        fieldName: 'end_time',
+        isRequired: false,
+        ofType: ModelFieldType(ModelFieldTypeEnum.dateTime)
     ));
   });
 }

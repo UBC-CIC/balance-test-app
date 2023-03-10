@@ -16,11 +16,13 @@ class RecordingPage extends StatefulWidget {
     required this.movementType,
     required this.formattedMovementType,
     required this.userID,
+    required this.isClinicApp,
   }) : super(key: key);
 
   final String movementType;
   final String formattedMovementType;
   final String userID;
+  final bool isClinicApp;
 
   @override
   State<RecordingPage> createState() => _RecordingPageState();
@@ -111,6 +113,7 @@ class _RecordingPageState extends State<RecordingPage> {
                       magnetometerDataZ: magnetometerDataZ,
                       timeElapsed: timeElapsed,
                       userID: widget.userID,
+                      isClinicApp: widget.isClinicApp,
                     )),
           );
           setState(() {
@@ -335,7 +338,7 @@ class _RecordingPageState extends State<RecordingPage> {
                                         magnetometerDataY: magnetometerDataY,
                                         magnetometerDataZ: magnetometerDataZ,
                                         timeElapsed: timeElapsed,
-                                        userID: widget.userID,
+                                        userID: widget.userID, isClinicApp: widget.isClinicApp,
                                       )),
                             );
                             setState(() {

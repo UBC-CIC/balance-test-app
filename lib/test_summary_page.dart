@@ -1,3 +1,4 @@
+import 'dart:ffi';
 import 'dart:math';
 
 import 'package:amplify_flutter/amplify_flutter.dart';
@@ -6,8 +7,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_ringtone_player/flutter_ringtone_player.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:intl/intl.dart';
 import 'dart:convert';
-import "package:http/http.dart" as http;
 import 'loading_page.dart';
 import 'package:gaimon/gaimon.dart';
 import 'package:path_provider/path_provider.dart';
@@ -33,6 +34,7 @@ class TestSummary extends StatefulWidget {
     required this.movementType,
     required this.timeElapsed,
     required this.userID,
+    required this.isClinicApp,
   }) : super(key: key);
 
   final List<String> timeStampData;
@@ -49,6 +51,7 @@ class TestSummary extends StatefulWidget {
   final String movementType;
   final String timeElapsed;
   final String userID;
+  final bool isClinicApp;
 
   @override
   State<TestSummary> createState() => _TestSummaryState();
@@ -59,7 +62,13 @@ class _TestSummaryState extends State<TestSummary> {
   final _showCheck = ValueNotifier<bool>(false);
   final controller = ScrollController();
 
-  var uuid = Uuid();
+  var uuid = const Uuid();
+
+  final TextEditingController notesController = TextEditingController();
+
+  late TextEditingController clinicScoreController = TextEditingController();
+
+  bool showScoreWarning = false;
 
   //METHODS
 
@@ -87,61 +96,37 @@ class _TestSummaryState extends State<TestSummary> {
           Navigator.pop(context);
           Navigator.pop(context);
           Navigator.pop(context);
+          Navigator.pop(context);
         });
       });
     });
+  }
+
+  String formatDateTimeDatabase(String input) {
+    String twoDigits(int n) {
+      if (n >= 10) return '$n';
+      return '0$n';
+    }
+
+    DateTime dateTime = DateTime.parse(input).toLocal();
+    DateFormat outputFormat = DateFormat("yyyy-MM-dd HH:mm:ss");
+    String outputTimeString = outputFormat.format(dateTime);
+    final duration = dateTime.timeZoneOffset, hours = duration.inHours;
+    return "$outputTimeString${hours > 0 ? '+' : '-'}${twoDigits(hours.abs())}";
   }
 
   // Future<http.Response> postRequest() async {
   Future<void> postRequest() async {
     String testID = uuid.v4();
 
-    // final Map<String, Map<String, Object>> jsonMap = {};
-    //
-    // int tsLength = widget.timeStampData.length;
-    // int axLength = widget.accelerometerDataX.length;
-    // int ayLength = widget.accelerometerDataY.length;
-    // int azLength = widget.accelerometerDataZ.length;
-    // int gxLength = widget.gyroscopeDataX.length;
-    // int gyLength = widget.gyroscopeDataY.length;
-    // int gzLength = widget.gyroscopeDataZ.length;
-    // int mxLength = widget.magnetometerDataX.length;
-    // int myLength = widget.magnetometerDataY.length;
-    // int mzLength = widget.magnetometerDataZ.length;
-    //
-    // int minLen = [
-    //   tsLength,
-    //   axLength,
-    //   ayLength,
-    //   azLength,
-    //   gxLength,
-    //   gyLength,
-    //   gzLength,
-    //   mxLength,
-    //   myLength,
-    //   mzLength
-    // ].reduce(min);
-    //
-    // print(minLen);
-    //
-    // for (var i = 0; i < minLen; i++) {
-    //   Map<String, Object> dataPointMap = {};
-    //   dataPointMap["patient_id"] = "app-testing";
-    //   dataPointMap["movement"] = widget.formattedMovementType;
-    //   dataPointMap["ts"] = widget.timeStampData[i + tsLength - minLen];
-    //   dataPointMap["ax"] = widget.accelerometerDataX[i + axLength - minLen];
-    //   dataPointMap["ay"] = widget.accelerometerDataY[i + ayLength - minLen];
-    //   dataPointMap["az"] = widget.accelerometerDataZ[i + azLength - minLen];
-    //   dataPointMap["gx"] = widget.gyroscopeDataX[i + gxLength - minLen];
-    //   dataPointMap["gy"] = widget.gyroscopeDataY[i + gyLength - minLen];
-    //   dataPointMap["gz"] = widget.gyroscopeDataZ[i + gzLength - minLen];
-    //   dataPointMap["mx"] = widget.magnetometerDataX[i + mxLength - minLen];
-    //   dataPointMap["my"] = widget.magnetometerDataY[i + myLength - minLen];
-    //   dataPointMap["mz"] = widget.magnetometerDataZ[i + mzLength - minLen];
-    //   jsonMap[i.toString()] = dataPointMap;
-    // }
-    //
-    // String body = json.encode(jsonMap);
+    DateTime now = DateTime.now();
+
+    String databaseStartTime =
+        formatDateTimeDatabase(widget.timeStampData.first);
+    print("START TIME START TIME START TIME $databaseStartTime");
+
+    String databaseEndTime = formatDateTimeDatabase(widget.timeStampData.last);
+    print("END TIME END TIME END TIME $databaseEndTime");
 
     int shortestLength = [
       widget.timeStampData,
@@ -153,26 +138,37 @@ class _TestSummaryState extends State<TestSummary> {
       widget.gyroscopeDataZ,
       widget.magnetometerDataX,
       widget.magnetometerDataY,
-      widget.magnetometerDataZ]
-        .map((list) => list.length)
-        .reduce(min);
+      widget.magnetometerDataZ
+    ].map((list) => list.length).reduce(min);
 
     //Trim start of lists so they are the same lengths
-    List<String> timeStampDataTrim = widget.timeStampData.sublist(widget.timeStampData.length - shortestLength);
-    List<double> accelerometerDataXTrim = widget.accelerometerDataX.sublist(widget.accelerometerDataX.length - shortestLength);
-    List<double> accelerometerDataYTrim = widget.accelerometerDataY.sublist(widget.accelerometerDataY.length - shortestLength);
-    List<double> accelerometerDataZTrim = widget.accelerometerDataZ.sublist(widget.accelerometerDataZ.length - shortestLength);
-    List<double> gyroscopeDataXTrim = widget.gyroscopeDataX.sublist(widget.gyroscopeDataX.length - shortestLength);
-    List<double> gyroscopeDataYTrim = widget.gyroscopeDataY.sublist(widget.gyroscopeDataY.length - shortestLength);
-    List<double> gyroscopeDataZTrim = widget.gyroscopeDataZ.sublist(widget.gyroscopeDataZ.length - shortestLength);
-    List<double> magnetometerDataXTrim = widget.magnetometerDataX.sublist(widget.magnetometerDataX.length - shortestLength);
-    List<double> magnetometerDataYTrim = widget.magnetometerDataY.sublist(widget.magnetometerDataY.length - shortestLength);
-    List<double> magnetometerDataZTrim = widget.magnetometerDataZ.sublist(widget.magnetometerDataZ.length - shortestLength);
+    List<String> timeStampDataTrim = widget.timeStampData
+        .sublist(widget.timeStampData.length - shortestLength);
+    List<double> accelerometerDataXTrim = widget.accelerometerDataX
+        .sublist(widget.accelerometerDataX.length - shortestLength);
+    List<double> accelerometerDataYTrim = widget.accelerometerDataY
+        .sublist(widget.accelerometerDataY.length - shortestLength);
+    List<double> accelerometerDataZTrim = widget.accelerometerDataZ
+        .sublist(widget.accelerometerDataZ.length - shortestLength);
+    List<double> gyroscopeDataXTrim = widget.gyroscopeDataX
+        .sublist(widget.gyroscopeDataX.length - shortestLength);
+    List<double> gyroscopeDataYTrim = widget.gyroscopeDataY
+        .sublist(widget.gyroscopeDataY.length - shortestLength);
+    List<double> gyroscopeDataZTrim = widget.gyroscopeDataZ
+        .sublist(widget.gyroscopeDataZ.length - shortestLength);
+    List<double> magnetometerDataXTrim = widget.magnetometerDataX
+        .sublist(widget.magnetometerDataX.length - shortestLength);
+    List<double> magnetometerDataYTrim = widget.magnetometerDataY
+        .sublist(widget.magnetometerDataY.length - shortestLength);
+    List<double> magnetometerDataZTrim = widget.magnetometerDataZ
+        .sublist(widget.magnetometerDataZ.length - shortestLength);
 
     final Map<String, Object> arrayMap = {};
-    arrayMap["patient_id"] = "app-testing";
-    arrayMap["movement"] = "sit-to-stand";
+    arrayMap["user_id"] = widget.userID;
+    arrayMap["movement"] = widget.movementType;
     arrayMap["testID"] = testID;
+    clinicScoreController.text.isNotEmpty? arrayMap["clinic_score"] = clinicScoreController.text : (){};
+    arrayMap["start_date"] = "${now.year}-${now.month}-${now.day}";
     arrayMap["ts"] = timeStampDataTrim;
     arrayMap["ax"] = accelerometerDataXTrim;
     arrayMap["ay"] = accelerometerDataYTrim;
@@ -197,13 +193,10 @@ class _TestSummaryState extends State<TestSummary> {
     print(magnetometerDataZTrim.length);
     print(widget.movementType);
 
-
     String body = json.encode(arrayMap);
 
-    DateTime now = DateTime.now();
-
     String key =
-        'user_id/${widget.userID}/${widget.movementType}/${now.year.toString()}/${now.month.toString()}/${now.day.toString()}/$testID.json';
+        'user_id/user_id=${widget.userID}/movement=${widget.movementType}/year=${now.year.toString()}/month=${now.month.toString()}/day=${now.day.toString()}/test_event_id=$testID.json';
 
     final tempDir = await getTemporaryDirectory();
     final tempFile = File(tempDir.path + '/recording.json')
@@ -226,23 +219,61 @@ class _TestSummaryState extends State<TestSummary> {
       safePrint('Error uploading file: $e');
     }
 
-    // await Future.delayed(const Duration(seconds: 2));
-    // return;
+    //Upload to RDS
+    try {
+      var query = '''
+        mutation MyMutation {
+          putTestResult(
+            start_time: "$databaseStartTime",
+            end_time: "$databaseEndTime",
+            notes: "${notesController.text}",
+            patient_id: "${widget.userID}",
+            test_event_id: "$testID",
+            test_type: "${widget.movementType}") {
+            notes
+          }
+        }
+      ''';
 
-    // int before = DateTime.now()
-    //     .millisecondsSinceEpoch; // Used to show animation for >= 2 seconds
-    // var url = Uri.https('ox515vr0t5.execute-api.ca-central-1.amazonaws.com',
-    //     '/data-workflow-beta/data_input/json');
-    // var response = await http.post(url,
-    //     //headers: {"Content-Type": "application/json"},
-    //     body: body);
-    // print("${response.statusCode}");
-    // print("${response.body}");
-    // int after = DateTime.now().millisecondsSinceEpoch;
-    // if (((after - before) / 1000) < 2) {
-    //   await Future.delayed(Duration(milliseconds: (2000 - (after - before))));
-    // }
-    // return response;
+      await Amplify.API
+          .query(request: GraphQLRequest<String>(document: query))
+          .response;
+    } on ApiException catch (e) {
+      print('Query failed: $e');
+    }
+  }
+
+  bool isNumericUsing_tryParse(String string) {
+    // Null or empty string is not a number
+    if (string == null || string.isEmpty) {
+      return false;
+    }
+
+    // Try to parse input string to number.
+    // Both integer and double work.
+    // Use int.tryParse if you want to check integer only.
+    // Use double.tryParse if you want to check double only.
+    final number = num.tryParse(string);
+
+    if (number == null) {
+      return false;
+    }
+
+    return true;
+  }
+
+  void updateFilledStatus(String text) {
+      if (clinicScoreController.text.isEmpty || isNumericUsing_tryParse(clinicScoreController.text)&&(clinicScoreController.text.isNotEmpty && int.parse(clinicScoreController.text) <= 100 &&
+          int.parse(clinicScoreController.text) >= 0)) {
+        setState(() {
+          showScoreWarning = false;
+        });
+
+    } else {
+      setState(() {
+        showScoreWarning = true;
+      });
+    }
   }
 
 //UI
@@ -415,26 +446,109 @@ class _TestSummaryState extends State<TestSummary> {
                                       ],
                                     ),
                                   ),
-                                  SizedBox(
-                                    height: 270,
-                                    width: 0.82 * width,
-                                    child: TextField(
-                                      maxLines: 13,
-                                      minLines: 13,
-                                      maxLength: 500,
-                                      keyboardType: TextInputType.text,
-                                      decoration: InputDecoration(
-                                        filled: true,
-                                        fillColor: const Color(0x0A3F51B5),
-                                        border: OutlineInputBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(10),
-                                          borderSide: const BorderSide(
-                                            width: 1,
-                                            style: BorderStyle.none,
+                                  widget.isClinicApp? Column(
+                                    children: [
+                                      Padding(
+                                        padding: EdgeInsets.fromLTRB(
+                                            0.05 * width,
+                                            0.02 * height,
+                                            0.05 * width,
+                                            0),
+                                        child: Container(
+                                          decoration: BoxDecoration(
+                                              color: const Color(0x0A3F51B5),
+                                              borderRadius:
+                                                  BorderRadius.circular(10)),
+                                          padding: EdgeInsets.fromLTRB(
+                                              0.06 * width, 8, 0, 6),
+                                          child: Column(
+                                            mainAxisSize: MainAxisSize.min,
+                                            children: [
+                                              CupertinoTextField.borderless(
+                                                controller:
+                                                    clinicScoreController,
+                                                maxLength: 3,
+                                                onChanged: updateFilledStatus,
+                                                keyboardType:
+                                                    const TextInputType
+                                                            .numberWithOptions(
+                                                        signed: true,
+                                                        decimal: false),
+                                                padding: const EdgeInsets.only(
+                                                    left: 45,
+                                                    top: 6,
+                                                    right: 6,
+                                                    bottom: 6),
+                                                prefix: const Text(
+                                                  'Assign Score',
+                                                  style:
+                                                      TextStyle(fontSize: 16),
+                                                ),
+                                                placeholder: 'Optional',
+                                              ),
+                                            ],
                                           ),
                                         ),
-                                        hintText: 'Enter Additional Notes...',
+                                      ),
+                                      showScoreWarning
+                                          ? Padding(
+                                              padding: EdgeInsets.fromLTRB(
+                                                  0.1 * width,
+                                                  10,
+                                                  0.05 * width,
+                                                  0),
+                                              child: Row(
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.start,
+                                                  children: const [
+                                                    Padding(
+                                                        padding:
+                                                            EdgeInsets.fromLTRB(
+                                                                0, 0, 3, 0),
+                                                        child: Icon(
+                                                          CupertinoIcons
+                                                              .exclamationmark_circle,
+                                                          size: 16,
+                                                          color: Colors.red,
+                                                        )),
+                                                    Flexible(
+                                                      child: Text(
+                                                        'Please enter a score between 0-100',
+                                                        style: TextStyle(
+                                                            fontSize: 15,
+                                                            color: Colors.red),
+                                                      ),
+                                                    )
+                                                  ]),
+                                            )
+                                          : Container(),
+                                    ],
+                                  ) : Container(),
+                                  Padding(
+                                    padding:
+                                        const EdgeInsets.fromLTRB(0, 20, 0, 0),
+                                    child: SizedBox(
+                                      height: 270,
+                                      width: 0.82 * width,
+                                      child: TextField(
+                                        controller: notesController,
+                                        maxLines: 13,
+                                        minLines: 13,
+                                        maxLength: 500,
+                                        keyboardType: TextInputType.text,
+                                        decoration: InputDecoration(
+                                          filled: true,
+                                          fillColor: const Color(0x0A3F51B5),
+                                          border: OutlineInputBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(10),
+                                            borderSide: const BorderSide(
+                                              width: 1,
+                                              style: BorderStyle.none,
+                                            ),
+                                          ),
+                                          hintText: 'Enter Additional Notes...',
+                                        ),
                                       ),
                                     ),
                                   ),
@@ -475,7 +589,7 @@ class _TestSummaryState extends State<TestSummary> {
                                             height: 70,
                                             width: 0.4 * width,
                                             child: ElevatedButton(
-                                                onPressed: sendData,
+                                                onPressed: showScoreWarning? (){} : sendData,
                                                 style: ElevatedButton.styleFrom(
                                                     backgroundColor:
                                                         Colors.indigo,

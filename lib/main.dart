@@ -32,7 +32,7 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
       ),
       // home: const PatientApp(title: 'Flutter Demo Home Page'),
-      home: const ClinicApp(title: 'Flutter Demo Home Page'),
+      home: const PatientApp(title: 'Flutter Demo Home Page'),
     );
   }
 }

@@ -14,22 +14,58 @@ type PatientCareprovider {
   care_provider_id: String!
 }
 
+type PatientTest {
+  patient_id: String!
+  test_type: String!
+}
+
+type Test {
+  test_type: String!
+  instructions: String
+  duration_in_seconds: Int
+}
+
 type Query {
   # getters
   getCareproviderById(care_provider_id: String!): CareProvider
   getPatientById(patient_id: String!): Patient
-  getPatients(care_provider_id: String!): [Patient]
+  getTestEventById(test_event_id: String!): TestEvent
+  getPatientsForCareprovider(care_provider_id: String!): [Patient]
+  getAllPatients: [Patient]
   getTestEvents(
     patient_id: String!
     test_type: String
-    start_time: AWSDateTime
-    end_time: AWSDateTime
-    if_completed: Boolean
+    from_time: String
+    to_time: String
     sort: SortDirection
     count: Int
   ): [TestEvent]
+  getPatientAssignedTests(patient_id: String!): [Test]
+  getAllAvailableTests: [Test]
+
   # analytics
-  getWeeklyAverageBalanceScore(patientId: String!): Int
+  # getWeeklyAverageBalanceScore(patientId: String!): Int
+
+  # measurements
+  getMeasurementRange(
+    patient_id: String!
+    test_type: String!
+    from_date: String
+    to_date: String
+    measurement: Measurement!
+  ): [MeasurementRange]
+
+  getMeasurementData(
+    test_event_id: String!
+    test_type: String!
+    measurement: Measurement!
+    patient_id: String!
+    year: Int!
+    month: Int!
+    day: Int!
+  ): [Datapoint]
+
+  # test: String
 }
 
 type Mutation {
@@ -39,38 +75,70 @@ type Mutation {
     care_provider_id: String!
     patient_id: String!
   ): PatientCareprovider
-  createAndAssignTest(
+  assignTestToPatient(patient_id: String!, test_type: String!): PatientTest
+  removeTestFromPatient(patient_id: String!, test_type: String!): String
+  putTestResult(
     test_event_id: String!
     patient_id: String!
     test_type: String!
+    doctor_score: Int
+    start_time: String!
+    end_time: String!
     notes: String
   ): TestEvent
-  putTestResult(
-    test_event_id: String!
-    test_type: String
-    balance_score: Int
-    doctor_score: Int
-    start_time: AWSDateTime
-    end_time: AWSDateTime
-    if_completed: Boolean
-  ): TestEvent
+  putBalanceScore(test_event_id: String!, balance_score: Int!): TestEvent
+  addTestType(
+    test_type: String!
+    instructions: String
+    duration_in_seconds: Int
+  ): Test
 }
 
 type TestEvent {
   test_event_id: String!
   patient_id: String!
   test_type: String!
-  if_completed: Boolean!
   balance_score: Int
   doctor_score: Int
   notes: String
-  start_time: AWSDateTime
-  end_time: AWSDateTime
+  start_time: String
+  end_time: String
+}
+
+type MeasurementRange {
+  date: String!
+  min: Float!
+  max: Float!
+}
+
+type Datapoint {
+  ts: String!
+  ax: Float
+  ay: Float
+  az: Float
+  gx: Float
+  gy: Float
+  gz: Float
+  mx: Float
+  my: Float
+  mz: Float
 }
 
 enum SortDirection {
   asc
   desc
+}
+
+enum Measurement {
+  ax
+  ay
+  az
+  gx
+  gy
+  gz
+  mx
+  my
+  mz
 }
 
 schema {

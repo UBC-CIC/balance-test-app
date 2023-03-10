@@ -19,41 +19,14 @@
 
 // ignore_for_file: public_member_api_docs, annotate_overrides, dead_code, dead_codepublic_member_api_docs, depend_on_referenced_packages, file_names, library_private_types_in_public_api, no_leading_underscores_for_library_prefixes, no_leading_underscores_for_local_identifiers, non_constant_identifier_names, null_check_on_nullable_type_parameter, prefer_adjacent_string_concatenation, prefer_const_constructors, prefer_if_null_operators, prefer_interpolation_to_compose_strings, slash_for_doc_comments, sort_child_properties_last, unnecessary_const, unnecessary_constructor_name, unnecessary_late, unnecessary_new, unnecessary_null_aware_assignments, unnecessary_nullable_for_final_variable_declarations, unnecessary_string_interpolations, use_build_context_synchronously
 
-import 'package:amplify_core/amplify_core.dart';
-import 'CareProvider.dart';
-import 'Datapoint.dart';
-import 'MeasurementRange.dart';
-import 'Patient.dart';
-import 'PatientCareprovider.dart';
-import 'PatientTest.dart';
-import 'Test.dart';
-import 'TestEvent.dart';
-
-export 'CareProvider.dart';
-export 'Datapoint.dart';
-export 'Measurement.dart';
-export 'MeasurementRange.dart';
-export 'Patient.dart';
-export 'PatientCareprovider.dart';
-export 'PatientTest.dart';
-export 'SortDirection.dart';
-export 'Test.dart';
-export 'TestEvent.dart';
-
-class ModelProvider implements ModelProviderInterface {
-  @override
-  String version = "07744d1cd7b5b59c28cb9096a2ef7b4c";
-  @override
-  List<ModelSchema> modelSchemas = [];
-  static final ModelProvider _instance = ModelProvider();
-  @override
-  List<ModelSchema> customTypeSchemas = [CareProvider.schema, Datapoint.schema, MeasurementRange.schema, Patient.schema, PatientCareprovider.schema, PatientTest.schema, Test.schema, TestEvent.schema];
-
-  static ModelProvider get instance => _instance;
-
-  @override
-  ModelType<Model> getModelTypeByModelName(String modelName) {
-    // TODO: implement getModelTypeByModelName
-    throw UnimplementedError();
-  }
+enum Measurement {
+  ax,
+  ay,
+  az,
+  gx,
+  gy,
+  gz,
+  mx,
+  my,
+  mz
 }

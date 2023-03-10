@@ -1,8 +1,9 @@
 import 'package:balance_test/past_tests_page.dart';
-import 'package:balance_test/new_test_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+
+import 'new_test_page_clinic.dart';
 
 int groupValue = 0;
 
@@ -34,7 +35,7 @@ class _ClinicPatientPageState extends State<ClinicPatientPage> {
 
     List<Widget> pages = <Widget>[
       PastTests(parentCtx: context, userID: widget.userID),
-      NewTestPage(
+      NewTestPageClinic(
         parentCtx: context,
         userID: widget.userID,
       ),
