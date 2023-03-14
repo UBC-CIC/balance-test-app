@@ -329,15 +329,15 @@ class _AccountPageState extends State<AccountPage> {
                     child: FittedBox(
                       fit: BoxFit.scaleDown,
                       child: SizedBox(
-                        height: 56,
-                        width: 0.28 * width,
+                        height: 52,
+                        width: 112,
                         child: ElevatedButton(
                           onPressed: signOut,
                           style: ElevatedButton.styleFrom(
                               elevation: 0,
                               backgroundColor: const Color(0xff006CC6),
                               shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(20),
+                                borderRadius: BorderRadius.circular(28),
                                 //border radius equal to or more than 50% of width
                               )),
                           child: FittedBox(
@@ -350,7 +350,7 @@ class _AccountPageState extends State<AccountPage> {
                                     textStyle: const TextStyle(
                                       color: Colors.white,
                                       fontFamily: 'DMSans-Medium',
-                                      fontSize: 22,
+                                      fontSize: 19,
                                       fontWeight: FontWeight.w400,
                                     ),
                                   ),

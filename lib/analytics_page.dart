@@ -1,28 +1,45 @@
+import 'dart:convert';
+import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:balance_test/TestDetail.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:intl/intl.dart';
-
+import 'package:charts_flutter/flutter.dart' as charts;
 
 class TestDetailsPage extends StatefulWidget {
-  const TestDetailsPage(
-      {Key? key,
-      required this.testID,
-      required this.movementName,
-      required this.dateFormatted,
-      required this.score,
-      required this.notes})
-      : super(key: key);
+  const TestDetailsPage({
+    Key? key,
+    required this.testID,
+    required this.formattedMovementName,
+    required this.movementName,
+    required this.dateFormatted,
+    required this.score,
+    required this.notes,
+    required this.dateTimeObj,
+    required this.userID,
+    required this.duration,
+  }) : super(key: key);
 
   final String testID;
+  final String formattedMovementName;
   final String movementName;
   final String dateFormatted;
   final String score;
   final String? notes;
+  final DateTime dateTimeObj;
+  final String userID;
+  final int duration;
 
   @override
   State<TestDetailsPage> createState() => _TestDetailsPageState();
+}
+
+class TimeSeriesData {
+  final DateTime time;
+  final double value;
+
+  TimeSeriesData(this.time, this.value);
 }
 
 class _TestDetailsPageState extends State<TestDetailsPage> {
@@ -39,12 +56,105 @@ class _TestDetailsPageState extends State<TestDetailsPage> {
       "score": 72,
       "duration": 87,
       "notes":
-          'Toni cemuso hite ataneda tebe bigeric lu ire yama sorov! Gew dipebor natasum sikit afahar! Coticol xosieric uladu redes! Cedet ricak secadep bebeni yibas renacab rie: Badi let reri lareri bat asacubes paritur vagone iegarat! Nelalir cof odesie cipir sucomer si. Vaso foreca tunietec toconel ha gi ragi no! Leconug ida tewat febase arerotoh pit peceral. Figare temusa fig redo mesu nec neme wocies. Sef irahote sihelom. Ulurexi zepe na seniep enedico pop hohe renalis dicis.',
+      'Toni cemuso hite ataneda tebe bigeric lu ire yama sorov! Gew dipebor natasum sikit afahar! Coticol xosieric uladu redes! Cedet ricak secadep bebeni yibas renacab rie: Badi let reri lareri bat asacubes paritur vagone iegarat! Nelalir cof odesie cipir sucomer si. Vaso foreca tunietec toconel ha gi ragi no! Leconug ida tewat febase arerotoh pit peceral. Figare temusa fig redo mesu nec neme wocies. Sef irahote sihelom. Ulurexi zepe na seniep enedico pop hohe renalis dicis.',
     };
     return TestDetails.fromJson(data);
   }
 
+  late Future<List<charts.Series<TimeSeriesData, DateTime>>> axSeriesList =
+  queryGraphData("ax");
+  late Future<List<charts.Series<TimeSeriesData, DateTime>>> aySeriesList =
+  queryGraphData("ay");
+  late Future<List<charts.Series<TimeSeriesData, DateTime>>> azSeriesList =
+  queryGraphData("az");
+  late Future<List<charts.Series<TimeSeriesData, DateTime>>> gxSeriesList =
+  queryGraphData("gx");
+  late Future<List<charts.Series<TimeSeriesData, DateTime>>> gySeriesList =
+  queryGraphData("gy");
+  late Future<List<charts.Series<TimeSeriesData, DateTime>>> gzSeriesList =
+  queryGraphData("gz");
+  late Future<List<charts.Series<TimeSeriesData, DateTime>>> mxSeriesList =
+  queryGraphData("mx");
+  late Future<List<charts.Series<TimeSeriesData, DateTime>>> mySeriesList =
+  queryGraphData("my");
+  late Future<List<charts.Series<TimeSeriesData, DateTime>>> mzSeriesList =
+  queryGraphData("mz");
+
   //METHODS
+
+  Future<List<charts.Series<TimeSeriesData, DateTime>>> queryGraphData(
+      String sensor) async {
+    print('''
+        query MyQuery {
+          getMeasurementData(day: ${widget.dateTimeObj.day}, measurement: $sensor, month: ${widget.dateTimeObj.month}, patient_id: "${widget.userID}", test_event_id: "${widget.testID}", test_type: "${widget.movementName}", year: ${widget.dateTimeObj.year}) {
+            ts
+            val
+          }
+        }
+      ''');
+    try {
+      var query = '''
+        query MyQuery {
+          getMeasurementData(day: ${widget.dateTimeObj.day}, measurement: $sensor, month: ${widget.dateTimeObj.month}, patient_id: "${widget.userID}", test_event_id: "${widget.testID}", test_type: "${widget.movementName}", year: ${widget.dateTimeObj.year}) {
+            ts
+            val
+          }
+        }
+      ''';
+
+      final response = await Amplify.API
+          .query(request: GraphQLRequest<String>(document: query))
+          .response;
+
+      if (response.data == null) {
+        print('errors: ${response.errors}');
+        return <charts.Series<TimeSeriesData, DateTime>>[];
+      } else {
+        final sensorDataJson = json.decode(response.data!);
+
+        final List<String> sensorTimestamps =
+        sensorDataJson["getMeasurementData"]["ts"]
+            .map<String>((e) => e.toString())
+            .toList();
+        final List<double> sensorValues = sensorDataJson["getMeasurementData"]
+        ["val"]
+            .map<double>((e) => double.parse(e.toString()))
+            .toList();
+
+        return createChartSeries(sensorTimestamps, sensorValues);
+      }
+    } on ApiException catch (e) {
+      print('Query failed: $e');
+    }
+    return <charts.Series<TimeSeriesData, DateTime>>[];
+  }
+
+  List<charts.Series<TimeSeriesData, DateTime>> createChartSeries(
+      List<String> tsList, List<double> sensorList) {
+    final data = generateTimeSeriesDataList(tsList, sensorList);
+
+    return [
+      charts.Series<TimeSeriesData, DateTime>(
+        id: 'Sample',
+        colorFn: (_, __) => charts.ColorUtil.fromDartColor(Colors.indigo),
+        domainFn: (TimeSeriesData data, _) => data.time,
+        measureFn: (TimeSeriesData data, _) => data.value,
+        data: data,
+      )
+    ];
+  }
+
+  List<TimeSeriesData> generateTimeSeriesDataList(
+      List<String> tsList, List<double> sensorList) {
+    List<TimeSeriesData> data = [];
+
+    for (int i = 0; i < tsList.length; i += 1) {
+      DateTime dateTime = DateTime.parse(tsList[i]);
+      data.add(TimeSeriesData(dateTime, sensorList[i]));
+    }
+
+    return data;
+  }
 
   String formatDuration(int totalSeconds) {
     final duration = Duration(seconds: totalSeconds);
@@ -126,14 +236,14 @@ class _TestDetailsPageState extends State<TestDetailsPage> {
                           height: null,
                           child: Padding(
                             padding:
-                                const EdgeInsets.fromLTRB(22.0, 15, 22.0, 0),
+                            const EdgeInsets.fromLTRB(22.0, 15, 22.0, 0),
                             child: Column(
                               mainAxisSize: MainAxisSize.min,
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Padding(
                                   padding:
-                                      const EdgeInsets.fromLTRB(0, 0, 0, 8),
+                                  const EdgeInsets.fromLTRB(0, 0, 0, 8),
                                   child: Row(
                                     children: [
                                       const Icon(
@@ -161,7 +271,7 @@ class _TestDetailsPageState extends State<TestDetailsPage> {
                                 Flexible(
                                   //Overflow text pushes to next line
                                   child: Text(
-                                    widget.movementName,
+                                    widget.formattedMovementName,
                                     style: GoogleFonts.nunito(
                                       textStyle: const TextStyle(
                                         color: Colors.black,
@@ -180,7 +290,7 @@ class _TestDetailsPageState extends State<TestDetailsPage> {
                                 ),
                                 Padding(
                                   padding:
-                                      const EdgeInsets.fromLTRB(0, 0, 0, 8),
+                                  const EdgeInsets.fromLTRB(0, 0, 0, 8),
                                   child: Row(
                                     children: [
                                       const Icon(
@@ -229,144 +339,144 @@ class _TestDetailsPageState extends State<TestDetailsPage> {
                                   children: [
                                     Expanded(
                                         child: Align(
-                                      alignment: Alignment.centerLeft,
-                                      child: Padding(
-                                        padding: const EdgeInsets.fromLTRB(
-                                            5, 0, 5, 0),
-                                        child: Column(
-                                          mainAxisSize: MainAxisSize.min,
-                                          crossAxisAlignment:
+                                          alignment: Alignment.centerLeft,
+                                          child: Padding(
+                                            padding: const EdgeInsets.fromLTRB(
+                                                5, 0, 5, 0),
+                                            child: Column(
+                                              mainAxisSize: MainAxisSize.min,
+                                              crossAxisAlignment:
                                               CrossAxisAlignment.start,
-                                          children: [
-                                            Padding(
-                                              padding:
+                                              children: [
+                                                Padding(
+                                                  padding:
                                                   const EdgeInsets.fromLTRB(
                                                       0, 0, 0, 8),
-                                              child: Row(
-                                                children: [
-                                                  const Icon(
-                                                    CupertinoIcons
-                                                        .chart_bar_alt_fill,
-                                                    size: 24,
-                                                    color: Colors.indigo,
-                                                  ),
-                                                  Padding(
-                                                    padding: const EdgeInsets
-                                                        .fromLTRB(5, 0, 5, 0),
-                                                    child: Text(
-                                                      'Score',
-                                                      style: GoogleFonts.nunito(
-                                                        textStyle:
+                                                  child: Row(
+                                                    children: [
+                                                      const Icon(
+                                                        CupertinoIcons
+                                                            .chart_bar_alt_fill,
+                                                        size: 24,
+                                                        color: Colors.indigo,
+                                                      ),
+                                                      Padding(
+                                                        padding: const EdgeInsets
+                                                            .fromLTRB(5, 0, 5, 0),
+                                                        child: Text(
+                                                          'Score',
+                                                          style: GoogleFonts.nunito(
+                                                            textStyle:
                                                             const TextStyle(
-                                                          color: Colors.indigo,
-                                                          fontSize: 20,
-                                                          fontWeight:
+                                                              color: Colors.indigo,
+                                                              fontSize: 20,
+                                                              fontWeight:
                                                               FontWeight.bold,
+                                                            ),
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ),
+                                                Row(
+                                                  children: [
+                                                    Text(
+                                                      widget.score,
+                                                      style: GoogleFonts.nunito(
+                                                        textStyle: const TextStyle(
+                                                          color: Colors.black,
+                                                          fontSize: 35,
+                                                          fontWeight:
+                                                          FontWeight.bold,
                                                         ),
                                                       ),
                                                     ),
-                                                  ),
-                                                ],
-                                              ),
-                                            ),
-                                            Row(
-                                              children: [
-                                                Text(
-                                                  widget.score,
-                                                  style: GoogleFonts.nunito(
-                                                    textStyle: const TextStyle(
-                                                      color: Colors.black,
-                                                      fontSize: 35,
-                                                      fontWeight:
+                                                    Text(
+                                                      '%',
+                                                      style: GoogleFonts.nunito(
+                                                        textStyle: const TextStyle(
+                                                          color: Color(0xff777586),
+                                                          fontSize: 20,
+                                                          fontWeight:
                                                           FontWeight.bold,
+                                                        ),
+                                                      ),
                                                     ),
-                                                  ),
-                                                ),
-                                                Text(
-                                                  '%',
-                                                  style: GoogleFonts.nunito(
-                                                    textStyle: const TextStyle(
-                                                      color: Color(0xff777586),
-                                                      fontSize: 20,
-                                                      fontWeight:
-                                                          FontWeight.bold,
-                                                    ),
-                                                  ),
+                                                  ],
                                                 ),
                                               ],
                                             ),
-                                          ],
-                                        ),
-                                      ),
-                                    )),
+                                          ),
+                                        )),
                                     Expanded(
                                         child: Align(
-                                      alignment: Alignment.centerLeft,
-                                      child: Column(
-                                        mainAxisSize: MainAxisSize.min,
-                                        crossAxisAlignment:
+                                          alignment: Alignment.centerLeft,
+                                          child: Column(
+                                            mainAxisSize: MainAxisSize.min,
+                                            crossAxisAlignment:
                                             CrossAxisAlignment.start,
-                                        children: [
-                                          Padding(
-                                            padding: const EdgeInsets.fromLTRB(
-                                                0, 0, 0, 8),
-                                            child: FittedBox(
-                                              fit: BoxFit.scaleDown,
-                                              child: Row(
-                                                children: [
-                                                  const Icon(
-                                                    Icons.timer_rounded,
-                                                    size: 24,
-                                                    color: Colors.indigo,
-                                                  ),
-                                                  Padding(
-                                                    padding: const EdgeInsets
-                                                        .fromLTRB(5, 0, 5, 0),
-                                                    child: Text(
-                                                      'Duration',
-                                                      style: GoogleFonts.nunito(
-                                                        textStyle:
+                                            children: [
+                                              Padding(
+                                                padding: const EdgeInsets.fromLTRB(
+                                                    0, 0, 0, 8),
+                                                child: FittedBox(
+                                                  fit: BoxFit.scaleDown,
+                                                  child: Row(
+                                                    children: [
+                                                      const Icon(
+                                                        Icons.timer_rounded,
+                                                        size: 24,
+                                                        color: Colors.indigo,
+                                                      ),
+                                                      Padding(
+                                                        padding: const EdgeInsets
+                                                            .fromLTRB(5, 0, 5, 0),
+                                                        child: Text(
+                                                          'Duration',
+                                                          style: GoogleFonts.nunito(
+                                                            textStyle:
                                                             const TextStyle(
-                                                          color: Colors.indigo,
-                                                          fontSize: 20,
-                                                          fontWeight:
+                                                              color: Colors.indigo,
+                                                              fontSize: 20,
+                                                              fontWeight:
                                                               FontWeight.bold,
+                                                            ),
+                                                          ),
                                                         ),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ),
+                                              ),
+                                              Row(
+                                                children: [
+                                                  Text(
+                                                    formatDuration(
+                                                        widget.duration),
+                                                    style: GoogleFonts.nunito(
+                                                      textStyle: const TextStyle(
+                                                        color: Colors.black,
+                                                        fontSize: 35,
+                                                        fontWeight: FontWeight.bold,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  Text(
+                                                    'sec',
+                                                    style: GoogleFonts.nunito(
+                                                      textStyle: const TextStyle(
+                                                        color: Color(0xff777586),
+                                                        fontSize: 20,
+                                                        fontWeight: FontWeight.bold,
                                                       ),
                                                     ),
                                                   ),
                                                 ],
                                               ),
-                                            ),
-                                          ),
-                                          Row(
-                                            children: [
-                                              Text(
-                                                formatDuration(
-                                                    testDetails.duration),
-                                                style: GoogleFonts.nunito(
-                                                  textStyle: const TextStyle(
-                                                    color: Colors.black,
-                                                    fontSize: 35,
-                                                    fontWeight: FontWeight.bold,
-                                                  ),
-                                                ),
-                                              ),
-                                              Text(
-                                                'min',
-                                                style: GoogleFonts.nunito(
-                                                  textStyle: const TextStyle(
-                                                    color: Color(0xff777586),
-                                                    fontSize: 20,
-                                                    fontWeight: FontWeight.bold,
-                                                  ),
-                                                ),
-                                              ),
                                             ],
                                           ),
-                                        ],
-                                      ),
-                                    )),
+                                        )),
                                   ],
                                 ),
                                 const Divider(
@@ -383,9 +493,8 @@ class _TestDetailsPageState extends State<TestDetailsPage> {
                       ),
                     ),
                   ),
-
-            (widget.notes != null && widget.notes!.isNotEmpty)?
-              Padding(
+                  (widget.notes != null && widget.notes!.isNotEmpty)
+                      ? Padding(
                     padding: const EdgeInsets.fromLTRB(0, 10, 0, 0),
                     child: Center(
                       child: Card(
@@ -399,15 +508,16 @@ class _TestDetailsPageState extends State<TestDetailsPage> {
                           width: width * 0.9,
                           height: null,
                           child: Padding(
-                            padding:
-                                const EdgeInsets.fromLTRB(22.0, 20, 22.0, 0),
+                            padding: const EdgeInsets.fromLTRB(
+                                22.0, 20, 22.0, 0),
                             child: Column(
                               mainAxisSize: MainAxisSize.min,
-                              crossAxisAlignment: CrossAxisAlignment.start,
+                              crossAxisAlignment:
+                              CrossAxisAlignment.start,
                               children: [
                                 Padding(
-                                  padding:
-                                      const EdgeInsets.fromLTRB(0, 0, 0, 8),
+                                  padding: const EdgeInsets.fromLTRB(
+                                      0, 0, 0, 8),
                                   child: Row(
                                     children: [
                                       const Icon(
@@ -416,7 +526,8 @@ class _TestDetailsPageState extends State<TestDetailsPage> {
                                         color: Colors.indigo,
                                       ),
                                       Padding(
-                                        padding: const EdgeInsets.fromLTRB(
+                                        padding:
+                                        const EdgeInsets.fromLTRB(
                                             5, 0, 5, 0),
                                         child: Text(
                                           'Notes',
@@ -458,7 +569,8 @@ class _TestDetailsPageState extends State<TestDetailsPage> {
                         ),
                       ),
                     ),
-                  ) : Container(),
+                  )
+                      : Container(),
                   const Divider(
                     height: 22,
                     thickness: 1,
@@ -479,7 +591,7 @@ class _TestDetailsPageState extends State<TestDetailsPage> {
                     ),
                   ),
                   Padding(
-                    padding: const EdgeInsets.fromLTRB(0, 5, 0, 0),
+                    padding: const EdgeInsets.fromLTRB(0, 5, 0, 50),
                     child: Center(
                       child: Card(
                         color: Colors.white,
@@ -490,14 +602,564 @@ class _TestDetailsPageState extends State<TestDetailsPage> {
                         ),
                         child: SizedBox(
                           width: width * 0.9,
-                          height: 600,
+                          height: null,
                           child: Padding(
                             padding:
-                                const EdgeInsets.fromLTRB(22.0, 20, 22.0, 0),
+                            const EdgeInsets.fromLTRB(22.0, 20, 22.0, 0),
                             child: Column(
                                 mainAxisSize: MainAxisSize.min,
                                 crossAxisAlignment: CrossAxisAlignment.start,
-                                children: const []),
+                                children: [
+                                  Text(
+                                    'Accelerometer X',
+                                    style: GoogleFonts.nunito(
+                                      textStyle: const TextStyle(
+                                        color: Colors.indigo,
+                                        fontSize: 20,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ),
+                                  FutureBuilder<
+                                      List<
+                                          charts.Series<TimeSeriesData,
+                                              DateTime>>>(
+                                      future: axSeriesList,
+                                      builder: (context, snapshot) {
+                                        if (snapshot.connectionState ==
+                                            ConnectionState.waiting) {
+                                          return SizedBox(
+                                            width: width * 0.9,
+                                            height: 200,
+                                            child: const SpinKitThreeInOut(
+                                              color: Colors.indigo,
+                                              size: 25.0,
+                                            ),
+                                          );
+                                        } else if (snapshot.hasData) {
+                                          final axList = snapshot.data;
+                                          if (axList!.isEmpty) {
+                                            return SizedBox(
+                                              width: width * 0.9,
+                                              height: 200,
+                                              child: const Center(
+                                                child: Text(
+                                                    'Data still processing'),
+                                              ),
+                                            );
+                                          } else {
+                                            return SizedBox(
+                                              width: width * 0.9,
+                                              height: 200,
+                                              child: charts.TimeSeriesChart(
+                                                axList,
+                                                animate: true,
+                                                dateTimeFactory: const charts
+                                                    .LocalDateTimeFactory(),
+                                              ),
+                                            );
+                                          }
+                                        } else {
+                                          return Text(
+                                              snapshot.error.toString());
+                                        }
+                                      }),
+                                  const Divider(
+                                    height: 30,
+                                    thickness: 1,
+                                    indent: 5,
+                                    endIndent: 5,
+                                    color: Colors.transparent,
+                                  ),
+                                  Text(
+                                    'Accelerometer Y',
+                                    style: GoogleFonts.nunito(
+                                      textStyle: const TextStyle(
+                                        color: Colors.indigo,
+                                        fontSize: 20,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ),
+                                  FutureBuilder<
+                                      List<
+                                          charts.Series<TimeSeriesData,
+                                              DateTime>>>(
+                                      future: aySeriesList,
+                                      builder: (context, snapshot) {
+                                        if (snapshot.connectionState ==
+                                            ConnectionState.waiting) {
+                                          return SizedBox(
+                                            width: width * 0.9,
+                                            height: 200,
+                                            child: const SpinKitThreeInOut(
+                                              color: Colors.indigo,
+                                              size: 25.0,
+                                            ),
+                                          );
+                                        } else if (snapshot.hasData) {
+                                          final ayList = snapshot.data;
+                                          if (ayList!.isEmpty) {
+                                            return SizedBox(
+                                              width: width * 0.9,
+                                              height: 200,
+                                              child: const Center(
+                                                child: Text(
+                                                    'Data still processing'),
+                                              ),
+                                            );
+                                          } else {
+                                            return SizedBox(
+                                              width: width * 0.9,
+                                              height: 200,
+                                              child: charts.TimeSeriesChart(
+                                                ayList,
+                                                animate: true,
+                                                dateTimeFactory: const charts
+                                                    .LocalDateTimeFactory(),
+                                              ),
+                                            );
+                                          }
+                                        } else {
+                                          return Text(
+                                              snapshot.error.toString());
+                                        }
+                                      }),
+                                  const Divider(
+                                    height: 30,
+                                    thickness: 1,
+                                    indent: 5,
+                                    endIndent: 5,
+                                    color: Colors.transparent,
+                                  ),
+                                  Text(
+                                    'Accelerometer Z',
+                                    style: GoogleFonts.nunito(
+                                      textStyle: const TextStyle(
+                                        color: Colors.indigo,
+                                        fontSize: 20,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ),
+                                  FutureBuilder<
+                                      List<
+                                          charts.Series<TimeSeriesData,
+                                              DateTime>>>(
+                                      future: azSeriesList,
+                                      builder: (context, snapshot) {
+                                        if (snapshot.connectionState ==
+                                            ConnectionState.waiting) {
+                                          return SizedBox(
+                                            width: width * 0.9,
+                                            height: 200,
+                                            child: const SpinKitThreeInOut(
+                                              color: Colors.indigo,
+                                              size: 25.0,
+                                            ),
+                                          );
+                                        } else if (snapshot.hasData) {
+                                          final azList = snapshot.data;
+                                          if (azList!.isEmpty) {
+                                            return SizedBox(
+                                              width: width * 0.9,
+                                              height: 200,
+                                              child: const Center(
+                                                child: Text(
+                                                    'Data still processing'),
+                                              ),
+                                            );
+                                          } else {
+                                            return SizedBox(
+                                              width: width * 0.9,
+                                              height: 200,
+                                              child: charts.TimeSeriesChart(
+                                                azList,
+                                                animate: true,
+                                                dateTimeFactory: const charts
+                                                    .LocalDateTimeFactory(),
+                                              ),
+                                            );
+                                          }
+                                        } else {
+                                          return Text(
+                                              snapshot.error.toString());
+                                        }
+                                      }),
+                                  const Divider(
+                                    height: 30,
+                                    thickness: 1,
+                                    indent: 5,
+                                    endIndent: 5,
+                                    color: Colors.transparent,
+                                  ),
+                                  Text(
+                                    'Gyroscope X',
+                                    style: GoogleFonts.nunito(
+                                      textStyle: const TextStyle(
+                                        color: Colors.indigo,
+                                        fontSize: 20,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ),
+                                  FutureBuilder<
+                                      List<
+                                          charts.Series<TimeSeriesData,
+                                              DateTime>>>(
+                                      future: gxSeriesList,
+                                      builder: (context, snapshot) {
+                                        if (snapshot.connectionState ==
+                                            ConnectionState.waiting) {
+                                          return SizedBox(
+                                            width: width * 0.9,
+                                            height: 200,
+                                            child: const SpinKitThreeInOut(
+                                              color: Colors.indigo,
+                                              size: 25.0,
+                                            ),
+                                          );
+                                        } else if (snapshot.hasData) {
+                                          final gxList = snapshot.data;
+                                          if (gxList!.isEmpty) {
+                                            return SizedBox(
+                                              width: width * 0.9,
+                                              height: 200,
+                                              child: const Center(
+                                                child: Text(
+                                                    'Data still processing'),
+                                              ),
+                                            );
+                                          } else {
+                                            return SizedBox(
+                                              width: width * 0.9,
+                                              height: 200,
+                                              child: charts.TimeSeriesChart(
+                                                gxList,
+                                                animate: true,
+                                                dateTimeFactory: const charts
+                                                    .LocalDateTimeFactory(),
+                                              ),
+                                            );
+                                          }
+                                        } else {
+                                          return Text(
+                                              snapshot.error.toString());
+                                        }
+                                      }),
+                                  const Divider(
+                                    height: 30,
+                                    thickness: 1,
+                                    indent: 5,
+                                    endIndent: 5,
+                                    color: Colors.transparent,
+                                  ),
+                                  Text(
+                                    'Gyroscope Y',
+                                    style: GoogleFonts.nunito(
+                                      textStyle: const TextStyle(
+                                        color: Colors.indigo,
+                                        fontSize: 20,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ),
+                                  FutureBuilder<
+                                      List<
+                                          charts.Series<TimeSeriesData,
+                                              DateTime>>>(
+                                      future: gySeriesList,
+                                      builder: (context, snapshot) {
+                                        if (snapshot.connectionState ==
+                                            ConnectionState.waiting) {
+                                          return SizedBox(
+                                            width: width * 0.9,
+                                            height: 200,
+                                            child: const SpinKitThreeInOut(
+                                              color: Colors.indigo,
+                                              size: 25.0,
+                                            ),
+                                          );
+                                        } else if (snapshot.hasData) {
+                                          final gyList = snapshot.data;
+                                          if (gyList!.isEmpty) {
+                                            return SizedBox(
+                                              width: width * 0.9,
+                                              height: 200,
+                                              child: const Center(
+                                                child: Text(
+                                                    'Data still processing'),
+                                              ),
+                                            );
+                                          } else {
+                                            return SizedBox(
+                                              width: width * 0.9,
+                                              height: 200,
+                                              child: charts.TimeSeriesChart(
+                                                gyList,
+                                                animate: true,
+                                                dateTimeFactory: const charts
+                                                    .LocalDateTimeFactory(),
+                                              ),
+                                            );
+                                          }
+                                        } else {
+                                          return Text(
+                                              snapshot.error.toString());
+                                        }
+                                      }),
+                                  const Divider(
+                                    height: 30,
+                                    thickness: 1,
+                                    indent: 5,
+                                    endIndent: 5,
+                                    color: Colors.transparent,
+                                  ),
+                                  Text(
+                                    'Gyroscope Z',
+                                    style: GoogleFonts.nunito(
+                                      textStyle: const TextStyle(
+                                        color: Colors.indigo,
+                                        fontSize: 20,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ),
+                                  FutureBuilder<
+                                      List<
+                                          charts.Series<TimeSeriesData,
+                                              DateTime>>>(
+                                      future: gzSeriesList,
+                                      builder: (context, snapshot) {
+                                        if (snapshot.connectionState ==
+                                            ConnectionState.waiting) {
+                                          return SizedBox(
+                                            width: width * 0.9,
+                                            height: 200,
+                                            child: const SpinKitThreeInOut(
+                                              color: Colors.indigo,
+                                              size: 25.0,
+                                            ),
+                                          );
+                                        } else if (snapshot.hasData) {
+                                          final gzList = snapshot.data;
+                                          if (gzList!.isEmpty) {
+                                            return SizedBox(
+                                              width: width * 0.9,
+                                              height: 200,
+                                              child: const Center(
+                                                child: Text(
+                                                    'Data still processing'),
+                                              ),
+                                            );
+                                          } else {
+                                            return SizedBox(
+                                              width: width * 0.9,
+                                              height: 200,
+                                              child: charts.TimeSeriesChart(
+                                                gzList,
+                                                animate: true,
+                                                dateTimeFactory: const charts
+                                                    .LocalDateTimeFactory(),
+                                              ),
+                                            );
+                                          }
+                                        } else {
+                                          return Text(
+                                              snapshot.error.toString());
+                                        }
+                                      }),
+                                  const Divider(
+                                    height: 30,
+                                    thickness: 1,
+                                    indent: 5,
+                                    endIndent: 5,
+                                    color: Colors.transparent,
+                                  ),
+                                  Text(
+                                    'Magnetometer X',
+                                    style: GoogleFonts.nunito(
+                                      textStyle: const TextStyle(
+                                        color: Colors.indigo,
+                                        fontSize: 20,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ),
+                                  FutureBuilder<
+                                      List<
+                                          charts.Series<TimeSeriesData,
+                                              DateTime>>>(
+                                      future: mxSeriesList,
+                                      builder: (context, snapshot) {
+                                        if (snapshot.connectionState ==
+                                            ConnectionState.waiting) {
+                                          return SizedBox(
+                                            width: width * 0.9,
+                                            height: 200,
+                                            child: const SpinKitThreeInOut(
+                                              color: Colors.indigo,
+                                              size: 25.0,
+                                            ),
+                                          );
+                                        } else if (snapshot.hasData) {
+                                          final mxList = snapshot.data;
+                                          if (mxList!.isEmpty) {
+                                            return SizedBox(
+                                              width: width * 0.9,
+                                              height: 200,
+                                              child: const Center(
+                                                child: Text(
+                                                    'Data still processing'),
+                                              ),
+                                            );
+                                          } else {
+                                            return SizedBox(
+                                              width: width * 0.9,
+                                              height: 200,
+                                              child: charts.TimeSeriesChart(
+                                                mxList,
+                                                animate: true,
+                                                dateTimeFactory: const charts
+                                                    .LocalDateTimeFactory(),
+                                              ),
+                                            );
+                                          }
+                                        } else {
+                                          return Text(
+                                              snapshot.error.toString());
+                                        }
+                                      }),
+                                  const Divider(
+                                    height: 30,
+                                    thickness: 1,
+                                    indent: 5,
+                                    endIndent: 5,
+                                    color: Colors.transparent,
+                                  ),
+                                  Text(
+                                    'Magnetometer Y',
+                                    style: GoogleFonts.nunito(
+                                      textStyle: const TextStyle(
+                                        color: Colors.indigo,
+                                        fontSize: 20,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ),
+                                  FutureBuilder<
+                                      List<
+                                          charts.Series<TimeSeriesData,
+                                              DateTime>>>(
+                                      future: mySeriesList,
+                                      builder: (context, snapshot) {
+                                        if (snapshot.connectionState ==
+                                            ConnectionState.waiting) {
+                                          return SizedBox(
+                                            width: width * 0.9,
+                                            height: 200,
+                                            child: const SpinKitThreeInOut(
+                                              color: Colors.indigo,
+                                              size: 25.0,
+                                            ),
+                                          );
+                                        } else if (snapshot.hasData) {
+                                          final myList = snapshot.data;
+                                          if (myList!.isEmpty) {
+                                            return SizedBox(
+                                              width: width * 0.9,
+                                              height: 200,
+                                              child: const Center(
+                                                child: Text(
+                                                    'Data still processing'),
+                                              ),
+                                            );
+                                          } else {
+                                            return SizedBox(
+                                              width: width * 0.9,
+                                              height: 200,
+                                              child: charts.TimeSeriesChart(
+                                                myList,
+                                                animate: true,
+                                                dateTimeFactory: const charts
+                                                    .LocalDateTimeFactory(),
+                                              ),
+                                            );
+                                          }
+                                        } else {
+                                          return Text(
+                                              snapshot.error.toString());
+                                        }
+                                      }),
+                                  const Divider(
+                                    height: 30,
+                                    thickness: 1,
+                                    indent: 5,
+                                    endIndent: 5,
+                                    color: Colors.transparent,
+                                  ),
+                                  Text(
+                                    'Magnetometer Z',
+                                    style: GoogleFonts.nunito(
+                                      textStyle: const TextStyle(
+                                        color: Colors.indigo,
+                                        fontSize: 20,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ),
+                                  FutureBuilder<
+                                      List<
+                                          charts.Series<TimeSeriesData,
+                                              DateTime>>>(
+                                      future: mzSeriesList,
+                                      builder: (context, snapshot) {
+                                        if (snapshot.connectionState ==
+                                            ConnectionState.waiting) {
+                                          return SizedBox(
+                                            width: width * 0.9,
+                                            height: 200,
+                                            child: const SpinKitThreeInOut(
+                                              color: Colors.indigo,
+                                              size: 25.0,
+                                            ),
+                                          );
+                                        } else if (snapshot.hasData) {
+                                          final mzList = snapshot.data;
+                                          if (mzList!.isEmpty) {
+                                            return SizedBox(
+                                              width: width * 0.9,
+                                              height: 200,
+                                              child: const Center(
+                                                child: Text(
+                                                    'Data still processing'),
+                                              ),
+                                            );
+                                          } else {
+                                            return SizedBox(
+                                              width: width * 0.9,
+                                              height: 200,
+                                              child: charts.TimeSeriesChart(
+                                                mzList,
+                                                animate: true,
+                                                dateTimeFactory: const charts
+                                                    .LocalDateTimeFactory(),
+                                              ),
+                                            );
+                                          }
+                                        } else {
+                                          return Text(
+                                              snapshot.error.toString());
+                                        }
+                                      }),
+                                  const Divider(
+                                    height: 30,
+                                    thickness: 1,
+                                    indent: 5,
+                                    endIndent: 5,
+                                    color: Colors.transparent,
+                                  ),
+                                ]),
                           ),
                         ),
                       ),

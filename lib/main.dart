@@ -6,6 +6,7 @@ import 'package:balance_test/account_page.dart';
 import 'package:balance_test/clinic_home_page.dart';
 import 'package:balance_test/new_test_page.dart';
 import 'package:balance_test/past_tests_page.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -32,7 +33,7 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
       ),
       // home: const PatientApp(title: 'Flutter Demo Home Page'),
-      home: const PatientApp(title: 'Flutter Demo Home Page'),
+      home: const ClinicApp(title: 'Flutter Demo Home Page'),
     );
   }
 }
@@ -104,12 +105,16 @@ class _PatientAppState extends State<PatientApp> {
     ]);
 
     Future<Map<String, String>> fetchCurrentUserAttributes() async {
+      print(authInfo['sub']);
       if (authInfo.isEmpty) {
+        print('AUTH INFO EMPTY');
         final result = await Amplify.Auth.fetchUserAttributes();
         final data = {for (var e in result) e.userAttributeKey.key: e.value};
         authInfo = data;
         return data;
       } else {
+        print('AUTH INFO FILLED');
+        print(authInfo['sub']);
         return authInfo;
       }
     }
@@ -123,7 +128,7 @@ class _PatientAppState extends State<PatientApp> {
             print(snapshot.data);
             return NewTestPage(
                 parentCtx: mainCtx,
-                userID: (snapshot.data != null) ? snapshot.data!['sub']! : "");
+                userID: (snapshot.data != null) ? snapshot.data!['sub']! : "",);
           }),
       const Icon(
         Icons.show_chart_rounded,
@@ -298,7 +303,7 @@ class _PatientAppState extends State<PatientApp> {
               showUnselectedLabels: false,
               items: const <BottomNavigationBarItem>[
                 BottomNavigationBarItem(
-                  icon: Icon(Icons.home_filled),
+                  icon: Icon(CupertinoIcons.home),
                   label: 'Calls',
                 ),
                 BottomNavigationBarItem(
@@ -310,7 +315,7 @@ class _PatientAppState extends State<PatientApp> {
                   label: 'Chats',
                 ),
                 BottomNavigationBarItem(
-                  icon: Icon(Icons.account_circle),
+                  icon: Icon(CupertinoIcons.person),
                   label: 'Calls',
                 ),
               ],
@@ -577,7 +582,7 @@ class _ClinicAppState extends State<ClinicApp> {
                   label: 'Chats',
                 ),
                 BottomNavigationBarItem(
-                  icon: Icon(Icons.account_circle),
+                  icon: Icon(CupertinoIcons.person),
                   label: 'Calls',
                 ),
               ],

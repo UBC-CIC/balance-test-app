@@ -30,7 +30,9 @@ class _NewTestPageState extends State<NewTestPage> {
   static List<Test> testList = [];
 
   Future<List<Test>> queryTests() async {
-    print(widget.userID);
+    print('''
+        NEW TEST PAGE USER ID ${widget.userID}
+      ''');
     try {
       var query = '''
         query MyQuery {
@@ -68,6 +70,8 @@ class _NewTestPageState extends State<NewTestPage> {
     }
     return <Test>[];
   }
+
+
 
   @override
   void initState() {
@@ -323,7 +327,7 @@ class _NewTestPageState extends State<NewTestPage> {
 
               return buildTestList(testList);
             } else {
-              return const Center(child: SpinKitFadingGrid(
+              return const Center(child: SpinKitThreeInOut(
                 color: Colors.indigo,
                 size: 50.0,
               ));

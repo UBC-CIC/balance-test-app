@@ -167,6 +167,7 @@ class _TestSummaryState extends State<TestSummary> {
     arrayMap["user_id"] = widget.userID;
     arrayMap["movement"] = widget.movementType;
     arrayMap["testID"] = testID;
+    clinicScoreController.text.isNotEmpty? arrayMap["training"] = true : arrayMap["training"] = false;
     clinicScoreController.text.isNotEmpty? arrayMap["clinic_score"] = clinicScoreController.text : (){};
     arrayMap["start_date"] = "${now.year}-${now.month}-${now.day}";
     arrayMap["ts"] = timeStampDataTrim;
@@ -428,7 +429,7 @@ class _TestSummaryState extends State<TestSummary> {
                                                       ),
                                                     ),
                                                     Text(
-                                                      '$timeElapsed min',
+                                                      '$timeElapsed sec',
                                                       style: const TextStyle(
                                                         color:
                                                             Color(0xff2A2A2A),

@@ -1,7 +1,4 @@
-import 'package:amplify_api/model_queries.dart';
 import 'package:amplify_flutter/amplify_flutter.dart';
-import 'package:balance_test/TestDetailsListItem.dart';
-import 'package:balance_test/my_folding_cube.dart';
 import 'package:balance_test/test_details_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -34,6 +31,7 @@ class _PastTestsState extends State<PastTests> {
   List<TestEvent> testList = [];
 
   Future<List<TestEvent>> queryTestEvents() async {
+    print("PAST TEST PAGE USER ID ${widget.userID}");
     try {
       var query = '''
         query MyQuery {
@@ -280,11 +278,15 @@ class _PastTestsState extends State<PastTests> {
                               TestDetailsPage(
                                 testID: test == null? 'empty' : test
                                     .test_event_id,
-                                movementName: formatMovementName(
+                                formattedMovementName: formatMovementName(
                                     test == null ? 'empty' : test.test_type),
+                                movementName: test.test_type,
                                 dateFormatted: formatDateTime(test == null ?  DateTime.utc(1000, 1, 1) : test.start_time!.getDateTimeInUtc()),
                                 score: test == null ? '204' : (test.balance_score==null? '-' : test.balance_score.toString()),
                                 notes: test.notes,
+                                dateTimeObj: test.start_time!.getDateTimeInUtc(),
+                                userID: widget.userID,
+                                duration: test.end_time!.getDateTimeInUtc().difference(test.start_time!.getDateTimeInUtc()).inSeconds,
                               )));
                 },
                 child: Padding(
@@ -459,7 +461,7 @@ class _PastTestsState extends State<PastTests> {
 
               return buildTestList(testList);
             } else {
-              return const Center(child: SpinKitFadingGrid(
+              return const Center(child: SpinKitThreeInOut(
                 color: Colors.indigo,
                 size: 50.0,
               ));
