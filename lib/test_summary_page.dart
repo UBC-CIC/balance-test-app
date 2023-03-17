@@ -197,7 +197,7 @@ class _TestSummaryState extends State<TestSummary> {
     String body = json.encode(arrayMap);
 
     String key =
-        'user_id/user_id=${widget.userID}/movement=${widget.movementType}/year=${now.year.toString()}/month=${now.month.toString()}/day=${now.day.toString()}/test_event_id=$testID.json';
+        'movement=${widget.movementType}/year=${now.year.toString()}/month=${now.month.toString()}/day=${now.day.toString()}/test_event_id=$testID.json';
 
     final tempDir = await getTemporaryDirectory();
     final tempFile = File(tempDir.path + '/recording.json')

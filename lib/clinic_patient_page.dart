@@ -1,3 +1,4 @@
+import 'package:balance_test/analytics_page.dart';
 import 'package:balance_test/past_tests_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -39,9 +40,9 @@ class _ClinicPatientPageState extends State<ClinicPatientPage> {
         parentCtx: context,
         userID: widget.userID,
       ),
-      const Icon(
-        Icons.show_chart_rounded,
-        size: 150,
+      AnalyticsPage(
+        parentCtx: context,
+        userID: widget.userID,
       ),
     ];
 

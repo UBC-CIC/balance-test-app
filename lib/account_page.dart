@@ -13,7 +13,8 @@ class AccountPage extends StatefulWidget {
       required this.givenName,
       required this.familyName,
       required this.userID,
-      required this.email})
+      required this.email
+   })
       : super(key: key);
 
   final BuildContext parentCtx;
@@ -187,7 +188,10 @@ class _AccountPageState extends State<AccountPage> {
                         ),
                         children: [
                           CupertinoListTile(
-                            title: Text('$firstName $lastName'),
+                            title: FittedBox(
+                              fit: BoxFit.scaleDown,
+                              child: Text('$firstName $lastName'),
+                            ),
                             // trailing: const Icon(
                             //   CupertinoIcons.forward,
                             //   color: Color(0xffc4c4c6),
@@ -214,7 +218,41 @@ class _AccountPageState extends State<AccountPage> {
                         ),
                         children: [
                           CupertinoListTile(
-                            title: Text(email),
+                            title: FittedBox(
+                              fit: BoxFit.scaleDown,
+                              child: Text(email),
+                            ),
+                            // trailing: const Icon(
+                            //   CupertinoIcons.forward,
+                            //   color: Color(0xffc4c4c6),
+                            //   size: 20,
+                            // ),
+                            onTap: () {},
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  SafeArea(
+                    child: SingleChildScrollView(
+                      child: CupertinoListSection.insetGrouped(
+                        header: Padding(
+                          padding: EdgeInsets.fromLTRB(0.05 * width, 0, 0, 0),
+                          child: const Text(
+                            'User ID',
+                            style: TextStyle(
+                                fontWeight: FontWeight.w400,
+                                fontSize: 14,
+                                color: Color(0xffa4a3aa)),
+                          ),
+                        ),
+                        children: [
+                          CupertinoListTile(
+                            title: FittedBox(
+                              fit: BoxFit.scaleDown,
+                              child: Text(userID),
+                            ),
+
                             // trailing: const Icon(
                             //   CupertinoIcons.forward,
                             //   color: Color(0xffc4c4c6),

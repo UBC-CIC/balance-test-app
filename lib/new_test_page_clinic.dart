@@ -323,7 +323,7 @@ class _NewTestPageClinicState extends State<NewTestPageClinic> {
 
               return buildTestList(testList);
             } else {
-              return const Center(child: SpinKitFadingGrid(
+              return const Center(child: SpinKitThreeInOut(
                 color: Colors.indigo,
                 size: 50.0,
               ));

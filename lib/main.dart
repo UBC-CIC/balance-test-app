@@ -3,20 +3,19 @@ import 'package:amplify_authenticator/amplify_authenticator.dart';
 import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:amplify_storage_s3/amplify_storage_s3.dart';
 import 'package:balance_test/account_page.dart';
+import 'package:balance_test/analytics_page.dart';
 import 'package:balance_test/clinic_home_page.dart';
 import 'package:balance_test/new_test_page.dart';
 import 'package:balance_test/past_tests_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:jwt_decode/jwt_decode.dart';
 
 import 'amplifyconfiguration.dart';
 
 import 'package:balance_test/models//ModelProvider.dart';
 import 'package:amplify_api/amplify_api.dart';
-
-
-
 
 void main() {
   runApp(const MyApp());
@@ -33,12 +32,10 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
       ),
       // home: const PatientApp(title: 'Flutter Demo Home Page'),
-      home: const ClinicApp(title: 'Flutter Demo Home Page'),
+      home: const PatientApp(title: 'Flutter Demo Home Page'),
     );
   }
 }
-
-
 
 //Patient App
 
@@ -104,17 +101,28 @@ class _PatientAppState extends State<PatientApp> {
       DeviceOrientation.portraitUp,
     ]);
 
+
     Future<Map<String, String>> fetchCurrentUserAttributes() async {
-      print(authInfo['sub']);
       if (authInfo.isEmpty) {
         print('AUTH INFO EMPTY');
         final result = await Amplify.Auth.fetchUserAttributes();
         final data = {for (var e in result) e.userAttributeKey.key: e.value};
+        final authSession = await Amplify.Auth.fetchAuthSession(
+          options: CognitoSessionOptions(getAWSCredentials: true),
+        );
+        String identityId = (authSession as CognitoAuthSession).identityId!;
+        String token = (authSession as CognitoAuthSession).userPoolTokens!.idToken;
+        // Parse the JWT
+        Map<String, dynamic> payload = Jwt.parseJwt(token);
+        // Access the groups
+        String userGroup = payload['cognito:groups'][0];
+
         authInfo = data;
-        return data;
+        authInfo["identity_id"] = identityId.split(":")[1];
+        authInfo["user_group"] = userGroup;
+        return authInfo;
       } else {
         print('AUTH INFO FILLED');
-        print(authInfo['sub']);
         return authInfo;
       }
     }
@@ -127,13 +135,23 @@ class _PatientAppState extends State<PatientApp> {
               AsyncSnapshot<Map<String, String>> snapshot) {
             print(snapshot.data);
             return NewTestPage(
-                parentCtx: mainCtx,
-                userID: (snapshot.data != null) ? snapshot.data!['sub']! : "",);
+              parentCtx: mainCtx,
+              userID:
+                  (snapshot.data != null) ? snapshot.data!['identity_id']! : "",
+            );
           }),
-      const Icon(
-        Icons.show_chart_rounded,
-        size: 150,
-      ),
+      FutureBuilder<Map<String, String>>(
+          future: fetchCurrentUserAttributes(),
+          // function where you call your api
+          builder: (BuildContext context,
+              AsyncSnapshot<Map<String, String>> snapshot) {
+            print(snapshot.data);
+            return AnalyticsPage(
+              parentCtx: mainCtx,
+              userID:
+              (snapshot.data != null) ? snapshot.data!['identity_id']! : "",
+            );
+          }),
       FutureBuilder<Map<String, String>>(
           future: fetchCurrentUserAttributes(),
           // function where you call your api
@@ -142,7 +160,9 @@ class _PatientAppState extends State<PatientApp> {
             print(snapshot.data);
             return PastTests(
                 parentCtx: mainCtx,
-                userID: (snapshot.data != null) ? snapshot.data!['sub']! : "");
+                userID: (snapshot.data != null)
+                    ? snapshot.data!['identity_id']!
+                    : "");
           }),
       FutureBuilder<Map<String, String>>(
           future: fetchCurrentUserAttributes(),
@@ -156,7 +176,8 @@ class _PatientAppState extends State<PatientApp> {
                   (snapshot.data != null) ? snapshot.data!['given_name']! : "",
               familyName:
                   (snapshot.data != null) ? snapshot.data!['family_name']! : "",
-              userID: (snapshot.data != null) ? snapshot.data!['sub']! : "",
+              userID:
+                  (snapshot.data != null) ? snapshot.data!['identity_id']! : "",
               email: (snapshot.data != null) ? snapshot.data!['email']! : "",
             );
           }),
@@ -242,8 +263,7 @@ class _PatientAppState extends State<PatientApp> {
               return null;
           }
         },
-        child: MaterialApp(
-          // set the default theme
+        child: MaterialApp(// set the default theme
           theme: ThemeData.from(
             colorScheme: ColorScheme.fromSwatch(
               primarySwatch: Colors.indigo,
@@ -254,7 +274,6 @@ class _PatientAppState extends State<PatientApp> {
           ),
 
           builder: Authenticator.builder(),
-
           home: Scaffold(
             backgroundColor: const Color(0xfff2f1f6),
             appBar: AppBar(
@@ -276,7 +295,9 @@ class _PatientAppState extends State<PatientApp> {
                   style: TextStyle(
                     // color: Color.fromRGBO(141, 148, 162, 1.0),
                     color: Colors.black,
-                    fontFamily: (_selectedIndex == 3) ? 'DMSans-Regular' : 'DMSans-Medium',
+                    fontFamily: (_selectedIndex == 3)
+                        ? 'DMSans-Regular'
+                        : 'DMSans-Medium',
                     fontSize:
                         (_selectedIndex == 3) ? 0.06 * width : 0.085 * width,
                     fontWeight: FontWeight.w900,
@@ -324,6 +345,8 @@ class _PatientAppState extends State<PatientApp> {
         ));
   }
 }
+
+
 
 
 
@@ -419,7 +442,9 @@ class _ClinicAppState extends State<ClinicApp> {
             print(snapshot.data);
             return ClinicHomePage(
                 parentCtx: mainCtx,
-                userID: (snapshot.data != null) ? snapshot.data!['sub']! : "");
+                userID: (snapshot.data != null)
+                    ? snapshot.data!['identity_id']!
+                    : "");
           }),
       FutureBuilder<Map<String, String>>(
           future: fetchCurrentUserAttributes(),
@@ -430,10 +455,11 @@ class _ClinicAppState extends State<ClinicApp> {
             return AccountPage(
               parentCtx: mainCtx,
               givenName:
-              (snapshot.data != null) ? snapshot.data!['given_name']! : "",
+                  (snapshot.data != null) ? snapshot.data!['given_name']! : "",
               familyName:
-              (snapshot.data != null) ? snapshot.data!['family_name']! : "",
-              userID: (snapshot.data != null) ? snapshot.data!['sub']! : "",
+                  (snapshot.data != null) ? snapshot.data!['family_name']! : "",
+              userID:
+                  (snapshot.data != null) ? snapshot.data!['identity_id']! : "",
               email: (snapshot.data != null) ? snapshot.data!['email']! : "",
             );
           }),
@@ -448,7 +474,7 @@ class _ClinicAppState extends State<ClinicApp> {
 // builder used to show a custom sign in and sign up experience
         authenticatorBuilder: (BuildContext context, AuthenticatorState state) {
           const padding =
-          EdgeInsets.only(left: 16, right: 16, top: 48, bottom: 16);
+              EdgeInsets.only(left: 16, right: 16, top: 48, bottom: 16);
           switch (state.currentStep) {
             case AuthenticatorStep.signIn:
               return Scaffold(
@@ -513,7 +539,7 @@ class _ClinicAppState extends State<ClinicApp> {
                 ],
               );
             default:
-            // returning null defaults to the prebuilt authenticator for all other steps
+              // returning null defaults to the prebuilt authenticator for all other steps
               return null;
           }
         },
@@ -534,11 +560,11 @@ class _ClinicAppState extends State<ClinicApp> {
             backgroundColor: const Color(0xfff2f1f6),
             appBar: AppBar(
               toolbarHeight:
-              (_selectedIndex == 1) ? 0.06 * height : 0.1 * height,
+                  (_selectedIndex == 1) ? 0.06 * height : 0.1 * height,
               centerTitle: (_selectedIndex == 1) ? true : false,
               systemOverlayStyle: const SystemUiOverlayStyle(
                 statusBarBrightness:
-                Brightness.light, // light for black status bar
+                    Brightness.light, // light for black status bar
               ),
               title: Padding(
                 padding: EdgeInsets.fromLTRB(
@@ -551,9 +577,11 @@ class _ClinicAppState extends State<ClinicApp> {
                   style: TextStyle(
                     // color: Color.fromRGBO(141, 148, 162, 1.0),
                     color: Colors.black,
-                    fontFamily: (_selectedIndex == 1) ? 'DMSans-Regular' : 'DMSans-Medium',
+                    fontFamily: (_selectedIndex == 1)
+                        ? 'DMSans-Regular'
+                        : 'DMSans-Medium',
                     fontSize:
-                    (_selectedIndex == 1) ? 0.06 * width : 0.085 * width,
+                        (_selectedIndex == 1) ? 0.06 * width : 0.085 * width,
                     fontWeight: FontWeight.w900,
                   ),
                 ),
@@ -591,12 +619,3 @@ class _ClinicAppState extends State<ClinicApp> {
         ));
   }
 }
-
-
-
-
-
-
-
-
-
