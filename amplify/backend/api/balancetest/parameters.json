@@ -2,5 +2,11 @@
   "AppSyncApiName": "balancetest",
   "DynamoDBBillingMode": "PAY_PER_REQUEST",
   "DynamoDBEnableServerSideEncryption": false,
-  "AuthModeLastUpdated": "2023-03-15T16:38:47.680Z"
+  "AuthModeLastUpdated": "2023-03-15T21:45:23.329Z",
+  "AuthCognitoUserPoolId": {
+    "Fn::GetAtt": [
+      "authbalancetest6a22503d",
+      "Outputs.UserPoolId"
+    ]
+  }
 }

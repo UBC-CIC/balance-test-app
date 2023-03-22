@@ -103,7 +103,7 @@ class _AccountPageState extends State<AccountPage> {
   void signOut() async {
     try {
       await Amplify.Auth.signOut();
-      showResult('Signed Out');
+      showResult('Signed   Out');
       changeDisplay('SHOW_SIGN_IN');
     } on AmplifyException catch (e) {
       setState(() {
