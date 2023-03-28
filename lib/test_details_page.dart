@@ -46,21 +46,6 @@ class _TestDetailsPageState extends State<TestDetailsPage> {
   //VARIABLES
   final controller = ScrollController();
 
-  TestDetails testDetails = getTestDetails();
-
-  static TestDetails getTestDetails() {
-    const data = {
-      "testID": "1", //UUID format
-      "movement": "sit-to-stand",
-      "dateTime": "2023-02-10 15:14:40.731703 -08:00",
-      "score": 72,
-      "duration": 87,
-      "notes":
-          'Toni cemuso hite ataneda tebe bigeric lu ire yama sorov! Gew dipebor natasum sikit afahar! Coticol xosieric uladu redes! Cedet ricak secadep bebeni yibas renacab rie: Badi let reri lareri bat asacubes paritur vagone iegarat! Nelalir cof odesie cipir sucomer si. Vaso foreca tunietec toconel ha gi ragi no! Leconug ida tewat febase arerotoh pit peceral. Figare temusa fig redo mesu nec neme wocies. Sef irahote sihelom. Ulurexi zepe na seniep enedico pop hohe renalis dicis.',
-    };
-    return TestDetails.fromJson(data);
-  }
-
   late Future<List<charts.Series<TimeSeriesData, DateTime>>> axSeriesList =
       queryGraphData("ax");
   late Future<List<charts.Series<TimeSeriesData, DateTime>>> aySeriesList =
@@ -84,14 +69,7 @@ class _TestDetailsPageState extends State<TestDetailsPage> {
 
   Future<List<charts.Series<TimeSeriesData, DateTime>>> queryGraphData(
       String sensor) async {
-    print('''
-        query MyQuery {
-          getMeasurementData(day: ${widget.dateTimeObj.day}, measurement: $sensor, month: ${widget.dateTimeObj.month}, patient_id: "${widget.userID}", test_event_id: "${widget.testID}", test_type: "${widget.movementName}", year: ${widget.dateTimeObj.year}) {
-            ts
-            val
-          }
-        }
-      ''');
+
     try {
       var query = '''
         query MyQuery {
@@ -103,7 +81,7 @@ class _TestDetailsPageState extends State<TestDetailsPage> {
       ''';
 
       final response = await Amplify.API
-          .query(request: GraphQLRequest<String>(document: query))
+          .query(request: GraphQLRequest<String>(document: query, variables: {'patient_id': widget.userID}))
           .response;
 
       if (response.data == null) {

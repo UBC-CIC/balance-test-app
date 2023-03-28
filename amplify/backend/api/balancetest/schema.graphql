@@ -28,17 +28,13 @@ type Test {
 type Query {
   # getters
   getCareproviderById(care_provider_id: String!): CareProvider
-  getPatientById(patient_id: String!): Patient
-    @aws_lambda
-    @aws_cognito_user_pools(cognito_groups: ["care_provider_user"])
+  getPatientById(patient_id: String!): Patient @aws_lambda
   getTestEventById(test_event_id: String!, patient_id: String!): TestEvent
     @aws_lambda
-    @aws_cognito_user_pools(cognito_groups: ["care_provider_user"])
+  # @aws_cognito_user_pools(cognito_groups: ["care_provider_user"])
 
   getPatientsForCareprovider(care_provider_id: String!): [Patient]
-    @aws_cognito_user_pools(cognito_groups: ["care_provider_user"])
   getAllPatients: [Patient]
-    @aws_cognito_user_pools(cognito_groups: ["care_provider_user"])
   getTestEvents(
     patient_id: String!
     test_type: String
@@ -46,12 +42,8 @@ type Query {
     to_time: String
     sort: SortDirection
     count: Int
-  ): [TestEvent]
-    @aws_cognito_user_pools(cognito_groups: ["care_provider_user"])
-    @aws_lambda
-  getPatientAssignedTests(patient_id: String!): [Test]
-    @aws_cognito_user_pools(cognito_groups: ["care_provider_user"])
-    @aws_lambda
+  ): [TestEvent] @aws_lambda
+  getPatientAssignedTests(patient_id: String!): [Test] @aws_lambda
   getAllAvailableTests: [Test]
 
   # analytics
@@ -61,17 +53,13 @@ type Query {
     to_time: String!
     stat: Stat!
     movement: String
-  ): String
-    @aws_cognito_user_pools(cognito_groups: ["care_provider_user"])
-    @aws_lambda
+  ): String @aws_lambda
 
   # measurements
   getMeasurementRange(
     patient_id: String!
     measurement: Measurement!
-  ): MeasurementRange
-    @aws_cognito_user_pools(cognito_groups: ["care_provider_user"])
-    @aws_lambda
+  ): MeasurementRange @aws_lambda
 
   getMeasurementData(
     test_event_id: String!
@@ -81,9 +69,7 @@ type Query {
     year: Int!
     month: Int!
     day: Int!
-  ): MeasurementRecord
-    @aws_cognito_user_pools(cognito_groups: ["care_provider_user"])
-    @aws_lambda
+  ): MeasurementRecord @aws_lambda
 
   downloadTestEventDetails(
     test_event_id: String!
@@ -93,25 +79,21 @@ type Query {
     day: Int!
     patient_name: String
     test_type: String!
-  ): String
-    @aws_cognito_user_pools(cognito_groups: ["care_provider_user"])
-    @aws_lambda
+  ): String @aws_lambda
 }
 
 type Mutation {
   createPatient(patient_id: String!, email: String, name: String): Patient
+    @aws_lambda
   createCareProvider(care_provider_id: String!, email: String!): CareProvider
   addPatientToCareProvider(
     care_provider_id: String!
     patient_id: String!
   ): PatientCareprovider
-    @aws_cognito_user_pools(cognito_groups: ["care_provider_user"])
 
   assignTestToPatient(patient_id: String!, test_type: String!): PatientTest
-    @aws_cognito_user_pools(cognito_groups: ["care_provider_user"])
 
   removeTestFromPatient(patient_id: String!, test_type: String!): String
-    @aws_cognito_user_pools(cognito_groups: ["care_provider_user"])
 
   putTestResult(
     test_event_id: String!
@@ -121,9 +103,7 @@ type Mutation {
     start_time: String!
     end_time: String!
     notes: String
-  ): TestEvent
-    @aws_cognito_user_pools(cognito_groups: ["care_provider_user"])
-    @aws_lambda
+  ): TestEvent @aws_lambda
 
   putBalanceScore(test_event_id: String!, balance_score: Int!): TestEvent
   addTestType(

@@ -11,26 +11,38 @@ exports.handler = async (event) => {
   console.log(`EVENT: ${JSON.stringify(event)}`);
   const {
     authorizationToken,
-    requestContext: { variables: patient_id },
+    requestContext: {
+      variables: { patient_id },
+    },
   } = event;
-  let token = event.authorizationToken.replace("prefix-", "");
+  // let token = authorizationToken.replace("prefix-", "");
 
-  const user_cognito_id = jwt.decode(token).sub;
+  const user_cognito_id = jwt.decode(authorizationToken).sub;
   let params = {
-    // todo: remove hard code
+    // todo: remove hard-coded value
     UserPoolId: "ca-central-1_qBJ3I7w8V",
     Username: user_cognito_id,
   };
-  let resGetuser = await cognito.adminGetUser(params).promise();
-  console.log("resGetuser", resGetuser);
-  // todo: remove hardcode
-  let identityId = resGetuser.UserAttributes[6].Value;
+  let getUserResponse = await cognito.adminGetUser(params).promise();
+  let user = getUserResponse.UserAttributes;
+  console.log("user", user);
+  let identityId;
+  let isCareProvider = false;
+  for (let i = 0; i < user.length; i++) {
+    if (user[i].Name == "custom:identity_id") {
+      identityId = "ca-central-1:" + user[i].Value;
+    }
+    if (user[i].Name == "custom:user_type") {
+      console.log("user[i]", user[i]);
+      isCareProvider = true;
+    }
+  }
   console.log("identityId", identityId);
+  console.log("patient_id", patient_id);
+  console.log("iscareprovider", isCareProvider);
 
   const response = {
-    isAuthorized:
-      patient_id === identityId ||
-      resGetuser.UserAttributes[4].Value == "care_provider_user",
+    isAuthorized: isCareProvider || patient_id === identityId,
     // resolverContext: {
     //   userid: "user-id",
     //   info: "contextual information A",

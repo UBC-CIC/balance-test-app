@@ -4,8 +4,9 @@
     "apiName": "balancetest",
     "serviceName": "AppSync",
     "defaultAuthType": {
-      "mode": "AMAZON_COGNITO_USER_POOLS",
-      "cognitoUserPoolId": "authbalancetest6a22503d"
+      "mode": "AWS_LAMBDA",
+      "lambdaFunction": "graphQlLambdaAuthorizera1fc2e92",
+      "ttlSeconds": "300"
     },
     "conflictResolution": {},
     "additionalAuthTypes": [
@@ -14,11 +15,6 @@
         "expirationTime": 365,
         "apiKeyExpirationDate": "2024-03-14T21:43:58.948Z",
         "keyDescription": ""
-      },
-      {
-        "mode": "AWS_LAMBDA",
-        "lambdaFunction": "graphQlLambdaAuthorizera1fc2e92",
-        "ttlSeconds": "300"
       }
     ]
   }

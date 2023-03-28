@@ -4,10 +4,7 @@ import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:amplify_storage_s3/amplify_storage_s3.dart';
 import 'package:balance_test/PatientApp.dart';
 import 'package:balance_test/account_page.dart';
-import 'package:balance_test/analytics_page.dart';
 import 'package:balance_test/clinic_home_page.dart';
-import 'package:balance_test/new_test_page.dart';
-import 'package:balance_test/past_tests_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -32,7 +29,6 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      // home: const PatientApp(title: 'Flutter Demo Home Page'),
       home: const AppRouter(title: 'Flutter Demo Home Page'),
     );
   }
@@ -131,21 +127,37 @@ class _AppRouterState extends State<AppRouter> {
         print(e.message);
       }
     }
+
+
+
+
     final Map<String, String> userAttriubtes = await fetchCurrentUserAttributes();
     print(userAttriubtes);
-    if(userGroup == 'patient_user') {
+    if(userGroup == 'patient_user' && context.mounted) {
     Navigator.of(context).pushReplacement(
-      MaterialPageRoute(builder: (context) => PatientApp(userAttributes: userAttriubtes,)),
-    );
-    } else if (userGroup == 'care_provider_user'){
+      PageRouteBuilder(
+        pageBuilder: (_, __, ___) => PatientApp(userAttributes: userAttriubtes,),
+        transitionDuration: const Duration(milliseconds: 500),
+        transitionsBuilder: (_, a, __, c) => FadeTransition(opacity: a, child: c),
+      ),
 
+    );
+    } else if (userGroup == 'care_provider_user' && context.mounted){
+      Navigator.of(context).pushReplacement(
+        PageRouteBuilder(
+          pageBuilder: (_, __, ___) => PatientApp(userAttributes: userAttriubtes,),
+          transitionDuration: const Duration(milliseconds: 500),
+          transitionsBuilder: (_, a, __, c) => FadeTransition(opacity: a, child: c),
+        ),
+
+      );
     }
   }
 
 
   Future<bool> _configureAmplify() async{
-    final api = AmplifyAPI(modelProvider: ModelProvider.instance);
-
+    final api = AmplifyAPI(modelProvider: ModelProvider.instance,
+    authProviders: const [CustomFunctionProvider()]);
     try {
       await Amplify.addPlugin(AmplifyAuthCognito());
       await Amplify.addPlugin(AmplifyStorageS3());
@@ -302,7 +314,19 @@ class _AppRouterState extends State<AppRouter> {
 
 
 
+class CustomFunctionProvider extends FunctionAuthProvider {
+  const CustomFunctionProvider();
 
+  @override
+  Future<String?> getLatestAuthToken() async {
+    AuthSession authSession = await Amplify.Auth.fetchAuthSession(
+      options: CognitoSessionOptions(getAWSCredentials: true),
+    );
+    String token = (authSession as CognitoAuthSession).userPoolTokens!.idToken;
+    print(token);
+    return token;
+  }
+}
 
 
 

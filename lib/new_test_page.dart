@@ -45,7 +45,7 @@ class _NewTestPageState extends State<NewTestPage> {
       ''';
 
       final response = await Amplify.API
-          .query(request: GraphQLRequest<String>(document: query))
+          .query(request: GraphQLRequest<String>(document: query, variables: {'patient_id': widget.userID}))
           .response;
 
       if (response.data == null) {
@@ -334,5 +334,6 @@ class _NewTestPageState extends State<NewTestPage> {
             }
           },
         ));
+
   }
 }

@@ -1,15 +1,7 @@
 {
   "api": {
     "balancetest": {
-      "dependsOn": [
-        {
-          "attributes": [
-            "UserPoolId"
-          ],
-          "category": "auth",
-          "resourceName": "balancetest6a22503d"
-        }
-      ],
+      "dependsOn": [],
       "output": {
         "authConfig": {
           "additionalAuthenticationProviders": [
@@ -20,19 +12,13 @@
                 "description": ""
               },
               "authenticationType": "API_KEY"
-            },
-            {
-              "authenticationType": "AWS_LAMBDA",
-              "lambdaAuthorizerConfig": {
-                "lambdaFunction": "graphQlLambdaAuthorizera1fc2e92",
-                "ttlSeconds": "300"
-              }
             }
           ],
           "defaultAuthentication": {
-            "authenticationType": "AMAZON_COGNITO_USER_POOLS",
-            "userPoolConfig": {
-              "userPoolId": "authbalancetest6a22503d"
+            "authenticationType": "AWS_LAMBDA",
+            "lambdaAuthorizerConfig": {
+              "lambdaFunction": "graphQlLambdaAuthorizera1fc2e92",
+              "ttlSeconds": "300"
             }
           }
         }
@@ -143,6 +129,22 @@
         {
           "category": "auth",
           "resourceName": "balancetest6a22503d"
+        }
+      ]
+    },
+    "AMPLIFY_function_graphQlLambdaAuthorizera1fc2e92_deploymentBucketName": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "graphQlLambdaAuthorizera1fc2e92"
+        }
+      ]
+    },
+    "AMPLIFY_function_graphQlLambdaAuthorizera1fc2e92_s3Key": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "graphQlLambdaAuthorizera1fc2e92"
         }
       ]
     },
