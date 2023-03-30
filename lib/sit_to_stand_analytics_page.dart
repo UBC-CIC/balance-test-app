@@ -21,24 +21,31 @@ class SitToStandAnalyticsPage extends StatefulWidget {
   State<SitToStandAnalyticsPage> createState() => _SitToStandAnalyticsPageState();
 }
 
-class TimeSeriesData {
+class TimeSeriesScoreData {
   final DateTime time;
   final int value;
 
-  TimeSeriesData(this.time, this.value);
+  TimeSeriesScoreData(this.time, this.value);
+}
+
+class TimeSeriesRangeData {
+  final DateTime time;
+  final double value;
+
+  TimeSeriesRangeData(this.time, this.value);
+
 }
 
 class _SitToStandAnalyticsPageState extends State<SitToStandAnalyticsPage> {
-  //VARIABLES
+  //Generate Score Graph
   final controller = ScrollController();
 
 
-  late Future<List<charts.Series<TimeSeriesData, DateTime>>> scoreSeriesList =
+  late Future<List<charts.Series<TimeSeriesScoreData, DateTime>>> scoreSeriesList =
       querySitToStandScores();
 
-  //METHODS
 
-  Future<List<charts.Series<TimeSeriesData, DateTime>>> querySitToStandScores() async {
+  Future<List<charts.Series<TimeSeriesScoreData, DateTime>>> querySitToStandScores() async {
     print('Query Sit to Stand');
 
     try {
@@ -57,7 +64,7 @@ class _SitToStandAnalyticsPageState extends State<SitToStandAnalyticsPage> {
 
       if (response.data == null) {
         print('errors: ${response.errors}');
-        return <charts.Series<TimeSeriesData, DateTime>>[];
+        return <charts.Series<TimeSeriesScoreData, DateTime>>[];
       } else {
         print('1');
 
@@ -86,32 +93,32 @@ class _SitToStandAnalyticsPageState extends State<SitToStandAnalyticsPage> {
     } on ApiException catch (e) {
       print('Query failed: $e');
     }
-    return <charts.Series<TimeSeriesData, DateTime>>[];
+    return <charts.Series<TimeSeriesScoreData, DateTime>>[];
   }
 
 
-  List<charts.Series<TimeSeriesData, DateTime>> createChartSeries(
+  List<charts.Series<TimeSeriesScoreData, DateTime>> createChartSeries(
       List<DateTime> tsList, List<int> scoreList) {
     final data = generateTimeSeriesDataList(tsList, scoreList);
     print('Generate Chart Series');
 
     return [
-      charts.Series<TimeSeriesData, DateTime>(
+      charts.Series<TimeSeriesScoreData, DateTime>(
         id: 'Sample',
         colorFn: (_, __) => charts.ColorUtil.fromDartColor(Colors.indigo),
-        domainFn: (TimeSeriesData data, _) => data.time,
-        measureFn: (TimeSeriesData data, _) => data.value,
+        domainFn: (TimeSeriesScoreData data, _) => data.time,
+        measureFn: (TimeSeriesScoreData data, _) => data.value,
         data: data,
       )
     ];
   }
 
-  List<TimeSeriesData> generateTimeSeriesDataList(
+  List<TimeSeriesScoreData> generateTimeSeriesDataList(
       List<DateTime> tsList, List<int> scoreList) {
-    List<TimeSeriesData> data = [];
+    List<TimeSeriesScoreData> data = [];
     print('Generate Time Series Data List');
     for (int i = 0; i < tsList.length; i += 1) {
-      data.add(TimeSeriesData(tsList[i], scoreList[i]));
+      data.add(TimeSeriesScoreData(tsList[i], scoreList[i]));
     }
     print('Finished Generate Time Series Data List');
 
@@ -120,6 +127,126 @@ class _SitToStandAnalyticsPageState extends State<SitToStandAnalyticsPage> {
   }
 
 
+ //Generate Range Graph
+
+
+  late Future<List<charts.Series<TimeSeriesRangeData, DateTime>>> rangeSeriesListAx =
+  querySitToStandRange("ax");
+
+  late Future<List<charts.Series<TimeSeriesRangeData, DateTime>>> rangeSeriesListAy =
+  querySitToStandRange("ay");
+
+  late Future<List<charts.Series<TimeSeriesRangeData, DateTime>>> rangeSeriesListAz =
+  querySitToStandRange("az");
+
+  late Future<List<charts.Series<TimeSeriesRangeData, DateTime>>> rangeSeriesListGx =
+  querySitToStandRange("gx");
+
+  late Future<List<charts.Series<TimeSeriesRangeData, DateTime>>> rangeSeriesListGy =
+  querySitToStandRange("gy");
+
+  late Future<List<charts.Series<TimeSeriesRangeData, DateTime>>> rangeSeriesListGz =
+  querySitToStandRange("gz");
+
+  late Future<List<charts.Series<TimeSeriesRangeData, DateTime>>> rangeSeriesListMx =
+  querySitToStandRange("mx");
+
+  late Future<List<charts.Series<TimeSeriesRangeData, DateTime>>> rangeSeriesListMy =
+  querySitToStandRange("my");
+
+  late Future<List<charts.Series<TimeSeriesRangeData, DateTime>>> rangeSeriesListMz =
+  querySitToStandRange("mz");
+
+
+  Future<List<charts.Series<TimeSeriesRangeData, DateTime>>> querySitToStandRange(String sensor) async {
+
+    try {
+      var query = '''
+        query MyQuery {
+          getMeasurementRange(measurement: $sensor, patient_id: "${widget.userID}") {
+            day
+            month
+            year
+            max
+            min
+          }
+        }
+      ''';
+
+      final response = await Amplify.API
+          .query(request: GraphQLRequest<String>(document: query, variables: {'patient_id': widget.userID}))
+          .response;
+
+      if (response.data == null) {
+        print('errors: ${response.errors}');
+        return <charts.Series<TimeSeriesRangeData, DateTime>>[];
+      } else {
+        print('1');
+
+        final  rangeDataJson = json.decode(response.data!);
+        List<double> minList = rangeDataJson["getMeasurementRange"]['min'].map<double>((e) => double.parse(e.toString()))
+            .toList();
+        List<double> maxList = rangeDataJson["getMeasurementRange"]['max'].map<double>((e) => double.parse(e.toString()))
+            .toList();
+        List<int> dayList = rangeDataJson["getMeasurementRange"]['day'].map<int>((e) => int.parse(e.toString()))
+            .toList();
+        List<int> monthList = rangeDataJson["getMeasurementRange"]['month'].map<int>((e) => int.parse(e.toString()))
+            .toList();
+        List<int> yearList = rangeDataJson["getMeasurementRange"]['year'].map<int>((e) => int.parse(e.toString()))
+            .toList();
+        List<DateTime> dateList = [];
+        for(int i=0; i<dayList.length;i++){
+          int day = dayList[i];
+          int month = monthList[i];
+          int year = yearList[i];
+          DateTime dateTime = DateTime(year, month, day);
+          dateList.add(dateTime);
+        }
+
+        return createRangeChartSeries(dateList, minList, maxList);
+      }
+    } on ApiException catch (e) {
+      print('Query failed: $e');
+    }
+    return <charts.Series<TimeSeriesRangeData, DateTime>>[];
+  }
+
+
+  List<charts.Series<TimeSeriesRangeData, DateTime>> createRangeChartSeries(
+      List<DateTime> tsList, List<double> minList, List<double> maxList) {
+    final minData = generateTimeSeriesRangeDataList(tsList, minList);
+    final maxData = generateTimeSeriesRangeDataList(tsList, maxList);
+
+    print('Generate Chart Series');
+
+    return [
+
+      charts.Series<TimeSeriesRangeData, DateTime>(
+        id: 'Max',
+        colorFn: (_, __) => charts.ColorUtil.fromDartColor(Colors.indigo),
+        domainFn: (TimeSeriesRangeData data, _) => data.time,
+        measureFn: (TimeSeriesRangeData data, _) => data.value,
+        data: maxData,
+      ),
+      // Hollow green bars.
+      charts.Series<TimeSeriesRangeData, DateTime>(
+        id: 'Min',
+        colorFn: (_, __) => charts.ColorUtil.fromDartColor(Colors.indigo),
+        domainFn: (TimeSeriesRangeData data, _) => data.time,
+        measureFn: (TimeSeriesRangeData data, _) => data.value,
+        data: minData,
+      ),
+    ];
+  }
+
+  List<TimeSeriesRangeData> generateTimeSeriesRangeDataList(
+      List<DateTime> tsList, List<double> valueList) {
+    List<TimeSeriesRangeData> data = [];
+    for (int i = 0; i < tsList.length; i += 1) {
+      data.add(TimeSeriesRangeData(tsList[i], valueList[i]));
+    }
+    return data;
+  }
 
 
   String formatDuration(int totalSeconds) {
@@ -188,20 +315,9 @@ class _SitToStandAnalyticsPageState extends State<SitToStandAnalyticsPage> {
                     color: Colors.transparent,
                   ),
 
+
                   Padding(
-                    padding: EdgeInsets.fromLTRB(0.05 * width, 20, 0, 0),
-                    child: const Text(
-                      'Movement Graphs',
-                      style: TextStyle(
-                        color: Colors.black,
-                        fontSize: 25,
-                        fontFamily: 'DMSans-Bold',
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(0, 10, 0, 50),
+                    padding: const EdgeInsets.fromLTRB(0, 10, 0, 10),
                     child: Center(
                       child: Card(
                         color: Colors.white,
@@ -232,7 +348,7 @@ class _SitToStandAnalyticsPageState extends State<SitToStandAnalyticsPage> {
                                   ),
                                   FutureBuilder<
                                           List<
-                                              charts.Series<TimeSeriesData,
+                                              charts.Series<TimeSeriesScoreData,
                                                   DateTime>>>(
                                       future: scoreSeriesList,
                                       builder: (context, snapshot) {
@@ -287,6 +403,642 @@ class _SitToStandAnalyticsPageState extends State<SitToStandAnalyticsPage> {
                       ),
                     ),
                   ),
-                ])));
+                  Padding(
+                    padding: EdgeInsets.fromLTRB(0.05 * width, 10, 0, 0),
+                    child: const Text(
+                      'Sensor Range Graphs',
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontSize: 25,
+                        fontFamily: 'DMSans-Bold',
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(0, 10, 0, 50),
+                    child: Center(
+                      child: Card(
+                        color: Colors.white,
+                        elevation: 1,
+                        shadowColor: Colors.white70,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(15.0),
+                        ),
+                        child: SizedBox(
+                          width: width * 0.9,
+                          height: null,
+                          child: Padding(
+                            padding:
+                            const EdgeInsets.fromLTRB(22.0, 20, 22.0, 0),
+                            child: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    'Accelerometer X',
+                                    style: GoogleFonts.nunito(
+                                      textStyle: const TextStyle(
+                                        color: Colors.indigo,
+                                        fontSize: 20,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ),
+                                  FutureBuilder<
+                                      List<
+                                          charts.Series<TimeSeriesRangeData,
+                                              DateTime>>>(
+                                      future: rangeSeriesListAx,
+                                      builder: (context, snapshot) {
+                                        if (snapshot.connectionState ==
+                                            ConnectionState.waiting) {
+                                          return SizedBox(
+                                            width: width * 0.9,
+                                            height: 200,
+                                            child: const SpinKitThreeInOut(
+                                              color: Colors.indigo,
+                                              size: 25.0,
+                                            ),
+                                          );
+                                        } else if (snapshot.hasData) {
+                                          final axList = snapshot.data;
+                                          if (axList!.isEmpty) {
+                                            return SizedBox(
+                                              width: width * 0.9,
+                                              height: 200,
+                                              child: const Center(
+                                                child: Text(
+                                                    'Data still processing'),
+                                              ),
+                                            );
+                                          } else {
+                                            return SizedBox(
+                                              width: width * 0.9,
+                                              height: 200,
+                                              child: charts.TimeSeriesChart(
+                                                axList,
+                                                defaultRenderer: charts.BarRendererConfig<DateTime>(
+                                                    groupingType: charts.BarGroupingType.stacked, strokeWidthPx: 0.0, maxBarWidthPx: 5, cornerStrategy: const charts.ConstCornerStrategy(4),),
+
+                                                defaultInteractions: false,
+                                                animate: true,
+                                                dateTimeFactory: const charts
+                                                    .LocalDateTimeFactory(),
+                                              ),
+                                            );
+                                          }
+                                        } else {
+                                          return Text(
+                                              snapshot.error.toString());
+                                        }
+                                      }),
+                                  const Divider(
+                                    height: 30,
+                                    thickness: 1,
+                                    indent: 5,
+                                    endIndent: 5,
+                                    color: Colors.transparent,
+                                  ),
+
+                                  Text(
+                                    'Accelerometer Y',
+                                    style: GoogleFonts.nunito(
+                                      textStyle: const TextStyle(
+                                        color: Colors.indigo,
+                                        fontSize: 20,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ),
+                                  FutureBuilder<
+                                      List<
+                                          charts.Series<TimeSeriesRangeData,
+                                              DateTime>>>(
+                                      future: rangeSeriesListAy,
+                                      builder: (context, snapshot) {
+                                        if (snapshot.connectionState ==
+                                            ConnectionState.waiting) {
+                                          return SizedBox(
+                                            width: width * 0.9,
+                                            height: 200,
+                                            child: const SpinKitThreeInOut(
+                                              color: Colors.indigo,
+                                              size: 25.0,
+                                            ),
+                                          );
+                                        } else if (snapshot.hasData) {
+                                          final axList = snapshot.data;
+                                          if (axList!.isEmpty) {
+                                            return SizedBox(
+                                              width: width * 0.9,
+                                              height: 200,
+                                              child: const Center(
+                                                child: Text(
+                                                    'Data still processing'),
+                                              ),
+                                            );
+                                          } else {
+                                            return SizedBox(
+                                              width: width * 0.9,
+                                              height: 200,
+                                              child: charts.TimeSeriesChart(
+                                                axList,
+                                                defaultRenderer: charts.BarRendererConfig<DateTime>(
+                                                  groupingType: charts.BarGroupingType.stacked, strokeWidthPx: 0.0, maxBarWidthPx: 5, cornerStrategy: const charts.ConstCornerStrategy(4),),
+
+                                                defaultInteractions: false,
+                                                animate: true,
+                                                dateTimeFactory: const charts
+                                                    .LocalDateTimeFactory(),
+                                              ),
+                                            );
+                                          }
+                                        } else {
+                                          return Text(
+                                              snapshot.error.toString());
+                                        }
+                                      }),
+                                  const Divider(
+                                    height: 30,
+                                    thickness: 1,
+                                    indent: 5,
+                                    endIndent: 5,
+                                    color: Colors.transparent,
+                                  ),
+
+                                  Text(
+                                    'Accelerometer Z',
+                                    style: GoogleFonts.nunito(
+                                      textStyle: const TextStyle(
+                                        color: Colors.indigo,
+                                        fontSize: 20,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ),
+                                  FutureBuilder<
+                                      List<
+                                          charts.Series<TimeSeriesRangeData,
+                                              DateTime>>>(
+                                      future: rangeSeriesListAz,
+                                      builder: (context, snapshot) {
+                                        if (snapshot.connectionState ==
+                                            ConnectionState.waiting) {
+                                          return SizedBox(
+                                            width: width * 0.9,
+                                            height: 200,
+                                            child: const SpinKitThreeInOut(
+                                              color: Colors.indigo,
+                                              size: 25.0,
+                                            ),
+                                          );
+                                        } else if (snapshot.hasData) {
+                                          final axList = snapshot.data;
+                                          if (axList!.isEmpty) {
+                                            return SizedBox(
+                                              width: width * 0.9,
+                                              height: 200,
+                                              child: const Center(
+                                                child: Text(
+                                                    'Data still processing'),
+                                              ),
+                                            );
+                                          } else {
+                                            return SizedBox(
+                                              width: width * 0.9,
+                                              height: 200,
+                                              child: charts.TimeSeriesChart(
+                                                axList,
+                                                defaultRenderer: charts.BarRendererConfig<DateTime>(
+                                                  groupingType: charts.BarGroupingType.stacked, strokeWidthPx: 0.0, maxBarWidthPx: 5, cornerStrategy: const charts.ConstCornerStrategy(4),),
+
+                                                defaultInteractions: false,
+                                                animate: true,
+                                                dateTimeFactory: const charts
+                                                    .LocalDateTimeFactory(),
+                                              ),
+                                            );
+                                          }
+                                        } else {
+                                          return Text(
+                                              snapshot.error.toString());
+                                        }
+                                      }),
+                                  const Divider(
+                                    height: 30,
+                                    thickness: 1,
+                                    indent: 5,
+                                    endIndent: 5,
+                                    color: Colors.transparent,
+                                  ),
+
+                                  Text(
+                                    'Gyroscope X',
+                                    style: GoogleFonts.nunito(
+                                      textStyle: const TextStyle(
+                                        color: Colors.indigo,
+                                        fontSize: 20,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ),
+                                  FutureBuilder<
+                                      List<
+                                          charts.Series<TimeSeriesRangeData,
+                                              DateTime>>>(
+                                      future: rangeSeriesListGx,
+                                      builder: (context, snapshot) {
+                                        if (snapshot.connectionState ==
+                                            ConnectionState.waiting) {
+                                          return SizedBox(
+                                            width: width * 0.9,
+                                            height: 200,
+                                            child: const SpinKitThreeInOut(
+                                              color: Colors.indigo,
+                                              size: 25.0,
+                                            ),
+                                          );
+                                        } else if (snapshot.hasData) {
+                                          final axList = snapshot.data;
+                                          if (axList!.isEmpty) {
+                                            return SizedBox(
+                                              width: width * 0.9,
+                                              height: 200,
+                                              child: const Center(
+                                                child: Text(
+                                                    'Data still processing'),
+                                              ),
+                                            );
+                                          } else {
+                                            return SizedBox(
+                                              width: width * 0.9,
+                                              height: 200,
+                                              child: charts.TimeSeriesChart(
+                                                axList,
+                                                defaultRenderer: charts.BarRendererConfig<DateTime>(
+                                                  groupingType: charts.BarGroupingType.stacked, strokeWidthPx: 0.0, maxBarWidthPx: 5, cornerStrategy: const charts.ConstCornerStrategy(4),),
+
+                                                defaultInteractions: false,
+                                                animate: true,
+                                                dateTimeFactory: const charts
+                                                    .LocalDateTimeFactory(),
+                                              ),
+                                            );
+                                          }
+                                        } else {
+                                          return Text(
+                                              snapshot.error.toString());
+                                        }
+                                      }),
+                                  const Divider(
+                                    height: 30,
+                                    thickness: 1,
+                                    indent: 5,
+                                    endIndent: 5,
+                                    color: Colors.transparent,
+                                  ),
+
+                                  Text(
+                                    'Gyroscope Y',
+                                    style: GoogleFonts.nunito(
+                                      textStyle: const TextStyle(
+                                        color: Colors.indigo,
+                                        fontSize: 20,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ),
+                                  FutureBuilder<
+                                      List<
+                                          charts.Series<TimeSeriesRangeData,
+                                              DateTime>>>(
+                                      future: rangeSeriesListGy,
+                                      builder: (context, snapshot) {
+                                        if (snapshot.connectionState ==
+                                            ConnectionState.waiting) {
+                                          return SizedBox(
+                                            width: width * 0.9,
+                                            height: 200,
+                                            child: const SpinKitThreeInOut(
+                                              color: Colors.indigo,
+                                              size: 25.0,
+                                            ),
+                                          );
+                                        } else if (snapshot.hasData) {
+                                          final axList = snapshot.data;
+                                          if (axList!.isEmpty) {
+                                            return SizedBox(
+                                              width: width * 0.9,
+                                              height: 200,
+                                              child: const Center(
+                                                child: Text(
+                                                    'Data still processing'),
+                                              ),
+                                            );
+                                          } else {
+                                            return SizedBox(
+                                              width: width * 0.9,
+                                              height: 200,
+                                              child: charts.TimeSeriesChart(
+                                                axList,
+                                                defaultRenderer: charts.BarRendererConfig<DateTime>(
+                                                  groupingType: charts.BarGroupingType.stacked, strokeWidthPx: 0.0, maxBarWidthPx: 5, cornerStrategy: const charts.ConstCornerStrategy(4),),
+
+                                                defaultInteractions: false,
+                                                animate: true,
+                                                dateTimeFactory: const charts
+                                                    .LocalDateTimeFactory(),
+                                              ),
+                                            );
+                                          }
+                                        } else {
+                                          return Text(
+                                              snapshot.error.toString());
+                                        }
+                                      }),
+                                  const Divider(
+                                    height: 30,
+                                    thickness: 1,
+                                    indent: 5,
+                                    endIndent: 5,
+                                    color: Colors.transparent,
+                                  ),
+
+                                  Text(
+                                    'Gyroscope Z',
+                                    style: GoogleFonts.nunito(
+                                      textStyle: const TextStyle(
+                                        color: Colors.indigo,
+                                        fontSize: 20,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ),
+                                  FutureBuilder<
+                                      List<
+                                          charts.Series<TimeSeriesRangeData,
+                                              DateTime>>>(
+                                      future: rangeSeriesListGz,
+                                      builder: (context, snapshot) {
+                                        if (snapshot.connectionState ==
+                                            ConnectionState.waiting) {
+                                          return SizedBox(
+                                            width: width * 0.9,
+                                            height: 200,
+                                            child: const SpinKitThreeInOut(
+                                              color: Colors.indigo,
+                                              size: 25.0,
+                                            ),
+                                          );
+                                        } else if (snapshot.hasData) {
+                                          final axList = snapshot.data;
+                                          if (axList!.isEmpty) {
+                                            return SizedBox(
+                                              width: width * 0.9,
+                                              height: 200,
+                                              child: const Center(
+                                                child: Text(
+                                                    'Data still processing'),
+                                              ),
+                                            );
+                                          } else {
+                                            return SizedBox(
+                                              width: width * 0.9,
+                                              height: 200,
+                                              child: charts.TimeSeriesChart(
+                                                axList,
+                                                defaultRenderer: charts.BarRendererConfig<DateTime>(
+                                                  groupingType: charts.BarGroupingType.stacked, strokeWidthPx: 0.0, maxBarWidthPx: 5, cornerStrategy: const charts.ConstCornerStrategy(4),),
+
+                                                defaultInteractions: false,
+                                                animate: true,
+                                                dateTimeFactory: const charts
+                                                    .LocalDateTimeFactory(),
+                                              ),
+                                            );
+                                          }
+                                        } else {
+                                          return Text(
+                                              snapshot.error.toString());
+                                        }
+                                      }),
+                                  const Divider(
+                                    height: 30,
+                                    thickness: 1,
+                                    indent: 5,
+                                    endIndent: 5,
+                                    color: Colors.transparent,
+                                  ),
+
+                                  Text(
+                                    'Magnetometer X',
+                                    style: GoogleFonts.nunito(
+                                      textStyle: const TextStyle(
+                                        color: Colors.indigo,
+                                        fontSize: 20,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ),
+                                  FutureBuilder<
+                                      List<
+                                          charts.Series<TimeSeriesRangeData,
+                                              DateTime>>>(
+                                      future: rangeSeriesListMx,
+                                      builder: (context, snapshot) {
+                                        if (snapshot.connectionState ==
+                                            ConnectionState.waiting) {
+                                          return SizedBox(
+                                            width: width * 0.9,
+                                            height: 200,
+                                            child: const SpinKitThreeInOut(
+                                              color: Colors.indigo,
+                                              size: 25.0,
+                                            ),
+                                          );
+                                        } else if (snapshot.hasData) {
+                                          final axList = snapshot.data;
+                                          if (axList!.isEmpty) {
+                                            return SizedBox(
+                                              width: width * 0.9,
+                                              height: 200,
+                                              child: const Center(
+                                                child: Text(
+                                                    'Data still processing'),
+                                              ),
+                                            );
+                                          } else {
+                                            return SizedBox(
+                                              width: width * 0.9,
+                                              height: 200,
+                                              child: charts.TimeSeriesChart(
+                                                axList,
+                                                defaultRenderer: charts.BarRendererConfig<DateTime>(
+                                                  groupingType: charts.BarGroupingType.stacked, strokeWidthPx: 0.0, maxBarWidthPx: 5, cornerStrategy: const charts.ConstCornerStrategy(4),),
+
+                                                defaultInteractions: false,
+                                                animate: true,
+                                                dateTimeFactory: const charts
+                                                    .LocalDateTimeFactory(),
+                                              ),
+                                            );
+                                          }
+                                        } else {
+                                          return Text(
+                                              snapshot.error.toString());
+                                        }
+                                      }),
+                                  const Divider(
+                                    height: 30,
+                                    thickness: 1,
+                                    indent: 5,
+                                    endIndent: 5,
+                                    color: Colors.transparent,
+                                  ),
+
+                                  Text(
+                                    'Magnetometer Y',
+                                    style: GoogleFonts.nunito(
+                                      textStyle: const TextStyle(
+                                        color: Colors.indigo,
+                                        fontSize: 20,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ),
+                                  FutureBuilder<
+                                      List<
+                                          charts.Series<TimeSeriesRangeData,
+                                              DateTime>>>(
+                                      future: rangeSeriesListMy,
+                                      builder: (context, snapshot) {
+                                        if (snapshot.connectionState ==
+                                            ConnectionState.waiting) {
+                                          return SizedBox(
+                                            width: width * 0.9,
+                                            height: 200,
+                                            child: const SpinKitThreeInOut(
+                                              color: Colors.indigo,
+                                              size: 25.0,
+                                            ),
+                                          );
+                                        } else if (snapshot.hasData) {
+                                          final axList = snapshot.data;
+                                          if (axList!.isEmpty) {
+                                            return SizedBox(
+                                              width: width * 0.9,
+                                              height: 200,
+                                              child: const Center(
+                                                child: Text(
+                                                    'Data still processing'),
+                                              ),
+                                            );
+                                          } else {
+                                            return SizedBox(
+                                              width: width * 0.9,
+                                              height: 200,
+                                              child: charts.TimeSeriesChart(
+                                                axList,
+                                                defaultRenderer: charts.BarRendererConfig<DateTime>(
+                                                  groupingType: charts.BarGroupingType.stacked, strokeWidthPx: 0.0, maxBarWidthPx: 5, cornerStrategy: const charts.ConstCornerStrategy(4),),
+
+                                                defaultInteractions: false,
+                                                animate: true,
+                                                dateTimeFactory: const charts
+                                                    .LocalDateTimeFactory(),
+                                              ),
+                                            );
+                                          }
+                                        } else {
+                                          return Text(
+                                              snapshot.error.toString());
+                                        }
+                                      }),
+                                  const Divider(
+                                    height: 30,
+                                    thickness: 1,
+                                    indent: 5,
+                                    endIndent: 5,
+                                    color: Colors.transparent,
+                                  ),
+
+                                  Text(
+                                    'Magnetometer Z',
+                                    style: GoogleFonts.nunito(
+                                      textStyle: const TextStyle(
+                                        color: Colors.indigo,
+                                        fontSize: 20,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ),
+                                  FutureBuilder<
+                                      List<
+                                          charts.Series<TimeSeriesRangeData,
+                                              DateTime>>>(
+                                      future: rangeSeriesListMz,
+                                      builder: (context, snapshot) {
+                                        if (snapshot.connectionState ==
+                                            ConnectionState.waiting) {
+                                          return SizedBox(
+                                            width: width * 0.9,
+                                            height: 200,
+                                            child: const SpinKitThreeInOut(
+                                              color: Colors.indigo,
+                                              size: 25.0,
+                                            ),
+                                          );
+                                        } else if (snapshot.hasData) {
+                                          final axList = snapshot.data;
+                                          if (axList!.isEmpty) {
+                                            return SizedBox(
+                                              width: width * 0.9,
+                                              height: 200,
+                                              child: const Center(
+                                                child: Text(
+                                                    'Data still processing'),
+                                              ),
+                                            );
+                                          } else {
+                                            return SizedBox(
+                                              width: width * 0.9,
+                                              height: 200,
+                                              child: charts.TimeSeriesChart(
+                                                axList,
+                                                defaultRenderer: charts.BarRendererConfig<DateTime>(
+                                                  groupingType: charts.BarGroupingType.stacked, strokeWidthPx: 0.0, maxBarWidthPx: 5, cornerStrategy: const charts.ConstCornerStrategy(4),),
+
+                                                defaultInteractions: false,
+                                                animate: true,
+                                                dateTimeFactory: const charts
+                                                    .LocalDateTimeFactory(),
+                                              ),
+                                            );
+                                          }
+                                        } else {
+                                          return Text(
+                                              snapshot.error.toString());
+                                        }
+                                      }),
+                                  const Divider(
+                                    height: 30,
+                                    thickness: 1,
+                                    indent: 5,
+                                    endIndent: 5,
+                                    color: Colors.transparent,
+                                  ),
+
+
+                                ]),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+            ),
+        ),
+    );
   }
 }
