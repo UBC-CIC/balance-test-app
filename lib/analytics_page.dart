@@ -185,7 +185,7 @@ class _AnalyticsPageState extends State<AnalyticsPage> {
                                           return Row(
                                             children: [
                                               Text(
-                                                snapshot.data!=null? snapshot.data!.round().toString() : '-',
+                                                snapshot.data!=null? snapshot.data!.round().toString() : '',
                                                 style: GoogleFonts.nunito(
                                                   textStyle: const TextStyle(
                                                     color: Colors.black,
@@ -207,7 +207,7 @@ class _AnalyticsPageState extends State<AnalyticsPage> {
                                             ],
                                           );
                                         } else {
-                                          return Container(height: 30); // loading
+                                          return Container(height: 44); // loading
                                         }
                                       },
                                     ),
@@ -256,10 +256,22 @@ class _AnalyticsPageState extends State<AnalyticsPage> {
                                                         ));
                                                   }
                                                 } else {
-                                                  return const Text('-');
+                                                  return Text('-',
+                                                      style: GoogleFonts.nunito(
+                                                      textStyle: const TextStyle(
+                                                      color: Colors.black,
+                                                      fontSize: 18,
+                                                      fontWeight: FontWeight.bold,
+                                                  )));
                                                 }
                                               } else {
-                                                return const Text('-');
+                                                return Text('',
+                                                    style: GoogleFonts.nunito(
+                                                        textStyle: const TextStyle(
+                                                          color: Colors.black,
+                                                          fontSize: 18,
+                                                          fontWeight: FontWeight.bold,
+                                                        )));
                                               }
                                             })
                                       ],
@@ -341,7 +353,7 @@ class _AnalyticsPageState extends State<AnalyticsPage> {
                                           );
                                         } else {
                                           return Container(
-                                            height: 38,
+                                            height: 44,
                                           );
                                         }
                                       },
@@ -391,14 +403,22 @@ class _AnalyticsPageState extends State<AnalyticsPage> {
                                                         ));
                                                   }
                                                 } else {
-                                                  return Container(
-                                                    height: 1,
-                                                  );
+                                                  return Text('-',
+                                                      style: GoogleFonts.nunito(
+                                                          textStyle: const TextStyle(
+                                                            color: Colors.black,
+                                                            fontSize: 18,
+                                                            fontWeight: FontWeight.bold,
+                                                          )));
                                                 }
                                               } else {
-                                                return Container(
-                                                  height: 1,
-                                                );
+                                                return Text('',
+                                                    style: GoogleFonts.nunito(
+                                                        textStyle: const TextStyle(
+                                                          color: Colors.black,
+                                                          fontSize: 18,
+                                                          fontWeight: FontWeight.bold,
+                                                        )));
                                               }
                                             })
                                       ],

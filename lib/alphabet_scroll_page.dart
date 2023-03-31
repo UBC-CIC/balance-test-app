@@ -1,4 +1,5 @@
 import 'package:balance_test/clinic_patient_page.dart';
+import 'package:balance_test/models/PatientCustomListItem.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:azlistview/azlistview.dart';
@@ -14,7 +15,7 @@ class AlphabetScrollPage extends StatefulWidget {
     required this.parentCtx,
   }) : super(key: key);
 
-  final List<PatientListItem> patientList;
+  final List<PatientCustomListItem> patientList;
   final BuildContext parentCtx;
 
   @override
@@ -22,11 +23,12 @@ class AlphabetScrollPage extends StatefulWidget {
 }
 
 class _AZItem extends ISuspensionBean {
-  final String name;
+  final String firstName;
+  final String lastName;
   final String email;
   final String userID;
   final String tag;
-  _AZItem({required this.name, required this.email, required this.userID, required this.tag});
+  _AZItem({required this.firstName, required this.lastName, required this.email, required this.userID, required this.tag});
 
   @override
   String getSuspensionTag() => tag.toString();
@@ -41,14 +43,15 @@ class _AlphabetScrollPageState extends State<AlphabetScrollPage> {
     initList(widget.patientList);
   }
 
-  void initList(List<PatientListItem> items) {
+  void initList(List<PatientCustomListItem> items) {
     this.items = items
         .map(
           (item) => _AZItem(
-            name: item.name,
+            firstName: item.firstName,
+            lastName: item.lastName,
             email: item.email,
             userID: item.userID,
-            tag: item.name.isNotEmpty? item.name.substring(item.name.indexOf(" ") + 1, item.name.indexOf(" ") + 2).toUpperCase() : "",
+            tag: item.lastName.isNotEmpty? item.lastName.substring(0,1).toUpperCase() : "",
           ),
         )
         .toList();
@@ -87,7 +90,7 @@ class _AlphabetScrollPageState extends State<AlphabetScrollPage> {
             //Used to pop to main page instead of home
             MaterialPageRoute(
                 builder: (context) => ClinicPatientPage(
-                    name: item.name,
+                    name: "${item.firstName} ${item.lastName}",
                     userID: item.userID)));
       },
       child: Padding(
@@ -122,7 +125,7 @@ class _AlphabetScrollPageState extends State<AlphabetScrollPage> {
                               child: FittedBox(
                                 fit: BoxFit.scaleDown,
                                 child: Text(
-                                  item.name,
+                                  "${item.lastName}, ${item.firstName}",
                                   style: GoogleFonts.nunito(
                                     textStyle: const TextStyle(
                                       color: Color(0xff2A2A2A),

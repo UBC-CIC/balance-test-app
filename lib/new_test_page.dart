@@ -30,9 +30,7 @@ class _NewTestPageState extends State<NewTestPage> {
   static List<Test> testList = [];
 
   Future<List<Test>> queryTests() async {
-    print('''
-        NEW TEST PAGE USER ID ${widget.userID}
-      ''');
+
     try {
       var query = '''
         query MyQuery {

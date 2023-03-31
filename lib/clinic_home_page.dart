@@ -1,15 +1,11 @@
-import 'package:balance_test/TestDetailsListItem.dart';
-import 'package:balance_test/test_details_page.dart';
+import 'dart:convert';
+
+import 'package:amplify_flutter/amplify_flutter.dart';
+import 'package:balance_test/models/PatientCustomListItem.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:gaimon/gaimon.dart';
-import 'package:google_fonts/google_fonts.dart';
-import 'package:dropdown_button2/dropdown_button2.dart';
-import 'package:intl/intl.dart';
-
-import 'PatientListItem.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'alphabet_scroll_page.dart';
-
 
 class ClinicHomePage extends StatefulWidget {
   const ClinicHomePage({Key? key, required this.parentCtx, required this.userID}) : super(key: key);
@@ -26,120 +22,58 @@ class _ClinicHomePageState extends State<ClinicHomePage> {
 
   final controller = ScrollController();
 
-  List<PatientListItem> patientList = getTests();
 
-  static List<PatientListItem> getTests() {
-    const data = [
-      {
-        "name": "John Adams",
-        "email": "johndoe@gmail.com",
-        "userID": "1ec6234a-232a-415d-9d31-f059c2cc4afa",
-      },
-      {
-        "name": "Jane Doe",
-        "email": "janedoe@gmail.com",
-        "userID": "58a0a821-7529-4bd9-8838-1ba8a00c557d",
-      },
-      {
-        "name": "Robbie Mac",
-        "email": "robbiemac@gmail.com",
-        "userID": "58a0a821-7529-4bd9-8838-1ba8a00c557d",
-      },
-      {
-        "name": "Amanda Spence",
-        "email": "amandaspence@gmail.com",
-        "userID": "58a0a821-7529-4bd9-8838-1ba8a00c557d",
-      },
-      {
-        "name": "Palmer Mills",
-        "email": "palmermils@gmail.com",
-        "userID": "58a0a821-7529-4bd9-8838-1ba8a00c557d",
-      },
-      {
-        "name": "Sidney Monroe",
-        "email": "sidneymonroe@gmail.com",
-        "userID": "58a0a821-7529-4bd9-8838-1ba8a00c557d",
-      },
-      {
-        "name": "Caleb Monroe",
-        "email": "sidneymonroe@gmail.com",
-        "userID": "58a0a821-7529-4bd9-8838-1ba8a00c557d",
-      },
-      {
-        "name": "Derek Macdonald",
-        "email": "sidneymonroe@gmail.com",
-        "userID": "58a0a821-7529-4bd9-8838-1ba8a00c557d",
-      },
-      {
-        "name": "Edward Gibson",
-        "email": "sidneymonroe@gmail.com",
-        "userID": "58a0a821-7529-4bd9-8838-1ba8a00c557d",
-      },
-      {
-        "name": "Frank Liang",
-        "email": "sidneymonroe@gmail.com",
-        "userID": "58a0a821-7529-4bd9-8838-1ba8a00c557d",
-      },
-      {
-        "name": "Gabe Gilmour",
-        "email": "sidneymonroe@gmail.com",
-        "userID": "58a0a821-7529-4bd9-8838-1ba8a00c557d",
-      },
-      {
-        "name": "Harry Johnston",
-        "email": "sidneymonroe@gmail.com",
-        "userID": "58a0a821-7529-4bd9-8838-1ba8a00c557d",
-      },
-      {
-        "name": "Isaiah Edgar",
-        "email": "sidneymonroe@gmail.com",
-        "userID": "58a0a821-7529-4bd9-8838-1ba8a00c557d",
-      },
-      {
-        "name": "James Donaldson",
-        "email": "sidneymonroe@gmail.com",
-        "userID": "58a0a821-7529-4bd9-8838-1ba8a00c557d",
-      },
-      {
-        "name": "Kelly Dawson",
-        "email": "sidneymonroe@gmail.com",
-        "userID": "58a0a821-7529-4bd9-8838-1ba8a00c557d",
-      },
-      {
-        "name": "Larry Nelson",
-        "email": "sidneymonroe@gmail.com",
-        "userID": "58a0a821-7529-4bd9-8838-1ba8a00c557d",
-      },
-      {
-        "name": "Max Murphy",
-        "email": "sidneymonroe@gmail.com",
-        "userID": "58a0a821-7529-4bd9-8838-1ba8a00c557d",
-      },
-      {
-        "name": "Nolan Park",
-        "email": "sidneymonroe@gmail.com",
-        "userID": "58a0a821-7529-4bd9-8838-1ba8a00c557d",
-      },
-      {
-        "name": "Oswald Paterson",
-        "email": "sidneymonroe@gmail.com",
-        "userID": "58a0a821-7529-4bd9-8838-1ba8a00c557d",
-      },
-      {
-        "name": "Larry Paton",
-        "email": "sidneymonroe@gmail.com",
-        "userID": "58a0a821-7529-4bd9-8838-1ba8a00c557d",
-      },
-      {
-        "name": "Jared Watson",
-        "email": "sidneymonroe@gmail.com",
-        "userID": "58a0a821-7529-4bd9-8838-1ba8a00c557d",
-      },
-    ];
+  late Future<List<PatientCustomListItem>> futurePatientList;
 
-    List<PatientListItem> patientList = data.map<PatientListItem>(PatientListItem.fromJson).toList();
-    patientList.sort((a, b) => a.name.compareTo(b.name));
-    return patientList;
+  @override
+  void initState() {
+    super.initState();
+    futurePatientList = getPatientList();
+  }
+
+
+  Future<List<PatientCustomListItem>> getPatientList() async {
+
+    try {
+      var query = '''
+        query MyQuery {
+          getPatientsForCareprovider(care_provider_id: "${widget.userID}") {
+            email
+            first_name
+            last_name
+            patient_id
+          }
+        }
+      ''';
+      print(query);
+
+      final response = await Amplify.API
+          .query(request: GraphQLRequest<String>(document: query, variables: {'patient_id': widget.userID}))
+          .response;
+
+      if (response.data == null) {
+        print('errors: ${response.errors}');
+        return <PatientCustomListItem>[];
+      } else {
+        final testListJson = json.decode(response.data!);
+
+        List<PatientCustomListItem> tempList = [];
+
+        testListJson["getPatientsForCareprovider"].forEach((entry) {
+          tempList.add(PatientCustomListItem.fromJson(entry));
+        });
+
+        tempList.sort((a, b) =>
+            a.firstName.compareTo(
+                b.firstName));
+        return tempList;
+      }
+    } on ApiException catch (e) {
+      print('Query failed: $e');
+    }
+
+    return <PatientCustomListItem>[];
+
   }
 
 
@@ -147,12 +81,26 @@ class _ClinicHomePageState extends State<ClinicHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    double height = MediaQuery.of(context).size.height;
-    double width = MediaQuery.of(context).size.width;
-
-
-    return Expanded(child: AlphabetScrollPage(patientList: patientList, parentCtx: widget.parentCtx,));
-
+    return Expanded(
+      child: FutureBuilder<List<PatientCustomListItem>>(
+        future: futurePatientList,
+        builder: (context, snapshot) {
+          if (snapshot.hasData && snapshot.data!.isNotEmpty) {
+            return AlphabetScrollPage(
+              patientList: snapshot.data!,
+              parentCtx: widget.parentCtx,
+            );
+          } else if(snapshot.hasData && snapshot.data!.isEmpty){
+            return const Center(child: Text('No Patients Assigned'));
+          } else {
+            return const Center(
+                child: SpinKitThreeInOut(
+              color: Colors.indigo,
+              size: 50.0,
+            ));
+          }
+        },
+      ),
+    );
   }
-
 }

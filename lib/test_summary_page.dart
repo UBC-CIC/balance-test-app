@@ -205,7 +205,7 @@ class _TestSummaryState extends State<TestSummary> {
 
 
     final tempDir = await getTemporaryDirectory();
-    final tempFile = File(tempDir.path + '/recording.json')
+    final tempFile = File('${tempDir.path}/recording.json')
       ..createSync()
       ..writeAsStringSync(body);
 
@@ -250,7 +250,7 @@ class _TestSummaryState extends State<TestSummary> {
     }
   }
 
-  bool isNumericUsing_tryParse(String string) {
+  bool isNumber(String string) {
     // Null or empty string is not a number
     if (string == null || string.isEmpty) {
       return false;
@@ -271,7 +271,7 @@ class _TestSummaryState extends State<TestSummary> {
 
   void updateFilledStatus(String text) {
     if (clinicScoreController.text.isEmpty ||
-        isNumericUsing_tryParse(clinicScoreController.text) &&
+        isNumber(clinicScoreController.text) &&
             (clinicScoreController.text.isNotEmpty && int.parse(clinicScoreController.text) <= 100 && int.parse(clinicScoreController.text) >= 0)) {
       setState(() {
         showScoreInputWarning = false;
@@ -543,7 +543,7 @@ class _TestSummaryState extends State<TestSummary> {
                                   child: ElevatedButton(
                                       onPressed: () async {
                                         if (showScoreInputWarning) {
-                                        } else if (allowSharingStateVar == null || allowSharingStateVar == false) {
+                                        } else if (!widget.isClinicApp && (allowSharingStateVar == null || allowSharingStateVar == false)) {
                                           await showDialog<String>(
                                             context: context,
                                             builder: (BuildContext context) => CupertinoAlertDialog(

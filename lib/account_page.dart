@@ -1,5 +1,4 @@
 import 'package:amplify_flutter/amplify_flutter.dart';
-import 'package:balance_test/change_password_page.dart';
 import 'package:balance_test/countdown_selection_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -259,45 +258,6 @@ class _AccountPageState extends State<AccountPage> {
                             //   size: 20,
                             // ),
                             onTap: () {},
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                  SafeArea(
-                    child: SingleChildScrollView(
-                      child: CupertinoListSection.insetGrouped(
-                        header: Padding(
-                          padding: EdgeInsets.fromLTRB(0.05 * width, 0, 0, 0),
-                          child: const Text(
-                            'PASSWORD',
-                            style: TextStyle(
-                                fontWeight: FontWeight.w400,
-                                fontSize: 14,
-                                color: Color(0xffa4a3aa)),
-                          ),
-                        ),
-                        children: [
-                          CupertinoListTile(
-                            title: const Text(
-                              'Change Password',
-                              style: TextStyle(
-                                color: Color(0xff006CC6),
-                              ),
-                            ),
-                            // trailing: const Icon(
-                            //   CupertinoIcons.forward,
-                            //   color: Color(0xffc4c4c6),
-                            //   size: 20,
-                            // ),
-                            onTap: () {
-                              Navigator.push(
-                                  widget.parentCtx,
-                                  //Used to pop to main page instead of home
-                                  MaterialPageRoute(
-                                      builder: (context) =>
-                                          const ChangePasswordPage()));
-                            },
                           ),
                         ],
                       ),
