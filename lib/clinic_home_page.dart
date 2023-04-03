@@ -56,13 +56,12 @@ class _ClinicHomePageState extends State<ClinicHomePage> {
         return <PatientCustomListItem>[];
       } else {
         final testListJson = json.decode(response.data!);
-
+        print(testListJson);
         List<PatientCustomListItem> tempList = [];
-
         testListJson["getPatientsForCareprovider"].forEach((entry) {
           tempList.add(PatientCustomListItem.fromJson(entry));
         });
-
+        print(tempList);
         tempList.sort((a, b) =>
             a.firstName.compareTo(
                 b.firstName));

@@ -98,7 +98,6 @@ class _AppRouterState extends State<AppRouter> {
       userGroup = payload['cognito:groups'][0];
     }
 
-    print(userGroup);
 
     final cognitoAttributes = await Amplify.Auth.fetchUserAttributes();
     bool containsIdentityId = false;
@@ -131,11 +130,10 @@ class _AppRouterState extends State<AppRouter> {
 
 
 
-
     final Map<String, String> userAttributes = await fetchCurrentUserAttributes();
     print(userAttributes);
     if(userGroup == 'patient_user' && context.mounted) {
-    Navigator.of(context).pushReplacement(
+    Navigator.of(context).push(
       PageRouteBuilder(
         pageBuilder: (_, __, ___) => PatientApp(userAttributes: userAttributes,),
         transitionDuration: const Duration(milliseconds: 500),
@@ -144,7 +142,7 @@ class _AppRouterState extends State<AppRouter> {
 
     );
     } else if (userGroup == 'care_provider_user' && context.mounted){
-      Navigator.of(context).pushReplacement(
+      Navigator.of(context).push(
         PageRouteBuilder(
           pageBuilder: (_, __, ___) => ClinicApp(userAttributes: userAttributes,),
           transitionDuration: const Duration(milliseconds: 500),

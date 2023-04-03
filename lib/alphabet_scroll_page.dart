@@ -6,7 +6,6 @@ import 'package:azlistview/azlistview.dart';
 import 'package:gaimon/gaimon.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-import 'PatientListItem.dart';
 
 class AlphabetScrollPage extends StatefulWidget {
   const AlphabetScrollPage({
@@ -25,10 +24,9 @@ class AlphabetScrollPage extends StatefulWidget {
 class _AZItem extends ISuspensionBean {
   final String firstName;
   final String lastName;
-  final String email;
   final String userID;
   final String tag;
-  _AZItem({required this.firstName, required this.lastName, required this.email, required this.userID, required this.tag});
+  _AZItem({required this.firstName, required this.lastName, required this.userID, required this.tag});
 
   @override
   String getSuspensionTag() => tag.toString();
@@ -49,7 +47,6 @@ class _AlphabetScrollPageState extends State<AlphabetScrollPage> {
           (item) => _AZItem(
             firstName: item.firstName,
             lastName: item.lastName,
-            email: item.email,
             userID: item.userID,
             tag: item.lastName.isNotEmpty? item.lastName.substring(0,1).toUpperCase() : "",
           ),
