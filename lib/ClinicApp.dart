@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -10,6 +11,7 @@ class ClinicApp extends StatefulWidget {
 
   final String? title;
   final Map<String, String> userAttributes;
+
 
   @override
   State<ClinicApp> createState() => _ClinicAppState();

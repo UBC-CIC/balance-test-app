@@ -1,6 +1,7 @@
 import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:balance_test/past_tests_page.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
@@ -16,6 +17,7 @@ class PatientApp extends StatefulWidget {
 
   final String? title;
   final Map<String, String> userAttributes;
+
 
   @override
   State<PatientApp> createState() => _PatientAppState();
@@ -146,6 +148,7 @@ class _PatientAppState extends State<PatientApp> {
         familyName: widget.userAttributes['family_name']!,
         userID: widget.userAttributes['custom:identity_id']!,
         email: widget.userAttributes['email']!,
+
       ),
     ];
 

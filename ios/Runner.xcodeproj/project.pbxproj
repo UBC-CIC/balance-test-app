@@ -229,7 +229,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "/bin/sh \"$FLUTTER_ROOT/packages/flutter_tools/bin/xcode_backend.sh\" build";
+			shellScript = "/bin/sh \"$FLUTTER_ROOT/packages/flutter_tools/bin/xcode_backend.sh\" build\n";
 		};
 		DB875A4FF9A1CDCD9A1B4983 /* [CP] Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -363,7 +363,7 @@
 				CURRENT_PROJECT_VERSION = "$(FLUTTER_BUILD_NUMBER)";
 				DEVELOPMENT_TEAM = 28VCPGPA44;
 				ENABLE_BITCODE = NO;
-				INFOPLIST_FILE = "/Users/tim/Documents/UBC CIC Code/balance_test/ios/Runner/Info-Debug.plist";
+				INFOPLIST_FILE = "/Users/tim/Documents/UBC_CIC_Code/balance_test_app/ios/Runner/Info-Debug.plist";
 				INFOPLIST_KEY_CFBundleDisplayName = "UBC CIC Balance Test";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.medical";
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -495,7 +495,7 @@
 				CURRENT_PROJECT_VERSION = "$(FLUTTER_BUILD_NUMBER)";
 				DEVELOPMENT_TEAM = 28VCPGPA44;
 				ENABLE_BITCODE = NO;
-				INFOPLIST_FILE = "/Users/tim/Documents/UBC CIC Code/balance_test/ios/Runner/Info-Debug.plist";
+				INFOPLIST_FILE = "/Users/tim/Documents/UBC_CIC_Code/balance_test_app/ios/Runner/Info-Debug.plist";
 				INFOPLIST_KEY_CFBundleDisplayName = "UBC CIC Balance Test";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.medical";
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -521,7 +521,7 @@
 				CURRENT_PROJECT_VERSION = "$(FLUTTER_BUILD_NUMBER)";
 				DEVELOPMENT_TEAM = 28VCPGPA44;
 				ENABLE_BITCODE = NO;
-				INFOPLIST_FILE = "/Users/tim/Documents/UBC CIC Code/balance_test/ios/Runner/Info-Release.plist";
+				INFOPLIST_FILE = "/Users/tim/Documents/UBC_CIC_Code/balance_test_app/ios/Runner/Info-Release.plist";
 				INFOPLIST_KEY_CFBundleDisplayName = "UBC CIC Balance Test";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.medical";
 				LD_RUNPATH_SEARCH_PATHS = (

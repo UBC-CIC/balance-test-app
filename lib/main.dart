@@ -2,19 +2,16 @@ import 'package:amplify_auth_cognito/amplify_auth_cognito.dart';
 import 'package:amplify_authenticator/amplify_authenticator.dart';
 import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:amplify_storage_s3/amplify_storage_s3.dart';
-import 'package:balance_test/ClinicApp.dart';
-import 'package:balance_test/PatientApp.dart';
-import 'package:balance_test/account_page.dart';
-import 'package:balance_test/clinic_home_page.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:jwt_decode/jwt_decode.dart';
 
+import 'ClinicApp.dart';
+import 'PatientApp.dart';
 import 'amplifyconfiguration.dart';
+import 'package:amplify_api/amplify_api.dart';
 
 import 'package:balance_test/models//ModelProvider.dart';
-import 'package:amplify_api/amplify_api.dart';
 
 void main() {
   runApp(const MyApp());
@@ -61,10 +58,13 @@ class _AppRouterState extends State<AppRouter> {
   void initState() {
     super.initState();
     _checkUserSignIn();
+
   }
 
-  Future<void> _checkUserSignIn() async {
 
+
+
+  Future<void> _checkUserSignIn() async {
     await _configureAmplify();
 
     AuthSession result = await Amplify.Auth.fetchAuthSession();
@@ -75,8 +75,8 @@ class _AppRouterState extends State<AppRouter> {
       await Future.delayed(const Duration(seconds: 1));
       result = await Amplify.Auth.fetchAuthSession();
     }
-    await Future.delayed(const Duration(seconds: 1));
 
+    // Wait for user group to be assigned if not assigned
 
     AuthSession authSession = await Amplify.Auth.fetchAuthSession(
       options: CognitoSessionOptions(getAWSCredentials: true),
@@ -86,7 +86,8 @@ class _AppRouterState extends State<AppRouter> {
     Map<String, dynamic> payload = Jwt.parseJwt(token);
     // Access the groups
     String userGroup = payload['cognito:groups'][0];
-    while(userGroup!='patient_user' && userGroup!='care_provider_user') {
+
+    while (userGroup != 'patient_user' && userGroup != 'care_provider_user') {
       print(userGroup);
       print('CHECKING USER GROUP');
       await Future.delayed(const Duration(seconds: 1));
@@ -98,16 +99,17 @@ class _AppRouterState extends State<AppRouter> {
       userGroup = payload['cognito:groups'][0];
     }
 
+    // Assign identity id to cognito custom attributes if not already assigned
 
     final cognitoAttributes = await Amplify.Auth.fetchUserAttributes();
     bool containsIdentityId = false;
-    for(AuthUserAttribute attribute in cognitoAttributes){
+    for (AuthUserAttribute attribute in cognitoAttributes) {
       print(attribute.userAttributeKey.key);
-      if(attribute.userAttributeKey.key == 'custom:identity_id' && attribute.value.isNotEmpty) {
+      if (attribute.userAttributeKey.key == 'custom:identity_id' && attribute.value.isNotEmpty) {
         containsIdentityId = true;
       }
     }
-    if(containsIdentityId==false) {
+    if (containsIdentityId == false) {
       final authSession = await Amplify.Auth.fetchAuthSession(
         options: CognitoSessionOptions(getAWSCredentials: true),
       );
@@ -129,22 +131,53 @@ class _AppRouterState extends State<AppRouter> {
     }
 
 
+    // Route to new page
 
     final Map<String, String> userAttributes = await fetchCurrentUserAttributes();
     print(userAttributes);
-    if(userGroup == 'patient_user' && context.mounted) {
-    Navigator.of(context).push(
-      PageRouteBuilder(
-        pageBuilder: (_, __, ___) => PatientApp(userAttributes: userAttributes,),
-        transitionDuration: const Duration(milliseconds: 500),
-        transitionsBuilder: (_, a, __, c) => FadeTransition(opacity: a, child: c),
-      ),
+    if (userGroup == 'patient_user') {
+      try {
+        var query = '''
+            mutation MyMutation2 {
+              createPatient(patient_id: "${userAttributes['custom:identity_id']}", email: "${userAttributes['email']}", first_name: "${userAttributes['given_name']}", last_name: "${userAttributes['family_name']}") {
+                email
+                first_name
+                last_name
+                patient_id
+              }
+            }
+          ''';
 
-    );
-    } else if (userGroup == 'care_provider_user' && context.mounted){
+        final response = await Amplify.API
+            .query(request: GraphQLRequest<String>(document: query, variables: {'patient_id': "${userAttributes['custom:identity_id']}"}))
+            .response;
+
+        if (response.data == null) {
+          print('errors: ${response.errors}');
+        } else {
+          print(response.data);
+        }
+      } on ApiException catch (e) {
+        print('Query failed: $e');
+      }
+      if(context.mounted) {
+        Navigator.of(context).push(
+          PageRouteBuilder(
+            pageBuilder: (_, __, ___) =>
+                PatientApp(
+                  userAttributes: userAttributes,
+                ),
+            transitionDuration: const Duration(milliseconds: 500),
+            transitionsBuilder: (_, a, __, c) => FadeTransition(opacity: a, child: c),
+          ),
+        );
+      }
+    } else if (userGroup == 'care_provider_user' && context.mounted) {
       Navigator.of(context).push(
         PageRouteBuilder(
-          pageBuilder: (_, __, ___) => ClinicApp(userAttributes: userAttributes,),
+          pageBuilder: (_, __, ___) => ClinicApp(
+            userAttributes: userAttributes,
+          ),
           transitionDuration: const Duration(milliseconds: 500),
           transitionsBuilder: (_, a, __, c) => FadeTransition(opacity: a, child: c),
         ),
@@ -152,10 +185,8 @@ class _AppRouterState extends State<AppRouter> {
     }
   }
 
-
-  Future<bool> _configureAmplify() async{
-    final api = AmplifyAPI(modelProvider: ModelProvider.instance,
-    authProviders: const [CustomFunctionProvider()]);
+  Future<bool> _configureAmplify() async {
+    final api = AmplifyAPI(modelProvider: ModelProvider.instance, authProviders: const [CustomFunctionProvider()]);
     try {
       await Amplify.addPlugin(AmplifyAuthCognito());
       await Amplify.addPlugin(AmplifyStorageS3());
@@ -171,6 +202,7 @@ class _AppRouterState extends State<AppRouter> {
       return false;
     }
   }
+
 
   Future<Map<String, String>> fetchCurrentUserAttributes() async {
     if (authInfo.isEmpty) {
@@ -199,21 +231,15 @@ class _AppRouterState extends State<AppRouter> {
 
   @override
   Widget build(BuildContext mainCtx) {
-    double height = MediaQuery.of(mainCtx).size.height;
-    double width = MediaQuery.of(mainCtx).size.width;
 
     SystemChrome.setPreferredOrientations([
       DeviceOrientation.portraitUp,
     ]);
 
-
-
-
     return Authenticator(
 // builder used to show a custom sign in and sign up experience
         authenticatorBuilder: (BuildContext context, AuthenticatorState state) {
-          const padding =
-              EdgeInsets.only(left: 16, right: 16, top: 48, bottom: 16);
+          const padding = EdgeInsets.only(left: 16, right: 16, top: 48, bottom: 16);
           switch (state.currentStep) {
             case AuthenticatorStep.signIn:
               return Scaffold(
@@ -282,7 +308,8 @@ class _AppRouterState extends State<AppRouter> {
               return null;
           }
         },
-        child: MaterialApp(// set the default theme
+        child: MaterialApp(
+          // set the default theme
           theme: ThemeData.from(
             colorScheme: ColorScheme.fromSwatch(
               primarySwatch: Colors.indigo,
@@ -295,19 +322,18 @@ class _AppRouterState extends State<AppRouter> {
           builder: Authenticator.builder(),
           home: const Scaffold(
             body: Center(
-              child: Text('Balance Test',
-              style: TextStyle(
-                fontFamily: 'DMSans-Medium',
-                fontWeight: FontWeight.w600,
-                fontSize: 30,
-              )),
+              child:
+              Text('Balance Test',
+                  style: TextStyle(
+                    fontFamily: 'DMSans-Medium',
+                    fontWeight: FontWeight.w600,
+                    fontSize: 30,
+                  )),
             ),
           ),
         ));
   }
 }
-
-
 
 class CustomFunctionProvider extends FunctionAuthProvider {
   const CustomFunctionProvider();
@@ -322,5 +348,3 @@ class CustomFunctionProvider extends FunctionAuthProvider {
     return token;
   }
 }
-
-

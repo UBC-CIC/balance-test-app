@@ -12,7 +12,7 @@ class AccountPage extends StatefulWidget {
       required this.givenName,
       required this.familyName,
       required this.userID,
-      required this.email
+      required this.email,
    })
       : super(key: key);
 
@@ -21,6 +21,7 @@ class AccountPage extends StatefulWidget {
   final String familyName;
   final String userID;
   final String email;
+
 
   @override
   State<AccountPage> createState() => _AccountPageState();
@@ -96,19 +97,6 @@ class _AccountPageState extends State<AccountPage> {
       }
     } else {
       return const Text('');
-    }
-  }
-
-  void signOut() async {
-    try {
-      await Amplify.Auth.signOut();
-      showResult('Signed   Out');
-      changeDisplay('SHOW_SIGN_IN');
-    } on AmplifyException catch (e) {
-      setState(() {
-        _error = e;
-      });
-      print(e);
     }
   }
 
@@ -330,7 +318,17 @@ class _AccountPageState extends State<AccountPage> {
                         height: 52,
                         width: 112,
                         child: ElevatedButton(
-                          onPressed: signOut,
+                          onPressed: () async {
+                              try {
+                                await Amplify.Auth.signOut();
+                                if(widget.parentCtx.mounted){
+                                  Navigator.pop(widget.parentCtx);
+                                }
+
+                              } on AmplifyException catch (e) {
+                                print(e);
+                              }
+                          },
                           style: ElevatedButton.styleFrom(
                               elevation: 0,
                               backgroundColor: const Color(0xff006CC6),
