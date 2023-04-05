@@ -121,7 +121,7 @@ class _AppRouterState extends State<AppRouter> {
     bool containsIdentityId = false;
     for (AuthUserAttribute attribute in cognitoAttributes) {
       print(attribute.userAttributeKey.key);
-      if (attribute.userAttributeKey.key == 'custom:identity_id' && attribute.value.isNotEmpty) {
+      if (attribute.userAttributeKey.key == 'custom:identity_id' && attribute.value.isNotEmpty && attribute.value != 'null') {
         containsIdentityId = true;
       }
     }

@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'package:amplify_flutter/amplify_flutter.dart';
-import 'package:balance_test/TestDetail.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
@@ -479,7 +478,7 @@ class _SitToStandAnalyticsPageState extends State<SitToStandAnalyticsPage> {
                                               child: charts.TimeSeriesChart(
                                                 axList,
                                                 defaultRenderer: charts.BarRendererConfig<DateTime>(
-                                                    groupingType: charts.BarGroupingType.stacked, strokeWidthPx: 0.0, maxBarWidthPx: 5, cornerStrategy: const charts.ConstCornerStrategy(4),),
+                                                    groupingType: charts.BarGroupingType.stacked, strokeWidthPx: 0.0, maxBarWidthPx: 3, cornerStrategy: const charts.ConstCornerStrategy(4),),
 
                                                 defaultInteractions: false,
                                                 animate: true,
@@ -545,7 +544,7 @@ class _SitToStandAnalyticsPageState extends State<SitToStandAnalyticsPage> {
                                               child: charts.TimeSeriesChart(
                                                 axList,
                                                 defaultRenderer: charts.BarRendererConfig<DateTime>(
-                                                  groupingType: charts.BarGroupingType.stacked, strokeWidthPx: 0.0, maxBarWidthPx: 5, cornerStrategy: const charts.ConstCornerStrategy(4),),
+                                                  groupingType: charts.BarGroupingType.stacked, strokeWidthPx: 0.0, maxBarWidthPx: 3, cornerStrategy: const charts.ConstCornerStrategy(4),),
 
                                                 defaultInteractions: false,
                                                 animate: true,
@@ -611,7 +610,7 @@ class _SitToStandAnalyticsPageState extends State<SitToStandAnalyticsPage> {
                                               child: charts.TimeSeriesChart(
                                                 axList,
                                                 defaultRenderer: charts.BarRendererConfig<DateTime>(
-                                                  groupingType: charts.BarGroupingType.stacked, strokeWidthPx: 0.0, maxBarWidthPx: 5, cornerStrategy: const charts.ConstCornerStrategy(4),),
+                                                  groupingType: charts.BarGroupingType.stacked, strokeWidthPx: 0.0, maxBarWidthPx: 3, cornerStrategy: const charts.ConstCornerStrategy(4),),
 
                                                 defaultInteractions: false,
                                                 animate: true,
@@ -677,7 +676,7 @@ class _SitToStandAnalyticsPageState extends State<SitToStandAnalyticsPage> {
                                               child: charts.TimeSeriesChart(
                                                 axList,
                                                 defaultRenderer: charts.BarRendererConfig<DateTime>(
-                                                  groupingType: charts.BarGroupingType.stacked, strokeWidthPx: 0.0, maxBarWidthPx: 5, cornerStrategy: const charts.ConstCornerStrategy(4),),
+                                                  groupingType: charts.BarGroupingType.stacked, strokeWidthPx: 0.0, maxBarWidthPx: 3, cornerStrategy: const charts.ConstCornerStrategy(4),),
 
                                                 defaultInteractions: false,
                                                 animate: true,
@@ -743,7 +742,7 @@ class _SitToStandAnalyticsPageState extends State<SitToStandAnalyticsPage> {
                                               child: charts.TimeSeriesChart(
                                                 axList,
                                                 defaultRenderer: charts.BarRendererConfig<DateTime>(
-                                                  groupingType: charts.BarGroupingType.stacked, strokeWidthPx: 0.0, maxBarWidthPx: 5, cornerStrategy: const charts.ConstCornerStrategy(4),),
+                                                  groupingType: charts.BarGroupingType.stacked, strokeWidthPx: 0.0, maxBarWidthPx: 3, cornerStrategy: const charts.ConstCornerStrategy(4),),
 
                                                 defaultInteractions: false,
                                                 animate: true,
@@ -809,7 +808,7 @@ class _SitToStandAnalyticsPageState extends State<SitToStandAnalyticsPage> {
                                               child: charts.TimeSeriesChart(
                                                 axList,
                                                 defaultRenderer: charts.BarRendererConfig<DateTime>(
-                                                  groupingType: charts.BarGroupingType.stacked, strokeWidthPx: 0.0, maxBarWidthPx: 5, cornerStrategy: const charts.ConstCornerStrategy(4),),
+                                                  groupingType: charts.BarGroupingType.stacked, strokeWidthPx: 0.0, maxBarWidthPx: 3, cornerStrategy: const charts.ConstCornerStrategy(4),),
 
                                                 defaultInteractions: false,
                                                 animate: true,
@@ -875,7 +874,7 @@ class _SitToStandAnalyticsPageState extends State<SitToStandAnalyticsPage> {
                                               child: charts.TimeSeriesChart(
                                                 axList,
                                                 defaultRenderer: charts.BarRendererConfig<DateTime>(
-                                                  groupingType: charts.BarGroupingType.stacked, strokeWidthPx: 0.0, maxBarWidthPx: 5, cornerStrategy: const charts.ConstCornerStrategy(4),),
+                                                  groupingType: charts.BarGroupingType.stacked, strokeWidthPx: 0.0, maxBarWidthPx: 3, cornerStrategy: const charts.ConstCornerStrategy(4),),
 
                                                 defaultInteractions: false,
                                                 animate: true,
@@ -941,7 +940,7 @@ class _SitToStandAnalyticsPageState extends State<SitToStandAnalyticsPage> {
                                               child: charts.TimeSeriesChart(
                                                 axList,
                                                 defaultRenderer: charts.BarRendererConfig<DateTime>(
-                                                  groupingType: charts.BarGroupingType.stacked, strokeWidthPx: 0.0, maxBarWidthPx: 5, cornerStrategy: const charts.ConstCornerStrategy(4),),
+                                                  groupingType: charts.BarGroupingType.stacked, strokeWidthPx: 0.0, maxBarWidthPx: 3, cornerStrategy: const charts.ConstCornerStrategy(4),),
 
                                                 defaultInteractions: false,
                                                 animate: true,
@@ -1007,7 +1006,7 @@ class _SitToStandAnalyticsPageState extends State<SitToStandAnalyticsPage> {
                                               child: charts.TimeSeriesChart(
                                                 axList,
                                                 defaultRenderer: charts.BarRendererConfig<DateTime>(
-                                                  groupingType: charts.BarGroupingType.stacked, strokeWidthPx: 0.0, maxBarWidthPx: 5, cornerStrategy: const charts.ConstCornerStrategy(4),),
+                                                  groupingType: charts.BarGroupingType.stacked, strokeWidthPx: 0.0, maxBarWidthPx: 3, cornerStrategy: const charts.ConstCornerStrategy(4),),
 
                                                 defaultInteractions: false,
                                                 animate: true,

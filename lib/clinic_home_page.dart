@@ -45,7 +45,6 @@ class _ClinicHomePageState extends State<ClinicHomePage> {
           }
         }
       ''';
-      print(query);
 
       final response = await Amplify.API
           .query(request: GraphQLRequest<String>(document: query, variables: {'patient_id': widget.userID}))

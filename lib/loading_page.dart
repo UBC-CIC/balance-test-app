@@ -1,6 +1,8 @@
 import 'package:balance_test/my_folding_cube.dart';
 import 'package:flutter/material.dart';
 import 'my_animated_check.dart';
+import 'package:animated_cross/animated_cross.dart';
+
 
 class Loading extends StatefulWidget {
   const Loading({Key? key, required this.showCheckmark}) : super(key: key);
@@ -59,12 +61,19 @@ class _LoadingState extends State<Loading> with SingleTickerProviderStateMixin {
                   child: ValueListenableBuilder(
                     valueListenable: widget.showCheckmark,
                     builder: (context, value, child) {
-                      if (value == true) {
+                      if (value == 'success') {
                         _animationController.forward();
                         return AnimatedCheck(
                           progress: _animation,
                           size: 110,
                           color: Colors.indigo,
+                        );
+                      } else if (value == 'failed') {
+                        _animationController.forward();
+                        return AnimatedCross(
+                          progress: _animation,
+                          size: 110,
+                          color: Colors.redAccent,
                         );
                       } else {
                         return const MyFoldingCube(

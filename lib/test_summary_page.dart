@@ -60,7 +60,8 @@ class TestSummary extends StatefulWidget {
 
 class _TestSummaryState extends State<TestSummary> {
   //VARIABLES
-  final _showCheck = ValueNotifier<bool>(false);
+  final uploadResult = ValueNotifier<String>('none');
+
   final controller = ScrollController();
 
   var uuid = const Uuid();
@@ -92,28 +93,39 @@ class _TestSummaryState extends State<TestSummary> {
       barrierDismissible: false,
       context: context,
       builder: (BuildContext context) {
-        return Loading(showCheckmark: _showCheck);
+        return Loading(showCheckmark: uploadResult);
       },
     );
     postRequest().then((value) {
-      Gaimon.success();
-      FlutterRingtonePlayer.play(
-        android: AndroidSounds.alarm,
-        ios: const IosSound(1407),
-        looping: false,
-        volume: 1.0,
-      );
-      print("returned from post request");
-      _showCheck.value = true;
-      Future.delayed(const Duration(seconds: 2), () {
-        setState(() {
-          _showCheck.value = false;
-          Navigator.pop(context);
-          Navigator.pop(context);
-          Navigator.pop(context);
-          Navigator.pop(context);
+      if (value == true) {
+        Gaimon.success();
+        FlutterRingtonePlayer.play(
+          android: AndroidSounds.alarm,
+          ios: const IosSound(1407),
+          looping: false,
+          volume: 1.0,
+        );
+        print("returned from post request");
+        uploadResult.value = 'success';
+        Future.delayed(const Duration(seconds: 2), () {
+          setState(() {
+            uploadResult.value = 'none';
+            Navigator.pop(context);
+            Navigator.pop(context);
+            Navigator.pop(context);
+            Navigator.pop(context);
+          });
         });
-      });
+      } else {
+        Gaimon.error();
+        uploadResult.value = 'failed';
+        Future.delayed(const Duration(seconds: 2), () {
+          setState(() {
+            uploadResult.value = 'none';
+            Navigator.pop(context);
+          });
+        });
+      }
     });
   }
 
@@ -131,7 +143,7 @@ class _TestSummaryState extends State<TestSummary> {
   }
 
   // Future<http.Response> postRequest() async {
-  Future<void> postRequest() async {
+  Future<bool> postRequest() async {
     String testID = uuid.v4();
 
     DateTime now = DateTime.now();
@@ -203,28 +215,10 @@ class _TestSummaryState extends State<TestSummary> {
     String key =
         'movement=${widget.movementType}/year=${now.year.toString()}/month=${now.month.toString()}/day=${now.day.toString()}/test_event_id=$testID.json';
 
-
     final tempDir = await getTemporaryDirectory();
     final tempFile = File('${tempDir.path}/recording.json')
       ..createSync()
       ..writeAsStringSync(body);
-
-    // Upload the file to S3
-    try {
-      print('uploading to s3');
-      final UploadFileResult result = await Amplify.Storage.uploadFile(
-          local: tempFile,
-          options: UploadFileOptions(
-            accessLevel: StorageAccessLevel.private,
-          ),
-          key: key,
-          onProgress: (progress) {
-            safePrint('Fraction completed: ${progress.getFractionCompleted()}');
-          });
-      safePrint('Successfully uploaded file: ${result.key}');
-    } on StorageException catch (e) {
-      safePrint('Error uploading file: $e');
-    }
 
     //Upload to RDS
     try {
@@ -247,7 +241,41 @@ class _TestSummaryState extends State<TestSummary> {
       await Amplify.API.query(request: GraphQLRequest<String>(document: query, variables: {'patient_id': widget.userID})).response;
     } on ApiException catch (e) {
       print('Query failed: $e');
+      return false;
     }
+
+    // Upload the file to S3
+    try {
+      print('uploading to s3');
+      final UploadFileResult result = await Amplify.Storage.uploadFile(
+          local: tempFile,
+          options: UploadFileOptions(
+            accessLevel: StorageAccessLevel.private,
+          ),
+          key: key,
+          onProgress: (progress) {
+            safePrint('Fraction completed: ${progress.getFractionCompleted()}');
+          });
+      safePrint('Successfully uploaded file: ${result.key}');
+    } on StorageException catch (e) {
+      try {
+        print('deleting from rds');
+
+        var query = '''
+        mutation MyMutation {
+          deleteTestEventFromDB(patient_id: "${widget.userID}", test_event_id: "$testID")
+        }
+      ''';
+
+        await Amplify.API.query(request: GraphQLRequest<String>(document: query, variables: {'patient_id': widget.userID})).response;
+      } on ApiException catch (e) {
+        print('Query failed: $e');
+        return false;
+      }
+      safePrint('Error uploading file: $e');
+      return false;
+    }
+    return true;
   }
 
   bool isNumber(String string) {
@@ -317,258 +345,256 @@ class _TestSummaryState extends State<TestSummary> {
         elevation: 0,
         backgroundColor: Colors.transparent,
       ),
-      body: FadingEdgeScrollView.fromSingleChildScrollView(
-        child: SingleChildScrollView(
-          controller: controller,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              Padding(
-                padding: const EdgeInsets.fromLTRB(0, 30, 0, 0),
-                child: Center(
-                  child: Card(
-                    color: Colors.white,
-                    elevation: 10,
-                    shadowColor: Colors.white70,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(15.0),
-                    ),
-                    child: SizedBox(
-                      width: width * 0.9,
-                      height: null,
-                      child: Column(
-                        //crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.fromLTRB(26.0, 20, 26, 0),
-                            child: Column(
-                              children: [
-                                Padding(
-                                  padding: const EdgeInsets.fromLTRB(0, 0, 0, 10),
-                                  child: Row(
-                                    children: const [
-                                      Text(
-                                        'Summary',
-                                        style: TextStyle(
-                                          color: Color(0xff2A2A2A),
-                                          fontFamily: 'DMSans-Medium',
-                                          fontSize: 32,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.fromLTRB(0, 7, 0, 7),
-                                  child: Row(
-                                    crossAxisAlignment: CrossAxisAlignment.center,
-                                    children: [
-                                      const Icon(
-                                        Icons.accessibility_new_rounded,
-                                        size: 55,
-                                        color: Colors.indigo,
-                                      ),
-                                      Padding(
-                                        padding: const EdgeInsets.fromLTRB(25, 0, 0, 0),
-                                        child: Column(
-                                          crossAxisAlignment: CrossAxisAlignment.start,
-                                          children: [
-                                            const Text(
-                                              'Movement',
-                                              style: TextStyle(
-                                                color: Colors.indigo,
-                                                fontFamily: 'DMSans-Medium',
-                                                fontSize: 18,
-                                              ),
-                                            ),
-                                            Text(
-                                              movementType,
-                                              style: const TextStyle(
-                                                color: Color(0xff2A2A2A),
-                                                fontFamily: 'DMSans-Medium',
-                                                fontSize: 26,
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.fromLTRB(0, 7, 0, 18),
-                                  child: Row(
-                                    crossAxisAlignment: CrossAxisAlignment.center,
-                                    children: [
-                                      const Icon(
-                                        Icons.access_time_rounded,
-                                        size: 55,
-                                        color: Colors.indigo,
-                                      ),
-                                      Padding(
-                                        padding: const EdgeInsets.fromLTRB(25, 0, 0, 0),
-                                        child: Column(
-                                          crossAxisAlignment: CrossAxisAlignment.start,
-                                          children: [
-                                            const Text(
-                                              'Test Duration',
-                                              style: TextStyle(
-                                                color: Colors.indigo,
-                                                fontFamily: 'DMSans-Medium',
-                                                fontSize: 18,
-                                              ),
-                                            ),
-                                            Text(
-                                              '$timeElapsed sec',
-                                              style: const TextStyle(
-                                                color: Color(0xff2A2A2A),
-                                                fontFamily: 'DMSans-Medium',
-                                                fontSize: 26,
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                          widget.isClinicApp
-                              ? Column(
-                                  children: [
-                                    Padding(
-                                      padding: EdgeInsets.fromLTRB(0.05 * width, 0.02 * height, 0.05 * width, 0),
-                                      child: Container(
-                                        decoration: BoxDecoration(color: const Color(0x0A3F51B5), borderRadius: BorderRadius.circular(10)),
-                                        padding: EdgeInsets.fromLTRB(0.06 * width, 8, 0, 6),
-                                        child: Column(
-                                          mainAxisSize: MainAxisSize.min,
-                                          children: [
-                                            CupertinoTextField.borderless(
-                                              controller: clinicScoreController,
-                                              maxLength: 3,
-                                              onChanged: updateFilledStatus,
-                                              keyboardType: const TextInputType.numberWithOptions(signed: true, decimal: false),
-                                              padding: const EdgeInsets.only(left: 45, top: 6, right: 6, bottom: 6),
-                                              prefix: const Text(
-                                                'Assign Score',
-                                                style: TextStyle(fontSize: 16),
-                                              ),
-                                              placeholder: 'Optional',
-                                            ),
-                                          ],
-                                        ),
+      body: SingleChildScrollView(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            Padding(
+              padding: const EdgeInsets.fromLTRB(0, 30, 0, 0),
+              child: Center(
+                child: Card(
+                  color: Colors.white,
+                  elevation: 10,
+                  shadowColor: Colors.white70,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(15.0),
+                  ),
+                  child: SizedBox(
+                    width: width * 0.9,
+                    height: null,
+                    child: Column(
+                      //crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.fromLTRB(26.0, 20, 26, 0),
+                          child: Column(
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.fromLTRB(0, 0, 0, 10),
+                                child: Row(
+                                  children: const [
+                                    Text(
+                                      'Summary',
+                                      style: TextStyle(
+                                        color: Color(0xff2A2A2A),
+                                        fontFamily: 'DMSans-Medium',
+                                        fontSize: 32,
                                       ),
                                     ),
-                                    showScoreInputWarning
-                                        ? Padding(
-                                            padding: EdgeInsets.fromLTRB(0.1 * width, 10, 0.05 * width, 0),
-                                            child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: const [
-                                              Padding(
-                                                  padding: EdgeInsets.fromLTRB(0, 0, 3, 0),
-                                                  child: Icon(
-                                                    CupertinoIcons.exclamationmark_circle,
-                                                    size: 16,
-                                                    color: Colors.red,
-                                                  )),
-                                              Flexible(
-                                                child: Text(
-                                                  'Please enter a score between 0-100',
-                                                  style: TextStyle(fontSize: 15, color: Colors.red),
-                                                ),
-                                              )
-                                            ]),
-                                          )
-                                        : Container(),
                                   ],
-                                )
-                              : Container(),
-                          Padding(
-                            padding: const EdgeInsets.fromLTRB(0, 20, 0, 0),
-                            child: SizedBox(
-                              height: 270,
-                              width: 0.82 * width,
-                              child: TextField(
-                                controller: notesController,
-                                maxLines: 13,
-                                minLines: 13,
-                                maxLength: 500,
-                                keyboardType: TextInputType.text,
-                                decoration: InputDecoration(
-                                  filled: true,
-                                  fillColor: const Color(0x0A3F51B5),
-                                  border: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(10),
-                                    borderSide: const BorderSide(
-                                      width: 1,
-                                      style: BorderStyle.none,
+                                ),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.fromLTRB(0, 7, 0, 7),
+                                child: Row(
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    const Icon(
+                                      Icons.accessibility_new_rounded,
+                                      size: 55,
+                                      color: Colors.indigo,
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.fromLTRB(25, 0, 0, 0),
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          const Text(
+                                            'Movement',
+                                            style: TextStyle(
+                                              color: Colors.indigo,
+                                              fontFamily: 'DMSans-Medium',
+                                              fontSize: 18,
+                                            ),
+                                          ),
+                                          Text(
+                                            movementType,
+                                            style: const TextStyle(
+                                              color: Color(0xff2A2A2A),
+                                              fontFamily: 'DMSans-Medium',
+                                              fontSize: 26,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.fromLTRB(0, 7, 0, 18),
+                                child: Row(
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    const Icon(
+                                      Icons.access_time_rounded,
+                                      size: 55,
+                                      color: Colors.indigo,
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.fromLTRB(25, 0, 0, 0),
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          const Text(
+                                            'Test Duration',
+                                            style: TextStyle(
+                                              color: Colors.indigo,
+                                              fontFamily: 'DMSans-Medium',
+                                              fontSize: 18,
+                                            ),
+                                          ),
+                                          Text(
+                                            '$timeElapsed sec',
+                                            style: const TextStyle(
+                                              color: Color(0xff2A2A2A),
+                                              fontFamily: 'DMSans-Medium',
+                                              fontSize: 26,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        widget.isClinicApp
+                            ? Column(
+                                children: [
+                                  Padding(
+                                    padding: EdgeInsets.fromLTRB(0.05 * width, 0.02 * height, 0.05 * width, 0),
+                                    child: Container(
+                                      decoration: BoxDecoration(color: const Color(0x0A3F51B5), borderRadius: BorderRadius.circular(10)),
+                                      padding: EdgeInsets.fromLTRB(0.06 * width, 8, 0, 6),
+                                      child: Column(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          CupertinoTextField.borderless(
+                                            controller: clinicScoreController,
+                                            maxLength: 3,
+                                            onChanged: updateFilledStatus,
+                                            keyboardType: const TextInputType.numberWithOptions(signed: true, decimal: false),
+                                            padding: const EdgeInsets.only(left: 45, top: 6, right: 6, bottom: 6),
+                                            prefix: const Text(
+                                              'Assign Score',
+                                              style: TextStyle(fontSize: 16),
+                                            ),
+                                            placeholder: 'Optional',
+                                          ),
+                                        ],
+                                      ),
                                     ),
                                   ),
-                                  hintText: 'Enter Additional Notes...',
+                                  showScoreInputWarning
+                                      ? Padding(
+                                          padding: EdgeInsets.fromLTRB(0.1 * width, 10, 0.05 * width, 0),
+                                          child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: const [
+                                            Padding(
+                                                padding: EdgeInsets.fromLTRB(0, 0, 3, 0),
+                                                child: Icon(
+                                                  CupertinoIcons.exclamationmark_circle,
+                                                  size: 16,
+                                                  color: Colors.red,
+                                                )),
+                                            Flexible(
+                                              child: Text(
+                                                'Please enter a score between 0-100',
+                                                style: TextStyle(fontSize: 15, color: Colors.red),
+                                              ),
+                                            )
+                                          ]),
+                                        )
+                                      : Container(),
+                                ],
+                              )
+                            : Container(),
+                        Padding(
+                          padding: const EdgeInsets.fromLTRB(0, 20, 0, 0),
+                          child: SizedBox(
+                            height: 270,
+                            width: 0.82 * width,
+                            child: TextField(
+                              controller: notesController,
+                              maxLines: 13,
+                              minLines: 13,
+                              maxLength: 500,
+                              keyboardType: TextInputType.text,
+                              decoration: InputDecoration(
+                                filled: true,
+                                fillColor: const Color(0x0A3F51B5),
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(10),
+                                  borderSide: const BorderSide(
+                                    width: 1,
+                                    style: BorderStyle.none,
+                                  ),
                                 ),
+                                hintText: 'Enter Additional Notes...',
                               ),
                             ),
                           ),
-                          Padding(
-                            padding: const EdgeInsets.fromLTRB(0, 15, 0, 20),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                SizedBox(
-                                    height: 70,
-                                    width: 0.4 * width,
-                                    child: ElevatedButton(
-                                      onPressed: () {
-                                        Navigator.pop(context);
-                                      },
-                                      style: ElevatedButton.styleFrom(
-                                          elevation: 0,
-                                          backgroundColor: const Color(0xffECEDF0),
-                                          shape: RoundedRectangleBorder(
-                                            borderRadius: BorderRadius.circular(8),
-                                            //border radius equal to or more than 50% of width
-                                          )),
-                                      child: const Icon(
-                                        CupertinoIcons.back,
-                                        size: 30,
-                                        color: Colors.black,
-                                      ),
-                                    )),
-                                SizedBox(
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.fromLTRB(0, 15, 0, 20),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              SizedBox(
                                   height: 70,
                                   width: 0.4 * width,
                                   child: ElevatedButton(
-                                      onPressed: () async {
-                                        if (showScoreInputWarning) {
-                                        } else if (!widget.isClinicApp && (allowSharingStateVar == null || allowSharingStateVar == false)) {
-                                          await showDialog<String>(
-                                            context: context,
-                                            builder: (BuildContext context) => CupertinoAlertDialog(
-                                              title: const Text('Allow "Balance Test" to share recorded IMU sensor data with your care provider?'),
-                                              content: const Text('Your data will be used to assess your balance.'),
-                                              actions: <CupertinoDialogAction>[
-                                                CupertinoDialogAction(
-                                                  /// This parameter indicates the action would perform
-                                                  /// a destructive action such as deletion, and turns
-                                                  /// the action's text color to red.
-                                                  isDestructiveAction: true,
-                                                  onPressed: () async {
-                                                    Navigator.pop(context);
-                                                  },
-                                                  child: const Text('Deny'),
-                                                ),
-                                                CupertinoDialogAction(
-                                                  /// This parameter indicates this action is the default,
-                                                  /// and turns the action's text to bold text.
-                                                  isDefaultAction: true,
-                                                  onPressed: () async {
-                                                    final SharedPreferences prefs = await SharedPreferences.getInstance();
-                                                    await prefs.setBool('allowSharing', true);
-                                                    try {
-                                                      var query = '''
+                                    onPressed: () {
+                                      Navigator.pop(context);
+                                    },
+                                    style: ElevatedButton.styleFrom(
+                                        elevation: 0,
+                                        backgroundColor: const Color(0xffECEDF0),
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(8),
+                                          //border radius equal to or more than 50% of width
+                                        )),
+                                    child: const Icon(
+                                      CupertinoIcons.back,
+                                      size: 30,
+                                      color: Colors.black,
+                                    ),
+                                  )),
+                              SizedBox(
+                                height: 70,
+                                width: 0.4 * width,
+                                child: ElevatedButton(
+                                    onPressed: () async {
+                                      if (showScoreInputWarning) {
+                                      } else if (!widget.isClinicApp && (allowSharingStateVar == null || allowSharingStateVar == false)) {
+                                        await showDialog<String>(
+                                          context: context,
+                                          builder: (BuildContext context) => CupertinoAlertDialog(
+                                            title: const Text('Allow "Balance Test" to share recorded IMU sensor data with your care provider?'),
+                                            content: const Text('Your data will be used to assess your balance.'),
+                                            actions: <CupertinoDialogAction>[
+                                              CupertinoDialogAction(
+                                                /// This parameter indicates the action would perform
+                                                /// a destructive action such as deletion, and turns
+                                                /// the action's text color to red.
+                                                isDestructiveAction: true,
+                                                onPressed: () async {
+                                                  Navigator.pop(context);
+                                                },
+                                                child: const Text('Deny'),
+                                              ),
+                                              CupertinoDialogAction(
+                                                /// This parameter indicates this action is the default,
+                                                /// and turns the action's text to bold text.
+                                                isDefaultAction: true,
+                                                onPressed: () async {
+                                                  final SharedPreferences prefs = await SharedPreferences.getInstance();
+                                                  await prefs.setBool('allowSharing', true);
+                                                  try {
+                                                    var query = '''
                                                                     mutation MyMutation2 {
                                                                       recordConsentDate(date: "${formatDateTimeDatabase(DateTime.now().toString())}", patient_id: "${widget.userID}") {
                                                                         privacy_consent_date
@@ -576,55 +602,54 @@ class _TestSummaryState extends State<TestSummary> {
                                                                     } 
                                                                   ''';
 
-                                                      final response = await Amplify.API
-                                                          .query(
-                                                              request:
-                                                                  GraphQLRequest<String>(document: query, variables: {'patient_id': widget.userID}))
-                                                          .response;
+                                                    final response = await Amplify.API
+                                                        .query(
+                                                            request:
+                                                                GraphQLRequest<String>(document: query, variables: {'patient_id': widget.userID}))
+                                                        .response;
 
-                                                      if (response.data == null) {
-                                                        print('errors: ${response.errors}');
-                                                      } else {
-                                                        print(response.data);
-                                                      }
-                                                    } on ApiException catch (e) {
-                                                      print('Query failed: $e');
+                                                    if (response.data == null) {
+                                                      print('errors: ${response.errors}');
+                                                    } else {
+                                                      print(response.data);
                                                     }
-                                                    allowSharingStateVar = true;
-                                                    if (context.mounted) {
-                                                      Navigator.pop(context);
-                                                    }
-                                                  },
-                                                  child: const Text('Allow'),
-                                                ),
-                                              ],
-                                            ),
-                                          );
-                                        } else {
-                                          print('sending data');
-                                          sendData();
-                                        }
-                                      },
-                                      style: ElevatedButton.styleFrom(
-                                          backgroundColor: Colors.indigo,
-                                          elevation: 0,
-                                          shape: RoundedRectangleBorder(
-                                            borderRadius: BorderRadius.circular(8),
-                                            //border radius equal to or more than 50% of width
-                                          )),
-                                      child: const Icon(CupertinoIcons.paperplane_fill)),
-                                ),
-                              ],
-                            ),
+                                                  } on ApiException catch (e) {
+                                                    print('Query failed: $e');
+                                                  }
+                                                  allowSharingStateVar = true;
+                                                  if (context.mounted) {
+                                                    Navigator.pop(context);
+                                                  }
+                                                },
+                                                child: const Text('Allow'),
+                                              ),
+                                            ],
+                                          ),
+                                        );
+                                      } else {
+                                        print('sending data');
+                                        sendData();
+                                      }
+                                    },
+                                    style: ElevatedButton.styleFrom(
+                                        backgroundColor: Colors.indigo,
+                                        elevation: 0,
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(8),
+                                          //border radius equal to or more than 50% of width
+                                        )),
+                                    child: const Icon(CupertinoIcons.paperplane_fill)),
+                              ),
+                            ],
                           ),
-                        ],
-                      ),
+                        ),
+                      ],
                     ),
                   ),
                 ),
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
