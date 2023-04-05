@@ -1,5 +1,5 @@
 import 'package:balance_test/clinic_patient_page.dart';
-import 'package:balance_test/models/PatientCustomListItem.dart';
+import 'package:balance_test/models/PatientListItem.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:azlistview/azlistview.dart';
@@ -14,25 +14,16 @@ class AlphabetScrollPage extends StatefulWidget {
     required this.parentCtx,
   }) : super(key: key);
 
-  final List<PatientCustomListItem> patientList;
+  final List<PatientListItem> patientList;
   final BuildContext parentCtx;
 
   @override
   State<AlphabetScrollPage> createState() => _AlphabetScrollPageState();
 }
 
-class _AZItem extends ISuspensionBean {
-  final String firstName;
-  final String lastName;
-  final String userID;
-  final String tag;
-  _AZItem({required this.firstName, required this.lastName, required this.userID, required this.tag});
-
-  @override
-  String getSuspensionTag() => tag.toString();
-}
 
 class _AlphabetScrollPageState extends State<AlphabetScrollPage> {
+
   List<_AZItem> items = [];
 
   @override
@@ -41,7 +32,7 @@ class _AlphabetScrollPageState extends State<AlphabetScrollPage> {
     initList(widget.patientList);
   }
 
-  void initList(List<PatientCustomListItem> items) {
+  void initList(List<PatientListItem> items) {
     this.items = items
         .map(
           (item) => _AZItem(
@@ -56,6 +47,23 @@ class _AlphabetScrollPageState extends State<AlphabetScrollPage> {
     SuspensionUtil.setShowSuspensionStatus(this.items);
   }
 
+  Widget buildHeaderTitle(String tag) => Container(
+    height: 42,
+    alignment: Alignment.centerLeft,
+    child: Padding(
+      padding: EdgeInsets.fromLTRB(0.06* MediaQuery.of(context).size.width, 15, 0, 0),
+      child: Text(
+        tag,
+        softWrap: false,
+        style: const TextStyle(
+          color: Color(0xff929292),
+          fontSize: 20,
+          fontWeight: FontWeight.w800,
+          fontFamily: 'DMSans-Regular',
+        ),
+      ),),
+  );
+
   @override
   Widget build(BuildContext context) => AzListView(
         padding: const EdgeInsets.fromLTRB(0, 8, 10, 8),
@@ -69,7 +77,6 @@ class _AlphabetScrollPageState extends State<AlphabetScrollPage> {
       );
 
   Widget buildListItem(_AZItem item) {
-    double height = MediaQuery.of(context).size.height;
     double width = MediaQuery.of(context).size.width;
 
     final tag = item.getSuspensionTag();
@@ -78,17 +85,18 @@ class _AlphabetScrollPageState extends State<AlphabetScrollPage> {
     return Column(
         children: <Widget>[
           Offstage(offstage:  offstage,
-          child: buildHeader(tag),),
+          child: buildHeaderTitle(tag),),
           GestureDetector(
       onTap: () {
         Gaimon.selection();
         Navigator.push(
             widget.parentCtx,
-            //Used to pop to main page instead of home
             MaterialPageRoute(
                 builder: (context) => ClinicPatientPage(
                     name: "${item.firstName} ${item.lastName}",
-                    userID: item.userID)));
+                    userID: item.userID)
+            )
+        );
       },
       child: Padding(
         padding: const EdgeInsets.fromLTRB(0, 2, 0, 2),
@@ -199,25 +207,19 @@ class _AlphabetScrollPageState extends State<AlphabetScrollPage> {
           );
 
   }
-
-  Widget buildHeader(String tag) => Container(
-  height: 42,
-    alignment: Alignment.centerLeft,
-    child: Padding(
-      padding: EdgeInsets.fromLTRB(0.06* MediaQuery.of(context).size.width, 15, 0, 0),
-      child: Text(
-      tag,
-      softWrap: false,
-      style: const TextStyle(
-          color: Color(0xff929292),
-          fontSize: 20,
-          fontWeight: FontWeight.w800,
-        fontFamily: 'DMSans-Regular',
-      ),
-    ),),
-  );
 }
 
 
 
 
+
+class _AZItem extends ISuspensionBean {
+  final String firstName;
+  final String lastName;
+  final String userID;
+  final String tag; //Used to order and group list
+  _AZItem({required this.firstName, required this.lastName, required this.userID, required this.tag});
+
+  @override
+  String getSuspensionTag() => tag.toString();
+}

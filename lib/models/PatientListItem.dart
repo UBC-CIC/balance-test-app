@@ -1,18 +1,18 @@
-class PatientCustomListItem {
+class PatientListItem {
 
   final String firstName;
   final String lastName;
   final String? email;
   final String userID;
 
-  const PatientCustomListItem({
+  const PatientListItem({
     required this.firstName,
     required this.lastName,
     required this.email,
     required this.userID,
   });
 
-  static PatientCustomListItem fromJson(json) => PatientCustomListItem(
+  static PatientListItem fromJson(json) => PatientListItem(
       firstName: json['first_name'],
       lastName: json['last_name'],
       email: json['email'],

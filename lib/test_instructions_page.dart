@@ -1,10 +1,8 @@
-import 'package:balance_test/TestDetail.dart';
 import 'package:balance_test/recording_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:gaimon/gaimon.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:intl/intl.dart';
 
 class TestInstructionsPage extends StatefulWidget {
   const TestInstructionsPage({
@@ -131,10 +129,8 @@ class _TestInstructionsPageState extends State<TestInstructionsPage> {
                               ),
                             ),
                             Flexible(
-                              //Overflow text pushes to next line
                               child: Text(
-                                // widget.instructions,
-                                '1. Sit on a chair with knees bent at a 90-degree angle and both feet flat on the floor\n2. Attach your mobile device to your chest with the chest strap\n3. Click the start button on the next page to begin recording your movement\n4. Stand up - Try to avoid using your hands for support\n5. Click on the stop button to end the recording\n6. Review recording details and add additional notes if needed\n7. Click send to send to your doctor or cancel to restart',
+                                widget.instructions,
                                 style: GoogleFonts.nunito(
                                   textStyle: const TextStyle(
                                     color: Colors.black,
@@ -218,7 +214,7 @@ class _TestInstructionsPageState extends State<TestInstructionsPage> {
                               ],
                             ),
                             const Divider(
-                              height: 20,
+                              height: 22,
                               thickness: 1,
                               indent: 5,
                               endIndent: 5,

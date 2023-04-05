@@ -1,21 +1,25 @@
-import 'package:balance_test/my_folding_cube.dart';
+import 'package:animated_check/animated_check.dart';
 import 'package:flutter/material.dart';
-import 'my_animated_check.dart';
 import 'package:animated_cross/animated_cross.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 
 class Loading extends StatefulWidget {
-  const Loading({Key? key, required this.showCheckmark}) : super(key: key);
+  const Loading({Key? key, required this.uploadStatus}) : super(key: key);
 
-  final ValueNotifier showCheckmark;
+  final ValueNotifier uploadStatus;
 
   @override
   State<Loading> createState() => _LoadingState();
 }
 
 class _LoadingState extends State<Loading> with SingleTickerProviderStateMixin {
+  //VARIABLES
+
   late AnimationController _animationController;
   late Animation<double> _animation;
+
+  //FUNCTIONS
 
   @override
   void initState() {
@@ -27,6 +31,9 @@ class _LoadingState extends State<Loading> with SingleTickerProviderStateMixin {
     _animation = Tween<double>(begin: 0, end: 1).animate(CurvedAnimation(
         parent: _animationController, curve: Curves.easeInOutCirc));
   }
+
+
+  //UI
 
   @override
   Widget build(BuildContext context) {
@@ -59,7 +66,7 @@ class _LoadingState extends State<Loading> with SingleTickerProviderStateMixin {
                 ),
                 child: Center(
                   child: ValueListenableBuilder(
-                    valueListenable: widget.showCheckmark,
+                    valueListenable: widget.uploadStatus,
                     builder: (context, value, child) {
                       if (value == 'success') {
                         _animationController.forward();
@@ -76,7 +83,7 @@ class _LoadingState extends State<Loading> with SingleTickerProviderStateMixin {
                           color: Colors.redAccent,
                         );
                       } else {
-                        return const MyFoldingCube(
+                        return const SpinKitFoldingCube(
                           color: Colors.indigo,
                           size: 50.0,
                         );

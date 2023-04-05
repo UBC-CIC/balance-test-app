@@ -3,10 +3,9 @@ import 'package:balance_test/past_tests_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-
 import 'new_test_page_clinic.dart';
 
-int groupValue = 0;
+int selectedToggleGroup = 0;
 
 class ClinicPatientPage extends StatefulWidget {
   const ClinicPatientPage({
@@ -23,12 +22,6 @@ class ClinicPatientPage extends StatefulWidget {
 }
 
 class _ClinicPatientPageState extends State<ClinicPatientPage> {
-  //VARIABLES
-
-  //METHODS
-
-  //UI
-
   @override
   Widget build(BuildContext context) {
     double height = MediaQuery.of(context).size.height;
@@ -85,46 +78,47 @@ class _ClinicPatientPageState extends State<ClinicPatientPage> {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Padding(
-              padding: EdgeInsets.fromLTRB(0.05*width, 0.01 * height, 0.05*width, 0),
-              child:  FittedBox(
+              padding: EdgeInsets.fromLTRB(0.05 * width, 0.01 * height, 0.05 * width, 0),
+              child: FittedBox(
                 fit: BoxFit.scaleDown,
                 child: Text(
-                widget.name,
-                style: const TextStyle(
-                  fontSize: 25,
-                  fontFamily: 'DMSans-Medium',
-                  fontWeight: FontWeight.w600,
+                  widget.name,
+                  style: const TextStyle(
+                    fontSize: 25,
+                    fontFamily: 'DMSans-Medium',
+                    fontWeight: FontWeight.w600,
+                  ),
                 ),
-              ),
               ),
             ),
             Padding(
-              padding: EdgeInsets.fromLTRB(0.05*width, 4, 0.05*width, 0),
-              child:  FittedBox(
+              padding: EdgeInsets.fromLTRB(0.05 * width, 4, 0.05 * width, 0),
+              child: FittedBox(
                 fit: BoxFit.scaleDown,
                 child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const Icon(
-                    Icons.account_circle,
-                    color: Color(0xff0061b2),
-                    size: 18,
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(2, 0, 0, 0),
-                    child: Text(
-                      widget.userID,
-                      style: GoogleFonts.nunito(
-                        textStyle: const TextStyle(
-                          color: Colors.black,
-                          fontWeight: FontWeight.w600,
-                          fontSize: 14,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Icon(
+                      Icons.account_circle,
+                      color: Color(0xff0061b2),
+                      size: 18,
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(2, 0, 0, 0),
+                      child: Text(
+                        widget.userID,
+                        style: GoogleFonts.nunito(
+                          textStyle: const TextStyle(
+                            color: Colors.black,
+                            fontWeight: FontWeight.w600,
+                            fontSize: 14,
+                          ),
                         ),
                       ),
                     ),
-                  ),
-                ],
-              ),),
+                  ],
+                ),
+              ),
             ),
             SizedBox(
               width: 0.9 * width,
@@ -133,31 +127,22 @@ class _ClinicPatientPageState extends State<ClinicPatientPage> {
                 child: CupertinoSlidingSegmentedControl<int>(
                   backgroundColor: CupertinoColors.lightBackgroundGray,
                   thumbColor: CupertinoColors.extraLightBackgroundGray,
-                  padding: const EdgeInsets.fromLTRB(4,3,4,3),
-                  groupValue: groupValue,
+                  padding: const EdgeInsets.fromLTRB(4, 3, 4, 3),
+                  groupValue: selectedToggleGroup,
                   children: const {
-                    0: Padding(
-                      padding: EdgeInsets.all(7),
-                      child: Text("Past Tests")
-                    ),
-                    1: Padding(
-                        padding: EdgeInsets.all(7),
-                        child: Text("New Test")
-                    ),
-                    2: Padding(
-                        padding: EdgeInsets.all(7),
-                        child: Text("Analytics")
-                    ),
+                    0: Padding(padding: EdgeInsets.all(7), child: Text("Past Tests")),
+                    1: Padding(padding: EdgeInsets.all(7), child: Text("New Test")),
+                    2: Padding(padding: EdgeInsets.all(7), child: Text("Analytics")),
                   },
                   onValueChanged: (value) {
                     setState(() {
-                      groupValue = value!;
+                      selectedToggleGroup = value!;
                     });
                   },
                 ),
               ),
             ),
-            pages.elementAt(groupValue), //New
+            pages.elementAt(selectedToggleGroup),
           ],
         ),
       ),

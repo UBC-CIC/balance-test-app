@@ -6,18 +6,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
 import 'account_page.dart';
 import 'analytics_page.dart';
 import 'new_test_page.dart';
 
 class PatientApp extends StatefulWidget {
-  const PatientApp({required this.userAttributes, Key? key, this.title})
-      : super(key: key);
+  const PatientApp({required this.userAttributes, Key? key, this.title}) : super(key: key);
 
   final String? title;
   final Map<String, String> userAttributes;
-
 
   @override
   State<PatientApp> createState() => _PatientAppState();
@@ -26,9 +23,7 @@ class PatientApp extends StatefulWidget {
 class _PatientAppState extends State<PatientApp> {
   //VARIABLES
 
-  final controller = ScrollController();
-
-  int _selectedIndex = 0; //NavBar index
+  int navBarIndex = 0;
   Map<String, String> authInfo = {};
 
   //FUNCTIONS
@@ -62,9 +57,7 @@ class _PatientAppState extends State<PatientApp> {
                 /// and turns the action's text to bold text.
                 isDefaultAction: true,
                 onPressed: () async {
-
                   await prefs.setBool('allowSharing', true);
-
                   try {
                     var query = '''
                                   mutation MyMutation2 {
@@ -75,16 +68,19 @@ class _PatientAppState extends State<PatientApp> {
                                 ''';
 
                     final response = await Amplify.API
-                        .query(request: GraphQLRequest<String>(document: query, variables: {'patient_id': widget.userAttributes['custom:identity_id']!}))
+                        .query(
+                            request: GraphQLRequest<String>(document: query, variables: {'patient_id': widget.userAttributes['custom:identity_id']!}))
                         .response;
 
                     if (response.data == null) {
-                      print('errors: ${response.errors}');
-                    } else {
-                      print(response.data);
-                    }
+                      if (kDebugMode) {
+                        print('errors: ${response.errors}');
+                      }
+                    } else {}
                   } on ApiException catch (e) {
-                    print('Query failed: $e');
+                    if (kDebugMode) {
+                      print('Query failed: $e');
+                    }
                   }
 
                   if (context.mounted) {
@@ -114,7 +110,7 @@ class _PatientAppState extends State<PatientApp> {
 
   void _onItemTapped(int index) {
     setState(() {
-      _selectedIndex = index;
+      navBarIndex = index;
     });
   }
 
@@ -148,7 +144,6 @@ class _PatientAppState extends State<PatientApp> {
         familyName: widget.userAttributes['family_name']!,
         userID: widget.userAttributes['custom:identity_id']!,
         email: widget.userAttributes['email']!,
-
       ),
     ];
 
@@ -173,25 +168,20 @@ class _PatientAppState extends State<PatientApp> {
       home: Scaffold(
         backgroundColor: const Color(0xfff2f1f6),
         appBar: AppBar(
-          toolbarHeight: (_selectedIndex == 3) ? 0.06 * height : 0.1 * height,
-          centerTitle: (_selectedIndex == 3) ? true : false,
+          toolbarHeight: (navBarIndex == 3) ? 0.06 * height : 0.1 * height,
+          centerTitle: (navBarIndex == 3) ? true : false,
           systemOverlayStyle: const SystemUiOverlayStyle(
             statusBarBrightness: Brightness.light, // light for black status bar
           ),
           title: Padding(
-            padding: EdgeInsets.fromLTRB(
-                (_selectedIndex == 3) ? 0 : 0.01 * width,
-                (_selectedIndex == 3) ? 0 : 0.1 * width,
-                0,
-                0),
+            padding: EdgeInsets.fromLTRB((navBarIndex == 3) ? 0 : 0.01 * width, (navBarIndex == 3) ? 0 : 0.1 * width, 0, 0),
             child: Text(
-              titles.elementAt(_selectedIndex),
+              titles.elementAt(navBarIndex),
               style: TextStyle(
                 // color: Color.fromRGBO(141, 148, 162, 1.0),
                 color: Colors.black,
-                fontFamily:
-                    (_selectedIndex == 3) ? 'DMSans-Regular' : 'DMSans-Medium',
-                fontSize: (_selectedIndex == 3) ? 0.06 * width : 0.085 * width,
+                fontFamily: (navBarIndex == 3) ? 'DMSans-Regular' : 'DMSans-Medium',
+                fontSize: (navBarIndex == 3) ? 0.06 * width : 0.085 * width,
                 fontWeight: FontWeight.w900,
               ),
             ),
@@ -200,7 +190,7 @@ class _PatientAppState extends State<PatientApp> {
           backgroundColor: Colors.transparent,
         ),
         body: Column(children: [
-          pages.elementAt(_selectedIndex), //New
+          pages.elementAt(navBarIndex), //New
         ]),
         bottomNavigationBar: BottomNavigationBar(
           backgroundColor: const Color(0xfff3f3f2),
@@ -209,7 +199,7 @@ class _PatientAppState extends State<PatientApp> {
           enableFeedback: true,
           unselectedItemColor: const Color(0xff929292),
           selectedItemColor: const Color(0xff006CC6),
-          currentIndex: _selectedIndex,
+          currentIndex: navBarIndex,
           onTap: _onItemTapped,
           elevation: 30,
           showSelectedLabels: false,

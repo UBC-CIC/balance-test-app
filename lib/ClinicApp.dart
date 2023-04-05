@@ -1,8 +1,6 @@
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-
 import 'account_page.dart';
 import 'clinic_home_page.dart';
 
@@ -20,10 +18,7 @@ class ClinicApp extends StatefulWidget {
 class _ClinicAppState extends State<ClinicApp> {
   //VARIABLES
 
-  final controller = ScrollController();
-
-  int _selectedIndex = 0; //NavBar index
-  bool _amplifyConfigured = false;
+  int navBarSelectedIndex = 0;
   Map<String, String> authInfo = {};
 
   //FUNCTIONS
@@ -35,7 +30,7 @@ class _ClinicAppState extends State<ClinicApp> {
 
   void _onItemTapped(int index) {
     setState(() {
-      _selectedIndex = index;
+      navBarSelectedIndex = index;
     });
   }
 
@@ -83,20 +78,20 @@ class _ClinicAppState extends State<ClinicApp> {
       home: Scaffold(
         backgroundColor: const Color(0xfff2f1f6),
         appBar: AppBar(
-          toolbarHeight: (_selectedIndex == 1) ? 0.06 * height : 0.1 * height,
-          centerTitle: (_selectedIndex == 1) ? true : false,
+          toolbarHeight: (navBarSelectedIndex == 1) ? 0.06 * height : 0.1 * height,
+          centerTitle: (navBarSelectedIndex == 1) ? true : false,
           systemOverlayStyle: const SystemUiOverlayStyle(
             statusBarBrightness: Brightness.light, // light for black status bar
           ),
           title: Padding(
-            padding: EdgeInsets.fromLTRB((_selectedIndex == 1) ? 0 : 0.01 * width, (_selectedIndex == 1) ? 0 : 0.1 * width, 0, 0),
+            padding: EdgeInsets.fromLTRB((navBarSelectedIndex == 1) ? 0 : 0.01 * width, (navBarSelectedIndex == 1) ? 0 : 0.1 * width, 0, 0),
             child: Text(
-              titles.elementAt(_selectedIndex),
+              titles.elementAt(navBarSelectedIndex),
               style: TextStyle(
                 // color: Color.fromRGBO(141, 148, 162, 1.0),
                 color: Colors.black,
-                fontFamily: (_selectedIndex == 1) ? 'DMSans-Regular' : 'DMSans-Medium',
-                fontSize: (_selectedIndex == 1) ? 0.06 * width : 0.085 * width,
+                fontFamily: (navBarSelectedIndex == 1) ? 'DMSans-Regular' : 'DMSans-Medium',
+                fontSize: (navBarSelectedIndex == 1) ? 0.06 * width : 0.085 * width,
                 fontWeight: FontWeight.w900,
               ),
             ),
@@ -105,7 +100,7 @@ class _ClinicAppState extends State<ClinicApp> {
           backgroundColor: Colors.transparent,
         ),
         body: Column(children: [
-          pages.elementAt(_selectedIndex), //New
+          pages.elementAt(navBarSelectedIndex), //New
         ]),
         bottomNavigationBar: BottomNavigationBar(
           backgroundColor: const Color(0xfff3f3f2),
@@ -114,7 +109,7 @@ class _ClinicAppState extends State<ClinicApp> {
           enableFeedback: true,
           unselectedItemColor: const Color(0xff929292),
           selectedItemColor: const Color(0xff006CC6),
-          currentIndex: _selectedIndex,
+          currentIndex: navBarSelectedIndex,
           onTap: _onItemTapped,
           elevation: 30,
           showSelectedLabels: false,

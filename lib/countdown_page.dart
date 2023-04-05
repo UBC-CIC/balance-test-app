@@ -1,9 +1,6 @@
-import 'package:balance_test/my_folding_cube.dart';
 import 'package:circular_countdown_timer/circular_countdown_timer.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-
-import 'my_animated_check.dart';
 
 class CountDown extends StatefulWidget {
   const CountDown({Key? key, required this.countdownDuration})
@@ -16,13 +13,19 @@ class CountDown extends StatefulWidget {
 }
 
 class _CountDownState extends State<CountDown> {
+  //VARIABLES
+
   CountDownController controller = CountDownController();
+
+  //FUNCTIONS
 
   @override
   void initState() {
     super.initState();
     controller.start();
   }
+
+  //UI
 
   @override
   Widget build(BuildContext context) {

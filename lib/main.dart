@@ -1,18 +1,16 @@
 import 'dart:async';
-
 import 'package:amplify_auth_cognito/amplify_auth_cognito.dart';
 import 'package:amplify_authenticator/amplify_authenticator.dart';
 import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:amplify_storage_s3/amplify_storage_s3.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:jwt_decode/jwt_decode.dart';
-
 import 'ClinicApp.dart';
 import 'PatientApp.dart';
 import 'amplifyconfiguration.dart';
 import 'package:amplify_api/amplify_api.dart';
-
 import 'package:balance_test/models//ModelProvider.dart';
 
 void main() {
@@ -25,33 +23,30 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Sensors Demo',
+      title: 'Main',
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: const AppRouter(title: 'Flutter Demo Home Page'),
+      home: const PageRouter(title: 'App Router'),
     );
   }
 }
 
-//Patient App
+//Page Router
 
-class AppRouter extends StatefulWidget {
-  const AppRouter({Key? key, this.title}) : super(key: key);
+class PageRouter extends StatefulWidget {
+  const PageRouter({Key? key, this.title}) : super(key: key);
 
   final String? title;
 
   @override
-  State<AppRouter> createState() => _AppRouterState();
+  State<PageRouter> createState() => _PageRouterState();
 }
 
-class _AppRouterState extends State<AppRouter> {
+class _PageRouterState extends State<PageRouter> {
   //VARIABLES
-  bool isSignedIn = false;
 
   final controller = ScrollController();
-
-  bool _amplifyConfigured = false;
   Map<String, String> authInfo = {};
 
   //FUNCTIONS
@@ -64,63 +59,57 @@ class _AppRouterState extends State<AppRouter> {
 
   Future<void> _checkUserSignIn() async {
     await _configureAmplify();
-    AuthSession result = await Amplify.Auth.fetchAuthSession();
-    if (result.isSignedIn) {
-      initSignedIn();
-    }
     StreamSubscription hubSubscription = Amplify.Hub.listen([HubChannel.Auth], (hubEvent) {
       print(hubEvent.eventName);
       switch (hubEvent.eventName) {
         case "SIGNED_IN":
           {
             initNotSignedIn();
-            print("USER IS SIGNED IN");
           }
           break;
         case "SIGNED_OUT":
-          {
-            print("USER IS SIGNED OUT");
-          }
+          {}
           break;
         case "SESSION_EXPIRED":
-          {
-            print("USER IS SIGNED IN");
-          }
+          {}
           break;
       }
     });
+    AuthSession result = await Amplify.Auth.fetchAuthSession();
+    if (result.isSignedIn) {
+      initSignedIn();
+    }
   }
 
   Future<void> initNotSignedIn() async {
-    // Wait for user group to be assigned if not assigned
-
+    //Get user group
     AuthSession authSession = await Amplify.Auth.fetchAuthSession(
       options: CognitoSessionOptions(getAWSCredentials: true),
     );
     String token = (authSession as CognitoAuthSession).userPoolTokens!.idToken;
-    // Parse the JWT
     Map<String, dynamic> payload = Jwt.parseJwt(token);
-    // Access the groups
     String userGroup = payload['cognito:groups'][0];
-
+    //Wait for user group to be assigned if not already assigned
+    int counter = 0;
     while (userGroup != 'patient_user' && userGroup != 'care_provider_user') {
-      print(userGroup);
-      print('CHECKING USER GROUP');
-      await Future.delayed(const Duration(seconds: 1));
-      authSession = await Amplify.Auth.fetchAuthSession(
-        options: CognitoSessionOptions(getAWSCredentials: true),
-      );
-      token = (authSession as CognitoAuthSession).userPoolTokens!.idToken;
-      payload = Jwt.parseJwt(token);
-      userGroup = payload['cognito:groups'][0];
+      if(counter<120) {
+        await Future.delayed(const Duration(seconds: 1));
+        authSession = await Amplify.Auth.fetchAuthSession(
+          options: CognitoSessionOptions(getAWSCredentials: true),
+        );
+        token = (authSession as CognitoAuthSession).userPoolTokens!.idToken;
+        payload = Jwt.parseJwt(token);
+        userGroup = payload['cognito:groups'][0];
+        counter++;
+      } else {
+        await Amplify.Auth.signOut();
+        break;
+      }
     }
-
-    // Assign identity id to cognito custom attributes if not already assigned
-
+    //Fetch identity_id, assign to Cognito custom attributes if not already assigned
     final cognitoAttributes = await Amplify.Auth.fetchUserAttributes();
     bool containsIdentityId = false;
     for (AuthUserAttribute attribute in cognitoAttributes) {
-      print(attribute.userAttributeKey.key);
       if (attribute.userAttributeKey.key == 'custom:identity_id' && attribute.value.isNotEmpty && attribute.value != 'null') {
         containsIdentityId = true;
       }
@@ -131,25 +120,18 @@ class _AppRouterState extends State<AppRouter> {
       );
       String identityId = (authSession as CognitoAuthSession).identityId!;
       try {
-        final result = await Amplify.Auth.updateUserAttribute(
+        await Amplify.Auth.updateUserAttribute(
           userAttributeKey: const CognitoUserAttributeKey.custom('identity_id'),
           value: identityId.split(":")[1],
         );
-        if (result.nextStep.updateAttributeStep == 'CONFIRM_ATTRIBUTE_WITH_CODE') {
-          var destination = result.nextStep.codeDeliveryDetails?.destination;
-          print('Confirmation code sent to $destination');
-        } else {
-          print('Update completed');
-        }
       } on AmplifyException catch (e) {
-        print(e.message);
+        if (kDebugMode) {
+          print(e.message);
+        }
       }
     }
-
-    // Route to new page
-
+    //Fetch attributes, add patient to patient table if patient user, and route to Patient App or Clinic App
     final Map<String, String> userAttributes = await fetchCurrentUserAttributes();
-    print(userAttributes);
     if (userGroup == 'patient_user') {
       try {
         var query = '''
@@ -168,12 +150,18 @@ class _AppRouterState extends State<AppRouter> {
             .response;
 
         if (response.data == null) {
-          print('errors: ${response.errors}');
+          if (kDebugMode) {
+            print('errors: ${response.errors}');
+          }
         } else {
-          print(response.data);
+          if (kDebugMode) {
+            print(response.data);
+          }
         }
       } on ApiException catch (e) {
-        print('Query failed: $e');
+        if (kDebugMode) {
+          print('Query failed: $e');
+        }
       }
       if (context.mounted) {
         Navigator.of(context).push(
@@ -199,9 +187,9 @@ class _AppRouterState extends State<AppRouter> {
     }
   }
 
-  Future<void> initSignedIn() async {
-    // Wait for user group to be assigned if not assigned
 
+  Future<void> initSignedIn() async {
+    //Fetch user group
     AuthSession authSession = await Amplify.Auth.fetchAuthSession(
       options: CognitoSessionOptions(getAWSCredentials: true),
     );
@@ -210,19 +198,24 @@ class _AppRouterState extends State<AppRouter> {
     Map<String, dynamic> payload = Jwt.parseJwt(token);
     // Access the groups
     String userGroup = payload['cognito:groups'][0];
-
+    //Wait for user group to be assigned
+    int counter = 0;
     while (userGroup != 'patient_user' && userGroup != 'care_provider_user') {
-      print(userGroup);
-      print('CHECKING USER GROUP');
-      await Future.delayed(const Duration(seconds: 1));
-      authSession = await Amplify.Auth.fetchAuthSession(
-        options: CognitoSessionOptions(getAWSCredentials: true),
-      );
-      token = (authSession as CognitoAuthSession).userPoolTokens!.idToken;
-      payload = Jwt.parseJwt(token);
-      userGroup = payload['cognito:groups'][0];
+      if(counter<120) {
+        await Future.delayed(const Duration(seconds: 1));
+        authSession = await Amplify.Auth.fetchAuthSession(
+          options: CognitoSessionOptions(getAWSCredentials: true),
+        );
+        token = (authSession as CognitoAuthSession).userPoolTokens!.idToken;
+        payload = Jwt.parseJwt(token);
+        userGroup = payload['cognito:groups'][0];
+        counter++;
+      } else {
+        await Amplify.Auth.signOut();
+        break;
+      }
     }
-
+    //Route to Patient App or Clinic App
     final Map<String, String> userAttributes = await fetchCurrentUserAttributes();
     if (userGroup == 'patient_user') {
       if (context.mounted) {
@@ -256,19 +249,16 @@ class _AppRouterState extends State<AppRouter> {
       await Amplify.addPlugin(AmplifyStorageS3());
       await Amplify.addPlugin(api);
       await Amplify.configure(amplifyconfig);
-      print('Successfully configured');
-      setState(() {
-        _amplifyConfigured = true;
-      });
       return true;
     } on Exception catch (e) {
-      print('Error configuring Amplify: $e');
+      if (kDebugMode) {
+        print('Error configuring Amplify: $e');
+      }
       return false;
     }
   }
 
   Future<Map<String, String>> fetchCurrentUserAttributes() async {
-    print('AUTH INFO EMPTY');
     final result = await Amplify.Auth.fetchUserAttributes();
     final data = {for (var e in result) e.userAttributeKey.key: e.value};
     final authSession = await Amplify.Auth.fetchAuthSession(
@@ -400,7 +390,6 @@ class CustomFunctionProvider extends FunctionAuthProvider {
       options: CognitoSessionOptions(getAWSCredentials: true),
     );
     String token = (authSession as CognitoAuthSession).userPoolTokens!.idToken;
-    print(token);
     return token;
   }
 }

@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'package:amplify_flutter/amplify_flutter.dart';
-import 'package:balance_test/TestDetail.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -85,7 +85,9 @@ class _TestDetailsPageState extends State<TestDetailsPage> {
           .response;
 
       if (response.data == null) {
-        print('errors: ${response.errors}');
+        if (kDebugMode) {
+          print('errors: ${response.errors}');
+        }
         return <charts.Series<TimeSeriesData, DateTime>>[];
       } else {
         final sensorDataJson = json.decode(response.data!);
@@ -102,7 +104,9 @@ class _TestDetailsPageState extends State<TestDetailsPage> {
         return createChartSeries(sensorTimestamps, sensorValues);
       }
     } on ApiException catch (e) {
-      print('Query failed: $e');
+      if (kDebugMode) {
+        print('Query failed: $e');
+      }
     }
     return <charts.Series<TimeSeriesData, DateTime>>[];
   }

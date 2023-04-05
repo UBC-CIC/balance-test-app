@@ -1,8 +1,7 @@
 import 'dart:convert';
-
 import 'package:amplify_flutter/amplify_flutter.dart';
-import 'package:balance_test/models/PatientCustomListItem.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:balance_test/models/PatientListItem.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'alphabet_scroll_page.dart';
@@ -20,19 +19,17 @@ class ClinicHomePage extends StatefulWidget {
 class _ClinicHomePageState extends State<ClinicHomePage> {
   //VARIABLES
 
-  final controller = ScrollController();
+  late Future<List<PatientListItem>> patientList;
 
-
-  late Future<List<PatientCustomListItem>> futurePatientList;
+  //METHODS
 
   @override
   void initState() {
     super.initState();
-    futurePatientList = getPatientList();
+    patientList = getPatientList();
   }
 
-
-  Future<List<PatientCustomListItem>> getPatientList() async {
+  Future<List<PatientListItem>> getPatientList() async {
 
     try {
       var query = '''
@@ -51,37 +48,38 @@ class _ClinicHomePageState extends State<ClinicHomePage> {
           .response;
 
       if (response.data == null) {
-        print('errors: ${response.errors}');
-        return <PatientCustomListItem>[];
+        if (kDebugMode) {
+          print('errors: ${response.errors}');
+        }
+        return <PatientListItem>[];
       } else {
         final testListJson = json.decode(response.data!);
-        print(testListJson);
-        List<PatientCustomListItem> tempList = [];
+        List<PatientListItem> patientReturnList = [];
         testListJson["getPatientsForCareprovider"].forEach((entry) {
-          tempList.add(PatientCustomListItem.fromJson(entry));
+          patientReturnList.add(PatientListItem.fromJson(entry));
         });
-        print(tempList);
-        tempList.sort((a, b) =>
+        patientReturnList.sort((a, b) =>
             a.firstName.compareTo(
                 b.firstName));
-        return tempList;
+        return patientReturnList;
       }
     } on ApiException catch (e) {
-      print('Query failed: $e');
+      if (kDebugMode) {
+        print('Query failed: $e');
+      }
     }
 
-    return <PatientCustomListItem>[];
+    return <PatientListItem>[];
 
   }
-
 
   //UI
 
   @override
   Widget build(BuildContext context) {
     return Expanded(
-      child: FutureBuilder<List<PatientCustomListItem>>(
-        future: futurePatientList,
+      child: FutureBuilder<List<PatientListItem>>(
+        future: patientList,
         builder: (context, snapshot) {
           if (snapshot.hasData && snapshot.data!.isNotEmpty) {
             return AlphabetScrollPage(

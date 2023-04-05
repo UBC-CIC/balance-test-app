@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:core';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_ringtone_player/flutter_ringtone_player.dart';
 import 'package:motion_sensors/motion_sensors.dart';
@@ -130,7 +131,9 @@ class _RecordingPageState extends State<RecordingPage> {
       stopwatch.stop();
       stopwatch.reset();
     });
-    print(timeStampData.length);
+    if (kDebugMode) {
+      print(timeStampData.length);
+    }
   }
 
   //Starts recording streams and stopwatch timer
@@ -147,13 +150,13 @@ class _RecordingPageState extends State<RecordingPage> {
           );
         },
       ).then((value) {
-        // FlutterRingtonePlayer.play(
-        //   android: AndroidSounds.alarm,
-        //   ios: const IosSound(1110),
-        //   looping: false,
-        //   asAlarm: false,
-        //   volume: 1.0,
-        // );
+        FlutterRingtonePlayer.play(
+          android: AndroidSounds.alarm,
+          ios: const IosSound(1110),
+          looping: false,
+          asAlarm: false,
+          volume: 1.0,
+        );
         startTimer();
 
         clearLists();
@@ -202,8 +205,6 @@ class _RecordingPageState extends State<RecordingPage> {
 
   @override
   Widget build(BuildContext context) {
-    String title = widget.movementType;
-
     double height = MediaQuery.of(context).size.height;
     double width = MediaQuery.of(context).size.width;
 
@@ -308,12 +309,12 @@ class _RecordingPageState extends State<RecordingPage> {
                               subscription.cancel();
                             }
 
-                            // FlutterRingtonePlayer.play(
-                            //   android: AndroidSounds.alarm,
-                            //   ios: const IosSound(1112),
-                            //   looping: false,
-                            //   volume: 1.0,
-                            // );
+                            FlutterRingtonePlayer.play(
+                              android: AndroidSounds.alarm,
+                              ios: const IosSound(1112),
+                              looping: false,
+                              volume: 1.0,
+                            );
 
                             String timeElapsed =
                                 '${stopwatch.elapsed.inMinutes}:${(stopwatch.elapsed.inSeconds % 60).toString().padLeft(2, '0')}';

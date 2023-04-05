@@ -16,7 +16,6 @@ import 'package:path_provider/path_provider.dart';
 import 'dart:io';
 import 'package:uuid/uuid.dart';
 
-import 'my_fading_scrollview.dart';
 
 class TestSummary extends StatefulWidget {
   const TestSummary({
@@ -93,7 +92,7 @@ class _TestSummaryState extends State<TestSummary> {
       barrierDismissible: false,
       context: context,
       builder: (BuildContext context) {
-        return Loading(showCheckmark: uploadResult);
+        return Loading(uploadStatus: uploadResult);
       },
     );
     postRequest().then((value) {

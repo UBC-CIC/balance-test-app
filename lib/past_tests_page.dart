@@ -1,6 +1,7 @@
 import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:balance_test/test_details_page.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:gaimon/gaimon.dart';
@@ -8,7 +9,6 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:intl/intl.dart';
 import 'dart:convert';
-
 import 'models/TestEvent.dart';
 
 class PastTests extends StatefulWidget {
@@ -25,13 +25,18 @@ class PastTests extends StatefulWidget {
 class _PastTestsState extends State<PastTests> {
   //VARIABLES
 
-  final controller = ScrollController();
-
   late Future<List<TestEvent>> futureTestList;
   List<TestEvent> testList = [];
 
+  //METHODS
+
+  @override
+  void initState() {
+    super.initState();
+    futureTestList = queryTestEvents();
+  }
+
   Future<List<TestEvent>> queryTestEvents() async {
-    print("PAST TEST PAGE USER ID ${widget.userID}");
     try {
       var query = '''
         query MyQuery {
@@ -53,7 +58,9 @@ class _PastTestsState extends State<PastTests> {
           .response;
 
       if (response.data == null) {
-        print('errors: ${response.errors}');
+        if (kDebugMode) {
+          print('errors: ${response.errors}');
+        }
         return <TestEvent>[];
       } else {
         final testListJson = json.decode(response.data!);
@@ -64,35 +71,44 @@ class _PastTestsState extends State<PastTests> {
           tempList.add(TestEvent.fromJson(entry));
         });
 
-        tempList.sort((a, b) => b!.start_time!.compareTo(a!.start_time!));
+        tempList.sort((a, b) => b.start_time!.compareTo(a.start_time!));
         return tempList;
       }
     } on ApiException catch (e) {
-      print('Query failed: $e');
+      if (kDebugMode) {
+        print('Query failed: $e');
+      }
     }
     return <TestEvent>[];
   }
 
-  @override
-  void initState() {
-    super.initState();
-    futureTestList = queryTestEvents();
+  String formatMovementName(String movement) {
+    if (movement == "sit-to-stand") {
+      // return "Sitting with\nBack Unsupported\nFeet Supported";
+      return "Sit to Stand";
+    } else {
+      return "err";
+    }
+  }
+
+  String formatDateTime(DateTime dateTimeObj) {
+    return DateFormat("MMM d, y h:mm a").format(dateTimeObj);
   }
 
   void sortList(String? value) {
     if (testList.isNotEmpty) {
       if (value == 'Most Recent') {
-        testList.sort((a, b) => b!.start_time!.compareTo(a!.start_time!));
+        testList.sort((a, b) => b.start_time!.compareTo(a.start_time!));
       } else if (value == 'Oldest') {
-        testList.sort((a, b) => a!.start_time!.compareTo(b!.start_time!));
+        testList.sort((a, b) => a.start_time!.compareTo(b.start_time!));
       } else if (value == 'Score: Low to High') {
-        testList.sort((a, b) => a!.balance_score!.compareTo(b!.balance_score!));
+        testList.sort((a, b) => a.balance_score!.compareTo(b.balance_score!));
       } else if (value == 'Score: High to Low') {
-        testList.sort((a, b) => b!.balance_score!.compareTo(a!.balance_score!));
+        testList.sort((a, b) => b.balance_score!.compareTo(a.balance_score!));
       } else if (value == 'Movement Name: Z to Z') {
-        testList.sort((a, b) => a!.test_type!.compareTo(b!.test_type!));
+        testList.sort((a, b) => a.test_type.compareTo(b.test_type));
       } else if (value == 'Movement Name: A to Z') {
-        testList.sort((a, b) => b!.test_type!.compareTo(a!.test_type!));
+        testList.sort((a, b) => b.test_type.compareTo(a.test_type));
       }
     }
   }
@@ -107,8 +123,7 @@ class _PastTestsState extends State<PastTests> {
     'Movement Name: Z to A',
   ];
 
-  //Dropdown index
-  String? selectedValue;
+  String? dropdownIndex;
 
   //Adds dividers to list of items in dropdown
   List<DropdownMenuItem<String>> _addDividersAfterItems(List<String> items) {
@@ -176,14 +191,7 @@ class _PastTestsState extends State<PastTests> {
   //UI
 
   Widget buildTestList(List<TestEvent> tests) {
-    double height = MediaQuery
-        .of(context)
-        .size
-        .height;
-    double width = MediaQuery
-        .of(context)
-        .size
-        .width;
+    double width = MediaQuery.of(context).size.width;
     if(tests.isEmpty) {
       return const Center(child: Text('No Tests Found'));
     } else {
@@ -222,7 +230,7 @@ class _PastTestsState extends State<PastTests> {
                       ),
                       items: _addDividersAfterItems(items),
                       customItemsHeights: _getCustomItemsHeights(),
-                      value: selectedValue,
+                      value: dropdownIndex,
                       onChanged: (value) {
                         setState(() {
                           sortList(value);
@@ -443,15 +451,6 @@ class _PastTestsState extends State<PastTests> {
 
   @override
   Widget build(BuildContext context) {
-    double height = MediaQuery
-        .of(context)
-        .size
-        .height;
-    double width = MediaQuery
-        .of(context)
-        .size
-        .width;
-
     return Expanded(
         child: FutureBuilder<List<TestEvent>>(
           future: futureTestList,
@@ -467,19 +466,7 @@ class _PastTestsState extends State<PastTests> {
               ));
             }
           },
-        ));
-  }
-
-  String formatMovementName(String movement) {
-    if (movement == "sit-to-stand") {
-      // return "Sitting with\nBack Unsupported\nFeet Supported";
-      return "Sit to Stand";
-    } else {
-      return "err";
-    }
-  }
-
-  String formatDateTime(DateTime dateTimeObj) {
-    return DateFormat("MMM d, y h:mm a").format(dateTimeObj);
+        ),
+    );
   }
 }

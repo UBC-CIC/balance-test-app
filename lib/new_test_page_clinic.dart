@@ -3,11 +3,11 @@ import 'dart:core';
 import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:balance_test/test_instructions_page.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:gaimon/gaimon.dart';
 import 'package:google_fonts/google_fonts.dart';
-
 import 'package:balance_test/models/Test.dart';
 
 class NewTestPageClinic extends StatefulWidget {
@@ -23,14 +23,18 @@ class NewTestPageClinic extends StatefulWidget {
 class _NewTestPageClinicState extends State<NewTestPageClinic> {
   //VARIABLES
 
-  //Controller for fading scroll view
-
   late Future<List<Test>> futureTestList;
-
   static List<Test> testList = [];
 
+  //METHODS
+
+  @override
+  void initState() {
+    super.initState();
+    futureTestList = queryTests();
+  }
+
   Future<List<Test>> queryTests() async {
-    print(widget.userID);
     try {
       var query = '''
         query MyQuery {
@@ -42,12 +46,12 @@ class _NewTestPageClinicState extends State<NewTestPageClinic> {
         }
       ''';
 
-      final response = await Amplify.API
-          .query(request: GraphQLRequest<String>(document: query, variables: {'patient_id': widget.userID}))
-          .response;
+      final response = await Amplify.API.query(request: GraphQLRequest<String>(document: query, variables: {'patient_id': widget.userID})).response;
 
       if (response.data == null) {
-        print('errors: ${response.errors}');
+        if (kDebugMode) {
+          print('errors: ${response.errors}');
+        }
         return <Test>[];
       } else {
         final testListJson = json.decode(response.data!);
@@ -58,23 +62,16 @@ class _NewTestPageClinicState extends State<NewTestPageClinic> {
           tempList.add(Test.fromJson(entry));
         });
 
-        tempList.sort((a, b) =>
-            convertMovementName(b!.test_type!).compareTo(
-                convertMovementName(a!.test_type!)));
+        tempList.sort((a, b) => convertMovementName(b.test_type).compareTo(convertMovementName(a.test_type)));
         return tempList;
       }
     } on ApiException catch (e) {
-      print('Query failed: $e');
+      if (kDebugMode) {
+        print('Query failed: $e');
+      }
     }
     return <Test>[];
   }
-
-  @override
-  void initState() {
-    super.initState();
-    futureTestList = queryTests();
-  }
-
 
   static String convertMovementName(String movement) {
     if (movement == 'sit-to-stand') {
@@ -110,35 +107,26 @@ class _NewTestPageClinicState extends State<NewTestPageClinic> {
     }
   }
 
-
   String formatDuration(int totalSeconds) {
     if (totalSeconds > 59) {
       int minutes = (totalSeconds / 60).round();
-      String mintueFormat;
+      String minuteFormat;
       if (minutes == 1) {
-        mintueFormat = 'minute';
+        minuteFormat = 'minute';
       } else {
-        mintueFormat = 'minutes';
+        minuteFormat = 'minutes';
       }
-      return '$minutes $mintueFormat';
+      return '$minutes $minuteFormat';
     } else {
       return '$totalSeconds seconds';
     }
   }
 
-
   //UI
 
   @override
   Widget build(BuildContext context) {
-    double height = MediaQuery
-        .of(context)
-        .size
-        .height;
-    double width = MediaQuery
-        .of(context)
-        .size
-        .width;
+    double width = MediaQuery.of(context).size.width;
 
     Widget buildTestList(List<Test> tests) {
       if (tests.isEmpty) {
@@ -182,8 +170,7 @@ class _NewTestPageClinicState extends State<NewTestPageClinic> {
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
                             Padding(
-                              padding: const EdgeInsets.fromLTRB(
-                                  20.0, 15, 0, 0),
+                              padding: const EdgeInsets.fromLTRB(20.0, 15, 0, 0),
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
@@ -208,20 +195,18 @@ class _NewTestPageClinicState extends State<NewTestPageClinic> {
                                     ),
                                   ),
                                   Padding(
-                                    padding: const EdgeInsets.fromLTRB(
-                                        0, 10, 0, 0),
+                                    padding: const EdgeInsets.fromLTRB(0, 10, 0, 0),
                                     child: Row(
                                       children: [
-                                        const Icon(Icons.access_time_rounded,
+                                        const Icon(
+                                          Icons.access_time_rounded,
                                           color: Color(0xff006CC6),
                                           size: 20,
                                         ),
                                         Padding(
-                                          padding:
-                                          const EdgeInsets.fromLTRB(8, 0, 0, 0),
+                                          padding: const EdgeInsets.fromLTRB(8, 0, 0, 0),
                                           child: Text(
-                                            formatDuration(
-                                                test.duration_in_seconds!),
+                                            formatDuration(test.duration_in_seconds!),
                                             style: GoogleFonts.nunito(
                                               textStyle: const TextStyle(
                                                 color: Color(0xff006CC6),
@@ -242,8 +227,7 @@ class _NewTestPageClinicState extends State<NewTestPageClinic> {
                               padding: const EdgeInsets.fromLTRB(0, 0, 20, 0),
                               child: FittedBox(
                                 fit: BoxFit.scaleDown,
-                                child:
-                                SizedBox(
+                                child: SizedBox(
                                   height: 55,
                                   width: 0.26 * width,
                                   child: ElevatedButton(
@@ -253,25 +237,19 @@ class _NewTestPageClinicState extends State<NewTestPageClinic> {
                                           widget.parentCtx,
                                           //Used to pop to main page instead of home
                                           MaterialPageRoute(
-                                              builder: (context) =>
-                                                  TestInstructionsPage(
-                                                    movementType: test
-                                                        .test_type,
+                                              builder: (context) => TestInstructionsPage(
+                                                    movementType: test.test_type,
                                                     userID: widget.userID,
-                                                    formattedMovementType: convertMovementName(
-                                                        test.test_type),
-                                                    instructions: test
-                                                        .instructions!,
+                                                    formattedMovementType: convertMovementName(test.test_type),
+                                                    instructions: test.instructions!,
                                                     isClinicApp: false,
                                                   )));
                                     },
                                     style: ElevatedButton.styleFrom(
                                         elevation: 0,
-                                        backgroundColor: const Color(
-                                            0xff006CC6),
+                                        backgroundColor: const Color(0xff006CC6),
                                         shape: RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.circular(
-                                              30),
+                                          borderRadius: BorderRadius.circular(30),
                                           //border radius equal to or more than 50% of width
                                         )),
                                     child: FittedBox(
@@ -279,8 +257,7 @@ class _NewTestPageClinicState extends State<NewTestPageClinic> {
                                       child: Row(
                                         children: [
                                           Padding(
-                                            padding: const EdgeInsets.fromLTRB(
-                                                0, 0, 3, 0),
+                                            padding: const EdgeInsets.fromLTRB(0, 0, 3, 0),
                                             child: Text(
                                               'Start',
                                               style: GoogleFonts.nunito(
@@ -295,7 +272,8 @@ class _NewTestPageClinicState extends State<NewTestPageClinic> {
                                           ),
                                           const Icon(
                                             CupertinoIcons.chevron_right,
-                                            size: 20,)
+                                            size: 20,
+                                          )
                                         ],
                                       ),
                                     ),
@@ -316,19 +294,20 @@ class _NewTestPageClinicState extends State<NewTestPageClinic> {
 
     return Expanded(
         child: FutureBuilder<List<Test>>(
-          future: futureTestList,
-          builder: (context, snapshot) {
-            if (snapshot.hasData) {
-              testList = snapshot.data!;
+      future: futureTestList,
+      builder: (context, snapshot) {
+        if (snapshot.hasData) {
+          testList = snapshot.data!;
 
-              return buildTestList(testList);
-            } else {
-              return const Center(child: SpinKitThreeInOut(
-                color: Colors.indigo,
-                size: 50.0,
-              ));
-            }
-          },
-        ));
+          return buildTestList(testList);
+        } else {
+          return const Center(
+              child: SpinKitThreeInOut(
+            color: Colors.indigo,
+            size: 50.0,
+          ));
+        }
+      },
+    ));
   }
 }

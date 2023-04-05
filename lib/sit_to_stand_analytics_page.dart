@@ -1,11 +1,11 @@
 import 'dart:convert';
 import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:charts_flutter/flutter.dart' as charts;
-
 import 'models/TestEvent.dart';
 
 class SitToStandAnalyticsPage extends StatefulWidget {
@@ -36,17 +36,14 @@ class TimeSeriesRangeData {
 }
 
 class _SitToStandAnalyticsPageState extends State<SitToStandAnalyticsPage> {
-  //Generate Score Graph
-  final controller = ScrollController();
-
-
+  ///SCORE GRAPH CODE
+  //VARIABLES
   late Future<List<charts.Series<TimeSeriesScoreData, DateTime>>> scoreSeriesList =
       querySitToStandScores();
 
+  //METHODS
 
   Future<List<charts.Series<TimeSeriesScoreData, DateTime>>> querySitToStandScores() async {
-    print('Query Sit to Stand');
-
     try {
       var query = '''
         query MyQuery {
@@ -62,10 +59,11 @@ class _SitToStandAnalyticsPageState extends State<SitToStandAnalyticsPage> {
           .response;
 
       if (response.data == null) {
-        print('errors: ${response.errors}');
+        if (kDebugMode) {
+          print('errors: ${response.errors}');
+        }
         return <charts.Series<TimeSeriesScoreData, DateTime>>[];
       } else {
-        print('1');
 
         final  scoreValueJson = json.decode(response.data!);
 
@@ -76,21 +74,23 @@ class _SitToStandAnalyticsPageState extends State<SitToStandAnalyticsPage> {
           tempList.add(TestEvent.fromJson(entry));
         });
 
-        tempList.sort((a, b) => b!.start_time!.compareTo(a!.start_time!));
+        tempList.sort((a, b) => b.start_time!.compareTo(a.start_time!));
 
 
         final List<DateTime> scoreTimeStamps = [];
         final List<int> scoreValues = [];
-        tempList.forEach((element) {
+        for (var element in tempList) {
           if(element.start_time!=null && element.balance_score!=null) {
             scoreTimeStamps.add(element.start_time!.getDateTimeInUtc());
             scoreValues.add(element.balance_score!);
           }
-        });
+        }
         return createChartSeries(scoreTimeStamps, scoreValues);
       }
     } on ApiException catch (e) {
-      print('Query failed: $e');
+      if (kDebugMode) {
+        print('Query failed: $e');
+      }
     }
     return <charts.Series<TimeSeriesScoreData, DateTime>>[];
   }
@@ -99,8 +99,6 @@ class _SitToStandAnalyticsPageState extends State<SitToStandAnalyticsPage> {
   List<charts.Series<TimeSeriesScoreData, DateTime>> createChartSeries(
       List<DateTime> tsList, List<int> scoreList) {
     final data = generateTimeSeriesDataList(tsList, scoreList);
-    print('Generate Chart Series');
-
     return [
       charts.Series<TimeSeriesScoreData, DateTime>(
         id: 'Sample',
@@ -115,19 +113,14 @@ class _SitToStandAnalyticsPageState extends State<SitToStandAnalyticsPage> {
   List<TimeSeriesScoreData> generateTimeSeriesDataList(
       List<DateTime> tsList, List<int> scoreList) {
     List<TimeSeriesScoreData> data = [];
-    print('Generate Time Series Data List');
     for (int i = 0; i < tsList.length; i += 1) {
       data.add(TimeSeriesScoreData(tsList[i], scoreList[i]));
     }
-    print('Finished Generate Time Series Data List');
-
-
     return data;
   }
 
-
- //Generate Range Graph
-
+  ///RANGE GRAPHS CODE
+  //VARIABLES
 
   late Future<List<charts.Series<TimeSeriesRangeData, DateTime>>> rangeSeriesListAx =
   querySitToStandRange("ax");
@@ -156,6 +149,7 @@ class _SitToStandAnalyticsPageState extends State<SitToStandAnalyticsPage> {
   late Future<List<charts.Series<TimeSeriesRangeData, DateTime>>> rangeSeriesListMz =
   querySitToStandRange("mz");
 
+  //METHODS
 
   Future<List<charts.Series<TimeSeriesRangeData, DateTime>>> querySitToStandRange(String sensor) async {
 
@@ -177,11 +171,11 @@ class _SitToStandAnalyticsPageState extends State<SitToStandAnalyticsPage> {
           .response;
 
       if (response.data == null) {
-        print('errors: ${response.errors}');
+        if (kDebugMode) {
+          print('errors: ${response.errors}');
+        }
         return <charts.Series<TimeSeriesRangeData, DateTime>>[];
       } else {
-        print('1');
-
         final  rangeDataJson = json.decode(response.data!);
         List<double> minList = rangeDataJson["getMeasurementRange"]['min'].map<double>((e) => double.parse(e.toString()))
             .toList();
@@ -205,7 +199,9 @@ class _SitToStandAnalyticsPageState extends State<SitToStandAnalyticsPage> {
         return createRangeChartSeries(dateList, minList, maxList);
       }
     } on ApiException catch (e) {
-      print('Query failed: $e');
+      if (kDebugMode) {
+        print('Query failed: $e');
+      }
     }
     return <charts.Series<TimeSeriesRangeData, DateTime>>[];
   }
@@ -216,8 +212,6 @@ class _SitToStandAnalyticsPageState extends State<SitToStandAnalyticsPage> {
     final minData = generateTimeSeriesRangeDataList(tsList, minList);
     final maxData = generateTimeSeriesRangeDataList(tsList, maxList);
 
-    print('Generate Chart Series');
-
     return [
 
       charts.Series<TimeSeriesRangeData, DateTime>(
@@ -227,7 +221,7 @@ class _SitToStandAnalyticsPageState extends State<SitToStandAnalyticsPage> {
         measureFn: (TimeSeriesRangeData data, _) => data.value,
         data: maxData,
       ),
-      // Hollow green bars.
+
       charts.Series<TimeSeriesRangeData, DateTime>(
         id: 'Min',
         colorFn: (_, __) => charts.ColorUtil.fromDartColor(Colors.indigo),
@@ -247,16 +241,6 @@ class _SitToStandAnalyticsPageState extends State<SitToStandAnalyticsPage> {
     return data;
   }
 
-
-  String formatDuration(int totalSeconds) {
-    final duration = Duration(seconds: totalSeconds);
-    final minutes = duration.inMinutes;
-    final seconds = totalSeconds % 60;
-
-    final minutesString = '$minutes'.padLeft(1, '0');
-    final secondsString = '$seconds'.padLeft(2, '0');
-    return '$minutesString:$secondsString';
-  }
 
   //UI
 
@@ -301,7 +285,6 @@ class _SitToStandAnalyticsPageState extends State<SitToStandAnalyticsPage> {
           backgroundColor: const Color(0xfcf2f1f6),
         ),
         body: SingleChildScrollView(
-            controller: controller,
             child: Column(
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.start,
