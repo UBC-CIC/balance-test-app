@@ -110,13 +110,13 @@ class _NewTestPageState extends State<NewTestPage> {
   String formatDuration(int totalSeconds) {
     if (totalSeconds > 59) {
       int minutes = (totalSeconds / 60).round();
-      String mintueFormat;
+      String minuteFormat;
       if (minutes == 1) {
-        mintueFormat = 'minute';
+        minuteFormat = 'minute';
       } else {
-        mintueFormat = 'minutes';
+        minuteFormat = 'minutes';
       }
-      return '$minutes $mintueFormat';
+      return '$minutes $minuteFormat';
     } else {
       return '$totalSeconds seconds';
     }
@@ -240,7 +240,7 @@ class _NewTestPageState extends State<NewTestPage> {
                                                     movementType: test.test_type,
                                                     userID: widget.userID,
                                                     formattedMovementType: convertMovementName(test.test_type),
-                                                    instructions: test.instructions!,
+                                                    instructions: test.instructions?? "empty",
                                                     isClinicApp: false,
                                                   )));
                                     },

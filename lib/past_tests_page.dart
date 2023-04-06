@@ -102,9 +102,9 @@ class _PastTestsState extends State<PastTests> {
       } else if (value == 'Oldest') {
         testList.sort((a, b) => a.start_time!.compareTo(b.start_time!));
       } else if (value == 'Score: Low to High') {
-        testList.sort((a, b) => a.balance_score!.compareTo(b.balance_score!));
+        testList.sort((a, b) => (a.balance_score?? 0).compareTo(b.balance_score?? 0));
       } else if (value == 'Score: High to Low') {
-        testList.sort((a, b) => b.balance_score!.compareTo(a.balance_score!));
+        testList.sort((a, b) => (b.balance_score?? 0).compareTo(a.balance_score?? 0));
       } else if (value == 'Movement Name: Z to Z') {
         testList.sort((a, b) => a.test_type.compareTo(b.test_type));
       } else if (value == 'Movement Name: A to Z') {

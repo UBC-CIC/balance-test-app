@@ -214,8 +214,22 @@ class _AnalyticsPageState extends State<AnalyticsPage> {
                                                   ),
                                                 ],
                                               );
+                                            } else if (snapshot.connectionState == ConnectionState.waiting) {
+                                              return Container(height: 44);
                                             } else {
-                                              return Container(height: 44); // loading
+                                              return SizedBox(
+                                                height: 44,
+                                                child: Text(
+                                                  '-',
+                                                  style: GoogleFonts.nunito(
+                                                    textStyle: const TextStyle(
+                                                      color: Colors.black,
+                                                      fontSize: 32,
+                                                      fontWeight: FontWeight.bold,
+                                                    ),
+                                                  ),
+                                                ),
+                                              ); // loading
                                             }
                                           },
                                         ),
@@ -359,10 +373,22 @@ class _AnalyticsPageState extends State<AnalyticsPage> {
                                                   ),
                                                 ],
                                               );
+                                            } else if (snapshot.connectionState == ConnectionState.waiting) {
+                                              return Container(height: 44);
                                             } else {
-                                              return Container(
+                                              return SizedBox(
                                                 height: 44,
-                                              );
+                                                child: Text(
+                                                  '-',
+                                                  style: GoogleFonts.nunito(
+                                                    textStyle: const TextStyle(
+                                                      color: Colors.black,
+                                                      fontSize: 32,
+                                                      fontWeight: FontWeight.bold,
+                                                    ),
+                                                  ),
+                                                ),
+                                              ); // lo
                                             }
                                           },
                                         ),
