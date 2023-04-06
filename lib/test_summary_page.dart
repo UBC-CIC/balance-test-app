@@ -1,8 +1,7 @@
-import 'dart:ffi';
 import 'dart:math';
-
 import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_ringtone_player/flutter_ringtone_player.dart';
@@ -59,18 +58,12 @@ class TestSummary extends StatefulWidget {
 
 class _TestSummaryState extends State<TestSummary> {
   //VARIABLES
+
   final uploadResult = ValueNotifier<String>('none');
-
-  final controller = ScrollController();
-
   var uuid = const Uuid();
-
   final TextEditingController notesController = TextEditingController();
-
   late TextEditingController clinicScoreController = TextEditingController();
-
   bool showScoreInputWarning = false;
-
   late bool? allowSharingStateVar;
 
   //METHODS
@@ -104,7 +97,6 @@ class _TestSummaryState extends State<TestSummary> {
           looping: false,
           volume: 1.0,
         );
-        print("returned from post request");
         uploadResult.value = 'success';
         Future.delayed(const Duration(seconds: 2), () {
           setState(() {
@@ -133,7 +125,6 @@ class _TestSummaryState extends State<TestSummary> {
       if (n >= 10) return '$n';
       return '0$n';
     }
-
     DateTime dateTime = DateTime.parse(input).toLocal();
     DateFormat outputFormat = DateFormat("yyyy-MM-dd HH:mm:ss");
     String outputTimeString = outputFormat.format(dateTime);
@@ -141,17 +132,15 @@ class _TestSummaryState extends State<TestSummary> {
     return "$outputTimeString${hours > 0 ? '+' : '-'}${twoDigits(hours.abs())}";
   }
 
-  // Future<http.Response> postRequest() async {
+
   Future<bool> postRequest() async {
     String testID = uuid.v4();
 
     DateTime now = DateTime.now();
 
     String databaseStartTime = formatDateTimeDatabase(widget.timeStampData.first);
-    print("START TIME START TIME START TIME $databaseStartTime");
 
     String databaseEndTime = formatDateTimeDatabase(widget.timeStampData.last);
-    print("END TIME END TIME END TIME $databaseEndTime");
 
     int shortestLength = [
       widget.timeStampData,
@@ -196,19 +185,6 @@ class _TestSummaryState extends State<TestSummary> {
     arrayMap["my"] = magnetometerDataYTrim;
     arrayMap["mz"] = magnetometerDataZTrim;
 
-    print("START");
-    print(timeStampDataTrim.length);
-    print(accelerometerDataXTrim.length);
-    print(accelerometerDataYTrim.length);
-    print(accelerometerDataZTrim.length);
-    print(gyroscopeDataXTrim.length);
-    print(gyroscopeDataYTrim.length);
-    print(gyroscopeDataZTrim.length);
-    print(magnetometerDataXTrim.length);
-    print(magnetometerDataYTrim.length);
-    print(magnetometerDataZTrim.length);
-    print(widget.movementType);
-
     String body = json.encode(arrayMap);
 
     String key =
@@ -221,8 +197,6 @@ class _TestSummaryState extends State<TestSummary> {
 
     //Upload to RDS
     try {
-      print('uploading to rds');
-
       var query = '''
         mutation MyMutation {
           putTestResult(
@@ -239,13 +213,14 @@ class _TestSummaryState extends State<TestSummary> {
 
       await Amplify.API.query(request: GraphQLRequest<String>(document: query, variables: {'patient_id': widget.userID})).response;
     } on ApiException catch (e) {
-      print('Query failed: $e');
+      if (kDebugMode) {
+        print('Query failed: $e');
+      }
       return false;
     }
 
     // Upload the file to S3
     try {
-      print('uploading to s3');
       final UploadFileResult result = await Amplify.Storage.uploadFile(
           local: tempFile,
           options: UploadFileOptions(
@@ -258,7 +233,9 @@ class _TestSummaryState extends State<TestSummary> {
       safePrint('Successfully uploaded file: ${result.key}');
     } on StorageException catch (e) {
       try {
-        print('deleting from rds');
+        if (kDebugMode) {
+          print('deleting from rds');
+        }
 
         var query = '''
         mutation MyMutation {
@@ -268,7 +245,9 @@ class _TestSummaryState extends State<TestSummary> {
 
         await Amplify.API.query(request: GraphQLRequest<String>(document: query, variables: {'patient_id': widget.userID})).response;
       } on ApiException catch (e) {
-        print('Query failed: $e');
+        if (kDebugMode) {
+          print('Query failed: $e');
+        }
         return false;
       }
       safePrint('Error uploading file: $e');
@@ -279,7 +258,7 @@ class _TestSummaryState extends State<TestSummary> {
 
   bool isNumber(String string) {
     // Null or empty string is not a number
-    if (string == null || string.isEmpty) {
+    if (string.isEmpty) {
       return false;
     }
 
@@ -298,8 +277,8 @@ class _TestSummaryState extends State<TestSummary> {
 
   void updateFilledStatus(String text) {
     if (clinicScoreController.text.isEmpty ||
-        isNumber(clinicScoreController.text) &&
-            (clinicScoreController.text.isNotEmpty && int.parse(clinicScoreController.text) <= 100 && int.parse(clinicScoreController.text) >= 0)) {
+        (isNumber(clinicScoreController.text) &&
+            (clinicScoreController.text.isNotEmpty && int.parse(clinicScoreController.text) <= 100 && int.parse(clinicScoreController.text) >= 0))) {
       setState(() {
         showScoreInputWarning = false;
       });
@@ -608,12 +587,15 @@ class _TestSummaryState extends State<TestSummary> {
                                                         .response;
 
                                                     if (response.data == null) {
-                                                      print('errors: ${response.errors}');
+                                                      if (kDebugMode) {
+                                                        print('errors: ${response.errors}');
+                                                      }
                                                     } else {
-                                                      print(response.data);
                                                     }
                                                   } on ApiException catch (e) {
-                                                    print('Query failed: $e');
+                                                    if (kDebugMode) {
+                                                      print('Query failed: $e');
+                                                    }
                                                   }
                                                   allowSharingStateVar = true;
                                                   if (context.mounted) {
@@ -626,7 +608,6 @@ class _TestSummaryState extends State<TestSummary> {
                                           ),
                                         );
                                       } else {
-                                        print('sending data');
                                         sendData();
                                       }
                                     },

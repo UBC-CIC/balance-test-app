@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_ringtone_player/flutter_ringtone_player.dart';
+import 'package:gaimon/gaimon.dart';
 import 'package:motion_sensors/motion_sensors.dart';
 import 'package:balance_test/test_summary_page.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -150,9 +151,11 @@ class _RecordingPageState extends State<RecordingPage> {
           );
         },
       ).then((value) {
+        Gaimon.warning();
+
         FlutterRingtonePlayer.play(
           android: AndroidSounds.alarm,
-          ios: const IosSound(1110),
+          ios: const IosSound(1115),
           looping: false,
           asAlarm: false,
           volume: 1.0,
@@ -308,10 +311,11 @@ class _RecordingPageState extends State<RecordingPage> {
                             for (final subscription in _streamSubscriptions) {
                               subscription.cancel();
                             }
+                            Gaimon.warning();
 
                             FlutterRingtonePlayer.play(
                               android: AndroidSounds.alarm,
-                              ios: const IosSound(1112),
+                              ios: const IosSound(1116),
                               looping: false,
                               volume: 1.0,
                             );
