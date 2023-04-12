@@ -187,8 +187,9 @@ class _TestSummaryState extends State<TestSummary> {
 
     String body = json.encode(arrayMap);
 
-    String key =
-        'movement=${widget.movementType}/year=${now.year.toString()}/month=${now.month.toString()}/day=${now.day.toString()}/test_event_id=$testID.json';
+    String key = clinicScoreController.text.isNotEmpty ?
+        'movement=${widget.movementType}/training/year=${now.year.toString()}/month=${now.month.toString()}/day=${now.day.toString()}/test_event_id=$testID.json':
+    'movement=${widget.movementType}/year=${now.year.toString()}/month=${now.month.toString()}/day=${now.day.toString()}/test_event_id=$testID.json';
 
     final tempDir = await getTemporaryDirectory();
     final tempFile = File('${tempDir.path}/recording.json')

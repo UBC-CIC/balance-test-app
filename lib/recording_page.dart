@@ -46,8 +46,7 @@ class _RecordingPageState extends State<RecordingPage> {
 
   bool recordingStarted = false; //To show start/stop button
 
-  final _streamSubscriptions =
-      <StreamSubscription<dynamic>>[]; //Recording Stream
+  final _streamSubscriptions = <StreamSubscription<dynamic>>[]; //Recording Stream
 
   Stopwatch stopwatch = Stopwatch();
   Timer? timer;
@@ -91,8 +90,7 @@ class _RecordingPageState extends State<RecordingPage> {
             subscription.cancel();
           }
 
-          String timeElapsed =
-              '${stopwatch.elapsed.inMinutes}:${(stopwatch.elapsed.inSeconds % 60).toString().padLeft(2, '0')}';
+          String timeElapsed = '${stopwatch.elapsed.inMinutes}:${(stopwatch.elapsed.inSeconds % 60).toString().padLeft(2, '0')}';
           setState(() {
             stopTimer();
           });
@@ -146,7 +144,7 @@ class _RecordingPageState extends State<RecordingPage> {
         context: context,
         barrierDismissible: false,
         builder: (BuildContext context) {
-          return CountDown(
+          return CountDownPage(
             countdownDuration: countdown,
           );
         },
@@ -160,25 +158,23 @@ class _RecordingPageState extends State<RecordingPage> {
           asAlarm: false,
           volume: 1.0,
         );
+
         startTimer();
 
         clearLists();
-        _streamSubscriptions
-            .add(motionSensors.accelerometer.listen((AccelerometerEvent event) {
+        _streamSubscriptions.add(motionSensors.accelerometer.listen((AccelerometerEvent event) {
           timeStampData.add("${DateTime.now().toLocal().toString()} "
               "${formattedTimeZoneOffset(DateTime.now())}");
           accelerometerDataX.add(event.x);
           accelerometerDataY.add(event.y);
           accelerometerDataZ.add(event.z);
         }));
-        _streamSubscriptions
-            .add(motionSensors.gyroscope.listen((GyroscopeEvent event) {
+        _streamSubscriptions.add(motionSensors.gyroscope.listen((GyroscopeEvent event) {
           gyroscopeDataX.add(event.x);
           gyroscopeDataY.add(event.y);
           gyroscopeDataZ.add(event.z);
         }));
-        _streamSubscriptions
-            .add(motionSensors.magnetometer.listen((MagnetometerEvent event) {
+        _streamSubscriptions.add(motionSensors.magnetometer.listen((MagnetometerEvent event) {
           magnetometerDataX.add(event.x);
           magnetometerDataY.add(event.y);
           magnetometerDataZ.add(event.z);
@@ -197,11 +193,53 @@ class _RecordingPageState extends State<RecordingPage> {
       return '0$n';
     }
 
-    final duration = time.timeZoneOffset,
-        hours = duration.inHours,
-        minutes = duration.inMinutes.remainder(60).abs().toInt();
+    final duration = time.timeZoneOffset, hours = duration.inHours, minutes = duration.inMinutes.remainder(60).abs().toInt();
 
     return '${hours > 0 ? '+' : '-'}${twoDigits(hours.abs())}:${twoDigits(minutes)}';
+  }
+
+  void stopRecording() {
+    for (final subscription in _streamSubscriptions) {
+      subscription.cancel();
+    }
+    Gaimon.warning();
+
+    FlutterRingtonePlayer.play(
+      android: AndroidSounds.alarm,
+      ios: const IosSound(1116),
+      looping: false,
+      volume: 1.0,
+    );
+
+    String timeElapsed = '${stopwatch.elapsed.inMinutes}:${(stopwatch.elapsed.inSeconds % 60).toString().padLeft(2, '0')}';
+    setState(() {
+      stopTimer();
+    });
+
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+          builder: (context) => TestSummary(
+                formattedMovementType: widget.formattedMovementType,
+                movementType: widget.movementType,
+                timeStampData: timeStampData,
+                accelerometerDataX: accelerometerDataX,
+                accelerometerDataY: accelerometerDataY,
+                accelerometerDataZ: accelerometerDataZ,
+                gyroscopeDataX: gyroscopeDataX,
+                gyroscopeDataY: gyroscopeDataY,
+                gyroscopeDataZ: gyroscopeDataZ,
+                magnetometerDataX: magnetometerDataX,
+                magnetometerDataY: magnetometerDataY,
+                magnetometerDataZ: magnetometerDataZ,
+                timeElapsed: timeElapsed,
+                userID: widget.userID,
+                isClinicApp: widget.isClinicApp,
+              )),
+    );
+    setState(() {
+      recordingStarted = false;
+    });
   }
 
   //UI
@@ -212,162 +250,111 @@ class _RecordingPageState extends State<RecordingPage> {
     double width = MediaQuery.of(context).size.width;
 
     return MaterialApp(
-      home: Scaffold(
-        backgroundColor: const Color(0xfff2f1f6),
-        appBar: AppBar(
-          toolbarHeight: 0.12 * height,
-          title: Padding(
-            padding: const EdgeInsets.fromLTRB(0, 15, 0, 0),
-            child: SizedBox(
-              width: width,
-              height: 0.1 * height,
-              child: FittedBox(
-                fit: BoxFit.scaleDown,
-                child: Text(
-                  widget.formattedMovementType,
-                  textAlign: TextAlign.center,
-                  style: GoogleFonts.nunito(
-                    textStyle: const TextStyle(
-                      // color: Color.fromRGBO(141, 148, 162, 1.0),
-                      color: Colors.black,
-                      // fontFamily: 'DMSans-Regular',
-                      fontSize: 32,
+      home: GestureDetector(
+        onTap: () {
+          if (recordingStarted) {
+            stopRecording();
+          }
+        },
+        child: Scaffold(
+          backgroundColor: recordingStarted ? const Color(0xfffe3d30) : const Color(0xfff2f1f6),
+          appBar: AppBar(
+            leading: SizedBox(
+              height: 0.06 * height,
+              child: IconButton(
+                splashColor: Colors.transparent,
+                highlightColor: Colors.transparent,
+                icon: Icon(
+                  CupertinoIcons.chevron_back,
+                  color: Colors.black,
+                  size: 0.03 * height,
+                ),
+                onPressed: () {
+                  stopTimer();
+                  for (final subscription in _streamSubscriptions) {
+                    subscription.cancel();
+                  }
+                  Navigator.pop(context);
+                },
+              ),
+            ),
+            toolbarHeight: 0.12 * height,
+            title: Padding(
+              padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
+              child: SizedBox(
+                height: 0.06 * height,
+                child: FittedBox(
+                  fit: BoxFit.scaleDown,
+                  child: Text(
+                    widget.formattedMovementType,
+                    textAlign: TextAlign.center,
+                    style: GoogleFonts.nunito(
+                      textStyle: const TextStyle(
+                        // color: Color.fromRGBO(141, 148, 162, 1.0),
+                        color: Colors.black,
+                        // fontFamily: 'DMSans-Regular',
+                        fontSize: 32,
+                      ),
                     ),
                   ),
                 ),
               ),
             ),
+            elevation: 0,
+            backgroundColor: Colors.transparent,
           ),
-          elevation: 0,
-          backgroundColor: Colors.transparent,
-        ),
-        body: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: <Widget>[
-            Padding(
-              padding: EdgeInsets.fromLTRB(0, 0.12 * height, 0, 0.05 * height),
-              child: Text(
-                '${stopwatch.elapsed.inMinutes.toString().padLeft(2, '0')}:${(stopwatch.elapsed.inSeconds % 60).toString().padLeft(2, '0')}',
-                style: GoogleFonts.varelaRound(
-                  textStyle: const TextStyle(
-                    color: Color(0xff2A2A2A),
-                    fontSize: 70,
+          body: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: <Widget>[
+              Padding(
+                padding: EdgeInsets.fromLTRB(0, 0.12 * height, 0, 0.05 * height),
+                child: Text(
+                  '${stopwatch.elapsed.inMinutes.toString().padLeft(2, '0')}:${(stopwatch.elapsed.inSeconds % 60).toString().padLeft(2, '0')}',
+                  style: GoogleFonts.varelaRound(
+                    textStyle: TextStyle(
+                      color: recordingStarted ? Colors.white : const Color(0xff2A2A2A),
+                      fontSize: 70,
+                    ),
                   ),
                 ),
               ),
-            ),
-            Padding(
-              padding: EdgeInsets.fromLTRB(0, 0.05 * height, 0, 0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  SizedBox(
-                      height: 0.3 * width,
-                      width: 0.3 * width,
-                      child: ElevatedButton(
-                        onPressed: () {
-                          stopTimer();
-                          for (final subscription in _streamSubscriptions) {
-                            subscription.cancel();
-                          }
-                          Navigator.pop(context);
-                        },
-                        style: ElevatedButton.styleFrom(
-                            backgroundColor: const Color(0xffECEDF0),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(0.15 * width),
-                              //border radius equal to or more than 50% of width
-                            )),
-                        child: const Icon(
-                          CupertinoIcons.back,
-                          color: Colors.black,
-                          size: 40,
-                        ),
-                      )),
-                  if (!recordingStarted)
-                    SizedBox(
-                        height: 0.3 * width,
-                        width: 0.3 * width,
-                        child: ElevatedButton(
-                          onPressed: startRecording,
-                          style: ElevatedButton.styleFrom(
-                              backgroundColor: const Color(0xff006CC6),
-                              shape: RoundedRectangleBorder(
-                                borderRadius:
-                                    BorderRadius.circular(0.15 * width),
-                                //border radius equal to or more than 50% of width
-                              )),
-                          child: const Icon(
-                            Icons.play_arrow_rounded,
-                            size: 40,
-                          ),
-                        )),
-                  if (recordingStarted)
-                    SizedBox(
-                        height: 0.3 * width,
-                        width: 0.3 * width,
-                        child: ElevatedButton(
-                          onPressed: () {
-                            for (final subscription in _streamSubscriptions) {
-                              subscription.cancel();
-                            }
-                            Gaimon.warning();
-
-                            FlutterRingtonePlayer.play(
-                              android: AndroidSounds.alarm,
-                              ios: const IosSound(1116),
-                              looping: false,
-                              volume: 1.0,
-                            );
-
-                            String timeElapsed =
-                                '${stopwatch.elapsed.inMinutes}:${(stopwatch.elapsed.inSeconds % 60).toString().padLeft(2, '0')}';
-                            setState(() {
-                              stopTimer();
-                            });
-
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => TestSummary(
-                                        formattedMovementType:
-                                            widget.formattedMovementType,
-                                        movementType: widget.movementType,
-                                        timeStampData: timeStampData,
-                                        accelerometerDataX: accelerometerDataX,
-                                        accelerometerDataY: accelerometerDataY,
-                                        accelerometerDataZ: accelerometerDataZ,
-                                        gyroscopeDataX: gyroscopeDataX,
-                                        gyroscopeDataY: gyroscopeDataY,
-                                        gyroscopeDataZ: gyroscopeDataZ,
-                                        magnetometerDataX: magnetometerDataX,
-                                        magnetometerDataY: magnetometerDataY,
-                                        magnetometerDataZ: magnetometerDataZ,
-                                        timeElapsed: timeElapsed,
-                                        userID: widget.userID, isClinicApp: widget.isClinicApp,
-                                      )),
-                            );
-                            setState(() {
-                              recordingStarted = false;
-                            });
-                          },
-                          style: ElevatedButton.styleFrom(
-                              backgroundColor: const Color(0xfffe3d30),
-                              shape: RoundedRectangleBorder(
-                                borderRadius:
-                                    BorderRadius.circular(0.15 * width),
-                                //border radius equal to or more than 50% of width
-                              )),
-                          child: const Icon(
-                            Icons.stop_rounded,
-                            size: 40,
-                            color: Colors.white,
-                          ),
-                        )),
-                ],
+              Padding(
+                padding: EdgeInsets.fromLTRB(0, 0.05 * height, 0, 0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    if (!recordingStarted)
+                      SizedBox(
+                          height: 0.4 * width,
+                          width: 0.4 * width,
+                          child: ElevatedButton(
+                            onPressed: startRecording,
+                            style: ElevatedButton.styleFrom(
+                                backgroundColor: const Color(0xff006CC6),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(0.25 * width),
+                                  //border radius equal to or more than 50% of width
+                                )),
+                            child: const Icon(
+                              Icons.play_arrow_rounded,
+                              size: 60,
+                            ),
+                          )),
+                    if (recordingStarted)
+                      SizedBox(
+                          height: 0.4 * width,
+                          width: 0.4 * width,
+                          child:
+                            const Icon(
+                              Icons.stop_rounded,
+                              size: 60,
+                              color: Colors.white,
+                          )),
+                  ],
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

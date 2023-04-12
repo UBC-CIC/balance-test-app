@@ -73,6 +73,38 @@ class _ClinicHomePageState extends State<ClinicHomePage> {
 
   }
 
+
+ void addPatient() async {
+    try {
+      var query = '''
+            mutation MyMutation2 {
+              addPatientToCareProvider(care_provider_id: "8101bca9-ab62-41e0-a376-a58239d4fdb5", patient_id: "0d33fb19-fe7b-4d1b-91f5-60bcfc6d175f") {
+                care_provider_id
+              }
+            }
+          ''';
+
+      final response = await Amplify.API
+          .query(request: GraphQLRequest<String>(document: query, variables: {'patient_id': widget.userID}))
+          .response;
+
+      if (response.data == null) {
+        if (kDebugMode) {
+          print('errors: ${response.errors}');
+        }
+      } else {
+        if (kDebugMode) {
+          print(response.data);
+        }
+      }
+    } on ApiException catch (e) {
+      if (kDebugMode) {
+        print('Query failed: $e');
+      }
+    }
+  }
+
+
   //UI
 
   @override
@@ -88,6 +120,8 @@ class _ClinicHomePageState extends State<ClinicHomePage> {
             );
           } else if(snapshot.hasData && snapshot.data!.isEmpty){
             return const Center(child: Text('No Patients Assigned'));
+            // return Center(child: ElevatedButton(onPressed: addPatient,
+            // child: Icon(Icons.add),));
           } else {
             return const Center(
                 child: SpinKitThreeInOut(

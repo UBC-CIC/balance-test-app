@@ -55,15 +55,18 @@ class _TestInstructionsPageState extends State<TestInstructionsPage> {
         toolbarHeight: 0.06 * height,
         title: Padding(
           padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
-          child: Text(
-            widget.formattedMovementType,
-            textAlign: TextAlign.center,
-            style: GoogleFonts.nunito(
-              textStyle: const TextStyle(
-                // color: Color.fromRGBO(141, 148, 162, 1.0),
-                color: Colors.black,
-                fontWeight: FontWeight.w500,
-                fontSize: 24,
+          child: FittedBox(
+            fit: BoxFit.scaleDown,
+            child: Text(
+              widget.formattedMovementType,
+              textAlign: TextAlign.center,
+              style: GoogleFonts.nunito(
+                textStyle: const TextStyle(
+                  // color: Color.fromRGBO(141, 148, 162, 1.0),
+                  color: Colors.black,
+                  fontWeight: FontWeight.w500,
+                  fontSize: 24,
+                ),
               ),
             ),
           ),

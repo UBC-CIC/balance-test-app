@@ -2,17 +2,16 @@ import 'package:circular_countdown_timer/circular_countdown_timer.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-class CountDown extends StatefulWidget {
-  const CountDown({Key? key, required this.countdownDuration})
-      : super(key: key);
+class CountDownPage extends StatefulWidget {
+  const CountDownPage({Key? key, required this.countdownDuration}) : super(key: key);
 
   final int countdownDuration;
 
   @override
-  State<CountDown> createState() => _CountDownState();
+  State<CountDownPage> createState() => _CountDownPageState();
 }
 
-class _CountDownState extends State<CountDown> {
+class _CountDownPageState extends State<CountDownPage> {
   //VARIABLES
 
   CountDownController controller = CountDownController();
@@ -29,19 +28,19 @@ class _CountDownState extends State<CountDown> {
 
   @override
   Widget build(BuildContext context) {
-    return Dialog(
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(20),
-      ),
-      elevation: 0,
-      backgroundColor: Colors.transparent,
-      child: Stack(
-        children: [
-          Center(
-            child: GestureDetector(
-              onTap: () {
-                Navigator.pop(context);
-              },
+    return GestureDetector(
+      onTap: () {
+        Navigator.pop(context);
+      },
+      child: Dialog(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(20),
+        ),
+        elevation: 0,
+        backgroundColor: Colors.transparent,
+        child: Stack(
+          children: [
+            Center(
               child: Container(
                 height: 200,
                 width: 200,
@@ -85,8 +84,8 @@ class _CountDownState extends State<CountDown> {
                 ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
