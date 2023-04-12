@@ -237,7 +237,7 @@ class _SitToStandAnalyticsPageState extends State<SitToStandAnalyticsPage> {
       charts.Series<TimeSeriesRangeData, DateTime>(
         id: 'Min',
         colorFn: (_, __) => charts.MaterialPalette.transparent,
-        fillColorFn: (TimeSeriesRangeData data, int? idx) => (data.value > 0 && maxData[idx as int].value > 0 || data.value < 0 && maxData[idx as int].value < 0) ? charts.ColorUtil.fromDartColor(Colors.transparent) : charts.ColorUtil.fromDartColor(Colors.orange),
+        fillColorFn: (TimeSeriesRangeData data, int? idx) => (data.value > 0 && maxData[idx as int].value > 0 || data.value < 0 && maxData[idx as int].value < 0) ? charts.ColorUtil.fromDartColor(Colors.transparent) : charts.ColorUtil.fromDartColor(Colors.indigo),
         domainFn: (TimeSeriesRangeData data, _) => data.time,
         measureFn: (TimeSeriesRangeData data, _) => data.value,
         data: minData,
@@ -474,7 +474,7 @@ class _SitToStandAnalyticsPageState extends State<SitToStandAnalyticsPage> {
                                               child: charts.TimeSeriesChart(
                                                 axList,
                                                 defaultRenderer: charts.BarRendererConfig<DateTime>(
-                                                    groupingType: charts.BarGroupingType.stacked, strokeWidthPx: 0.0, maxBarWidthPx: 3, cornerStrategy: const charts.ConstCornerStrategy(4)),
+                                                    groupingType: charts.BarGroupingType.stacked, strokeWidthPx: 0.0, maxBarWidthPx: 3, cornerStrategy: const charts.ConstCornerStrategy(1)),
 
                                                 defaultInteractions: false,
                                                 animate: true,
@@ -540,7 +540,7 @@ class _SitToStandAnalyticsPageState extends State<SitToStandAnalyticsPage> {
                                               child: charts.TimeSeriesChart(
                                                 axList,
                                                 defaultRenderer: charts.BarRendererConfig<DateTime>(
-                                                  groupingType: charts.BarGroupingType.stacked, strokeWidthPx: 0.0, maxBarWidthPx: 3, cornerStrategy: const charts.ConstCornerStrategy(4),),
+                                                  groupingType: charts.BarGroupingType.stacked, strokeWidthPx: 0.0, maxBarWidthPx: 3, cornerStrategy: const charts.ConstCornerStrategy(1),),
 
                                                 defaultInteractions: false,
                                                 animate: true,
@@ -606,7 +606,7 @@ class _SitToStandAnalyticsPageState extends State<SitToStandAnalyticsPage> {
                                               child: charts.TimeSeriesChart(
                                                 axList,
                                                 defaultRenderer: charts.BarRendererConfig<DateTime>(
-                                                  groupingType: charts.BarGroupingType.stacked, strokeWidthPx: 0.0, maxBarWidthPx: 3, cornerStrategy: const charts.ConstCornerStrategy(4),),
+                                                  groupingType: charts.BarGroupingType.stacked, strokeWidthPx: 0.0, maxBarWidthPx: 3, cornerStrategy: const charts.ConstCornerStrategy(1),),
 
                                                 defaultInteractions: false,
                                                 animate: true,
@@ -672,7 +672,7 @@ class _SitToStandAnalyticsPageState extends State<SitToStandAnalyticsPage> {
                                               child: charts.TimeSeriesChart(
                                                 axList,
                                                 defaultRenderer: charts.BarRendererConfig<DateTime>(
-                                                  groupingType: charts.BarGroupingType.stacked, strokeWidthPx: 0.0, maxBarWidthPx: 3, cornerStrategy: const charts.ConstCornerStrategy(4),),
+                                                  groupingType: charts.BarGroupingType.stacked, strokeWidthPx: 0.0, maxBarWidthPx: 3, cornerStrategy: const charts.ConstCornerStrategy(1),),
 
                                                 defaultInteractions: false,
                                                 animate: true,
@@ -738,7 +738,7 @@ class _SitToStandAnalyticsPageState extends State<SitToStandAnalyticsPage> {
                                               child: charts.TimeSeriesChart(
                                                 axList,
                                                 defaultRenderer: charts.BarRendererConfig<DateTime>(
-                                                  groupingType: charts.BarGroupingType.stacked, strokeWidthPx: 0.0, maxBarWidthPx: 3, cornerStrategy: const charts.ConstCornerStrategy(4),),
+                                                  groupingType: charts.BarGroupingType.stacked, strokeWidthPx: 0.0, maxBarWidthPx: 3, cornerStrategy: const charts.ConstCornerStrategy(1),),
 
                                                 defaultInteractions: false,
                                                 animate: true,
@@ -804,7 +804,7 @@ class _SitToStandAnalyticsPageState extends State<SitToStandAnalyticsPage> {
                                               child: charts.TimeSeriesChart(
                                                 axList,
                                                 defaultRenderer: charts.BarRendererConfig<DateTime>(
-                                                  groupingType: charts.BarGroupingType.stacked, strokeWidthPx: 0.0, maxBarWidthPx: 3, cornerStrategy: const charts.ConstCornerStrategy(4),),
+                                                  groupingType: charts.BarGroupingType.stacked, strokeWidthPx: 0.0, maxBarWidthPx: 3, cornerStrategy: const charts.ConstCornerStrategy(1),),
 
                                                 defaultInteractions: false,
                                                 animate: true,
@@ -870,7 +870,7 @@ class _SitToStandAnalyticsPageState extends State<SitToStandAnalyticsPage> {
                                               child: charts.TimeSeriesChart(
                                                 axList,
                                                 defaultRenderer: charts.BarRendererConfig<DateTime>(
-                                                  groupingType: charts.BarGroupingType.stacked, strokeWidthPx: 0.0, maxBarWidthPx: 3, cornerStrategy: const charts.ConstCornerStrategy(4),),
+                                                  groupingType: charts.BarGroupingType.stacked, strokeWidthPx: 0.0, maxBarWidthPx: 3, cornerStrategy: const charts.ConstCornerStrategy(1),),
 
                                                 defaultInteractions: false,
                                                 animate: true,
@@ -936,7 +936,7 @@ class _SitToStandAnalyticsPageState extends State<SitToStandAnalyticsPage> {
                                               child: charts.TimeSeriesChart(
                                                 axList,
                                                 defaultRenderer: charts.BarRendererConfig<DateTime>(
-                                                  groupingType: charts.BarGroupingType.stacked, strokeWidthPx: 0.0, maxBarWidthPx: 3, cornerStrategy: const charts.ConstCornerStrategy(4),),
+                                                  groupingType: charts.BarGroupingType.stacked, strokeWidthPx: 0.0, maxBarWidthPx: 3, cornerStrategy: const charts.ConstCornerStrategy(1),),
 
                                                 defaultInteractions: false,
                                                 animate: true,
@@ -1002,7 +1002,7 @@ class _SitToStandAnalyticsPageState extends State<SitToStandAnalyticsPage> {
                                               child: charts.TimeSeriesChart(
                                                 axList,
                                                 defaultRenderer: charts.BarRendererConfig<DateTime>(
-                                                  groupingType: charts.BarGroupingType.stacked, strokeWidthPx: 0.0, maxBarWidthPx: 3, cornerStrategy: const charts.ConstCornerStrategy(4),),
+                                                  groupingType: charts.BarGroupingType.stacked, strokeWidthPx: 0.0, maxBarWidthPx: 3, cornerStrategy: const charts.ConstCornerStrategy(1),),
 
                                                 defaultInteractions: false,
                                                 animate: true,
