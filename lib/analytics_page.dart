@@ -503,7 +503,7 @@ class _AnalyticsPageState extends State<AnalyticsPage> {
                 child: Center(
                   child: Card(
                     color: const Color(0xffffffff),
-                    elevation: 2,
+                    elevation: 1,
                     shadowColor: Colors.white70,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(20.0),

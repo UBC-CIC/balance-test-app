@@ -103,6 +103,7 @@ class _SitToStandAnalyticsPageState extends State<SitToStandAnalyticsPage> {
       charts.Series<TimeSeriesScoreData, DateTime>(
         id: 'Sample',
         colorFn: (_, __) => charts.ColorUtil.fromDartColor(Colors.indigo),
+        fillColorFn: (_, __) => charts.MaterialPalette.transparent,
         domainFn: (TimeSeriesScoreData data, _) => data.time,
         measureFn: (TimeSeriesScoreData data, _) => data.value,
         data: data,
@@ -196,6 +197,16 @@ class _SitToStandAnalyticsPageState extends State<SitToStandAnalyticsPage> {
           dateList.add(dateTime);
         }
 
+        //Used to render properly in both min max negative case
+
+        for (int i = 0; (i < minList.length && i < maxList.length); i++) {
+          if (minList[i] < 0 && maxList[i] < 0) {
+            double temp = minList[i];
+            minList[i] = maxList[i];
+            maxList[i] = temp;
+          }
+        }
+
         return createRangeChartSeries(dateList, minList, maxList);
       }
     } on ApiException catch (e) {
@@ -216,7 +227,8 @@ class _SitToStandAnalyticsPageState extends State<SitToStandAnalyticsPage> {
 
       charts.Series<TimeSeriesRangeData, DateTime>(
         id: 'Max',
-        colorFn: (_, __) => charts.ColorUtil.fromDartColor(Colors.indigo),
+        colorFn: (_, __) => charts.MaterialPalette.transparent,
+        fillColorFn: (TimeSeriesRangeData data, int? idx) => charts.ColorUtil.fromDartColor(Colors.indigo),
         domainFn: (TimeSeriesRangeData data, _) => data.time,
         measureFn: (TimeSeriesRangeData data, _) => data.value,
         data: maxData,
@@ -224,7 +236,8 @@ class _SitToStandAnalyticsPageState extends State<SitToStandAnalyticsPage> {
 
       charts.Series<TimeSeriesRangeData, DateTime>(
         id: 'Min',
-        colorFn: (_, __) => charts.ColorUtil.fromDartColor(Colors.indigo),
+        colorFn: (_, __) => charts.MaterialPalette.transparent,
+        fillColorFn: (TimeSeriesRangeData data, int? idx) => (data.value > 0 && maxData[idx as int].value > 0 || data.value < 0 && maxData[idx as int].value < 0) ? charts.ColorUtil.fromDartColor(Colors.transparent) : charts.ColorUtil.fromDartColor(Colors.orange),
         domainFn: (TimeSeriesRangeData data, _) => data.time,
         measureFn: (TimeSeriesRangeData data, _) => data.value,
         data: minData,
@@ -461,7 +474,7 @@ class _SitToStandAnalyticsPageState extends State<SitToStandAnalyticsPage> {
                                               child: charts.TimeSeriesChart(
                                                 axList,
                                                 defaultRenderer: charts.BarRendererConfig<DateTime>(
-                                                    groupingType: charts.BarGroupingType.stacked, strokeWidthPx: 0.0, maxBarWidthPx: 3, cornerStrategy: const charts.ConstCornerStrategy(4),),
+                                                    groupingType: charts.BarGroupingType.stacked, strokeWidthPx: 0.0, maxBarWidthPx: 3, cornerStrategy: const charts.ConstCornerStrategy(4)),
 
                                                 defaultInteractions: false,
                                                 animate: true,
