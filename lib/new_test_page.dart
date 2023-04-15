@@ -123,10 +123,10 @@ class _NewTestPageState extends State<NewTestPage> {
   }
 
   Future refresh() async {
-    final response = await queryTests();
     setState(() {
-      testList = response;
+      futureTestList = queryTests();
     });
+    await futureTestList;
   }
 
   //UI
