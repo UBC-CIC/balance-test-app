@@ -122,6 +122,13 @@ class _NewTestPageState extends State<NewTestPage> {
     }
   }
 
+  Future refresh() async {
+    final response = await queryTests();
+    setState(() {
+      testList = response;
+    });
+  }
+
   //UI
 
   @override
@@ -132,162 +139,166 @@ class _NewTestPageState extends State<NewTestPage> {
       if (tests.isEmpty) {
         return const Center(child: Text('No Assigned Tests'));
       } else {
-        return ListView.builder(
-            itemCount: tests.length + 1, // To include dropdown as 1st element
-            itemBuilder: (context, index) {
-              if (index == 0) {
-                return Padding(
-                  padding: EdgeInsets.fromLTRB(0.05 * width, 15, 0, 0),
-                  child: Text(
-                    'Tests To Do',
-                    style: TextStyle(
-                      // color: Color.fromRGBO(141, 148, 162, 1.0),
-                      color: Colors.black,
-                      fontFamily: 'DMSans-Medium',
-                      fontWeight: FontWeight.w900,
-                      fontSize: 0.052 * width,
-                    ),
-                  ),
-                );
-              } else {
-                final test = tests[index - 1];
-
-                return Padding(
-                  padding: const EdgeInsets.fromLTRB(0, 3, 0, 3),
-                  child: Center(
-                    child: Card(
-                      color: const Color(0xffffffff),
-                      elevation: 2,
-                      shadowColor: Colors.white70,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(16.0),
+        return RefreshIndicator(
+          color: const Color(0xff006CC6),
+          onRefresh: refresh,
+          child: ListView.builder(
+              itemCount: tests.length + 1, // To include dropdown as 1st element
+              itemBuilder: (context, index) {
+                if (index == 0) {
+                  return Padding(
+                    padding: EdgeInsets.fromLTRB(0.05 * width, 15, 0, 0),
+                    child: Text(
+                      'Tests To Do',
+                      style: TextStyle(
+                        // color: Color.fromRGBO(141, 148, 162, 1.0),
+                        color: Colors.black,
+                        fontFamily: 'DMSans-Medium',
+                        fontWeight: FontWeight.w900,
+                        fontSize: 0.052 * width,
                       ),
-                      child: SizedBox(
-                        width: width * 0.90,
-                        height: 140,
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            Padding(
-                              padding: const EdgeInsets.fromLTRB(20.0, 15, 0, 0),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  SizedBox(
-                                    height: 70,
-                                    width: 0.5 * width,
-                                    child: FittedBox(
-                                      alignment: Alignment.centerLeft,
-                                      fit: BoxFit.scaleDown,
-                                      child: Text(
-                                        // 'Sitting with\nBack Unsupported\nFeet Supported',
-                                        convertMovementName(test.test_type),
-                                        style: GoogleFonts.nunito(
-                                          textStyle: const TextStyle(
-                                            color: Color(0xff2A2A2A),
-                                            // fontFamily: 'DMSans-Bold',
-                                            fontSize: 23,
-                                            fontWeight: FontWeight.bold,
+                    ),
+                  );
+                } else {
+                  final test = tests[index - 1];
+
+                  return Padding(
+                    padding: const EdgeInsets.fromLTRB(0, 3, 0, 3),
+                    child: Center(
+                      child: Card(
+                        color: const Color(0xffffffff),
+                        elevation: 2,
+                        shadowColor: Colors.white70,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(16.0),
+                        ),
+                        child: SizedBox(
+                          width: width * 0.90,
+                          height: 140,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.fromLTRB(20.0, 15, 0, 0),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    SizedBox(
+                                      height: 70,
+                                      width: 0.5 * width,
+                                      child: FittedBox(
+                                        alignment: Alignment.centerLeft,
+                                        fit: BoxFit.scaleDown,
+                                        child: Text(
+                                          // 'Sitting with\nBack Unsupported\nFeet Supported',
+                                          convertMovementName(test.test_type),
+                                          style: GoogleFonts.nunito(
+                                            textStyle: const TextStyle(
+                                              color: Color(0xff2A2A2A),
+                                              // fontFamily: 'DMSans-Bold',
+                                              fontSize: 23,
+                                              fontWeight: FontWeight.bold,
+                                            ),
                                           ),
                                         ),
                                       ),
                                     ),
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.fromLTRB(0, 10, 0, 0),
-                                    child: Row(
-                                      children: [
-                                        const Icon(
-                                          Icons.access_time_rounded,
-                                          color: Color(0xff006CC6),
-                                          size: 20,
-                                        ),
-                                        Padding(
-                                          padding: const EdgeInsets.fromLTRB(8, 0, 0, 0),
-                                          child: Text(
-                                            formatDuration(test.duration_in_seconds!),
-                                            style: GoogleFonts.nunito(
-                                              textStyle: const TextStyle(
-                                                color: Color(0xff006CC6),
-                                                fontFamily: 'DMSans-Medium',
-                                                fontSize: 19,
-                                                fontWeight: FontWeight.w600,
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.fromLTRB(0, 0, 20, 0),
-                              child: FittedBox(
-                                fit: BoxFit.scaleDown,
-                                child: SizedBox(
-                                  height: 55,
-                                  width: 0.26 * width,
-                                  child: ElevatedButton(
-                                    onPressed: () {
-                                      Gaimon.selection();
-                                      Navigator.push(
-                                          widget.parentCtx,
-                                          MaterialPageRoute(
-                                              builder: (context) => TestInstructionsPage(
-                                                    movementType: test.test_type,
-                                                    userID: widget.userID,
-                                                    formattedMovementType: convertMovementName(test.test_type),
-                                                    instructions: test.instructions?? "empty",
-                                                    isClinicApp: false,
-                                                  )));
-                                    },
-                                    style: ElevatedButton.styleFrom(
-                                        elevation: 0,
-                                        backgroundColor: const Color(0xff006CC6),
-                                        shape: RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.circular(30),
-                                          //border radius equal to or more than 50% of width
-                                        )),
-                                    child: FittedBox(
-                                      fit: BoxFit.scaleDown,
+                                    Padding(
+                                      padding: const EdgeInsets.fromLTRB(0, 10, 0, 0),
                                       child: Row(
                                         children: [
+                                          const Icon(
+                                            Icons.access_time_rounded,
+                                            color: Color(0xff006CC6),
+                                            size: 20,
+                                          ),
                                           Padding(
-                                            padding: const EdgeInsets.fromLTRB(0, 0, 3, 0),
+                                            padding: const EdgeInsets.fromLTRB(8, 0, 0, 0),
                                             child: Text(
-                                              'Start',
+                                              formatDuration(test.duration_in_seconds!),
                                               style: GoogleFonts.nunito(
                                                 textStyle: const TextStyle(
-                                                  color: Colors.white,
+                                                  color: Color(0xff006CC6),
                                                   fontFamily: 'DMSans-Medium',
-                                                  fontSize: 22,
-                                                  fontWeight: FontWeight.w500,
+                                                  fontSize: 19,
+                                                  fontWeight: FontWeight.w600,
                                                 ),
                                               ),
                                             ),
                                           ),
-                                          const Icon(
-                                            CupertinoIcons.chevron_right,
-                                            size: 20,
-                                          )
                                         ],
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.fromLTRB(0, 0, 20, 0),
+                                child: FittedBox(
+                                  fit: BoxFit.scaleDown,
+                                  child: SizedBox(
+                                    height: 55,
+                                    width: 0.26 * width,
+                                    child: ElevatedButton(
+                                      onPressed: () {
+                                        Gaimon.selection();
+                                        Navigator.push(
+                                            widget.parentCtx,
+                                            MaterialPageRoute(
+                                                builder: (context) => TestInstructionsPage(
+                                                      movementType: test.test_type,
+                                                      userID: widget.userID,
+                                                      formattedMovementType: convertMovementName(test.test_type),
+                                                      instructions: test.instructions ?? "empty",
+                                                      isClinicApp: false,
+                                                    )));
+                                      },
+                                      style: ElevatedButton.styleFrom(
+                                          elevation: 0,
+                                          backgroundColor: const Color(0xff006CC6),
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.circular(30),
+                                            //border radius equal to or more than 50% of width
+                                          )),
+                                      child: FittedBox(
+                                        fit: BoxFit.scaleDown,
+                                        child: Row(
+                                          children: [
+                                            Padding(
+                                              padding: const EdgeInsets.fromLTRB(0, 0, 3, 0),
+                                              child: Text(
+                                                'Start',
+                                                style: GoogleFonts.nunito(
+                                                  textStyle: const TextStyle(
+                                                    color: Colors.white,
+                                                    fontFamily: 'DMSans-Medium',
+                                                    fontSize: 22,
+                                                    fontWeight: FontWeight.w500,
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                            const Icon(
+                                              CupertinoIcons.chevron_right,
+                                              size: 20,
+                                            )
+                                          ],
+                                        ),
                                       ),
                                     ),
                                   ),
                                 ),
                               ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
                       ),
                     ),
-                  ),
-                );
-              }
-            });
+                  );
+                }
+              }),
+        );
       }
     }
 

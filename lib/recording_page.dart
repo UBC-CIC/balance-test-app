@@ -3,6 +3,7 @@ import 'dart:core';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_ringtone_player/flutter_ringtone_player.dart';
 import 'package:gaimon/gaimon.dart';
 import 'package:motion_sensors/motion_sensors.dart';
@@ -259,6 +260,9 @@ class _RecordingPageState extends State<RecordingPage> {
         child: Scaffold(
           backgroundColor: recordingStarted ? const Color(0xfffe3d30) : const Color(0xfff2f1f6),
           appBar: AppBar(
+            systemOverlayStyle: const SystemUiOverlayStyle(
+              statusBarBrightness: Brightness.light, // light for black status bar
+            ),
             leading: SizedBox(
               height: 0.06 * height,
               child: IconButton(
@@ -325,30 +329,39 @@ class _RecordingPageState extends State<RecordingPage> {
                   children: [
                     if (!recordingStarted)
                       SizedBox(
-                          height: 0.4 * width,
-                          width: 0.4 * width,
+                          height: 0.45 * width,
+                          width: 0.45 * width,
                           child: ElevatedButton(
-                            onPressed: startRecording,
+                            onPressed: () {
+                              startRecording();
+                              Gaimon.selection();
+                            },
                             style: ElevatedButton.styleFrom(
                                 backgroundColor: const Color(0xff006CC6),
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(0.25 * width),
                                   //border radius equal to or more than 50% of width
                                 )),
-                            child: const Icon(
-                              Icons.play_arrow_rounded,
-                              size: 60,
+                            child: Text(
+                              'Start',
+                              style: GoogleFonts.nunito(
+                                textStyle: const TextStyle(
+                                  color: Colors.white,
+                                  fontFamily: 'DMSans-Medium',
+                                  fontSize: 38,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
                             ),
                           )),
                     if (recordingStarted)
                       SizedBox(
                           height: 0.4 * width,
                           width: 0.4 * width,
-                          child:
-                            const Icon(
-                              Icons.stop_rounded,
-                              size: 60,
-                              color: Colors.white,
+                          child: const Icon(
+                            Icons.stop_rounded,
+                            size: 60,
+                            color: Colors.white,
                           )),
                   ],
                 ),
