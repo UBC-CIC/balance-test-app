@@ -242,7 +242,7 @@ class _NewTestPageClinicState extends State<NewTestPageClinic> {
                                                     userID: widget.userID,
                                                     formattedMovementType: convertMovementName(test.test_type),
                                                     instructions: test.instructions!,
-                                                    isClinicApp: false,
+                                                    isClinicApp: true,
                                                   )));
                                     },
                                     style: ElevatedButton.styleFrom(

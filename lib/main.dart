@@ -92,7 +92,7 @@ class _PageRouterState extends State<PageRouter> {
     //Wait for user group to be assigned if not already assigned
     int counter = 0;
     while (userGroup != 'patient_user' && userGroup != 'care_provider_user') {
-      if(counter<120) {
+      if (counter < 120) {
         await Future.delayed(const Duration(seconds: 1));
         authSession = await Amplify.Auth.fetchAuthSession(
           options: CognitoSessionOptions(getAWSCredentials: true),
@@ -133,6 +133,7 @@ class _PageRouterState extends State<PageRouter> {
     //Fetch attributes, add patient to patient table if patient user, and route to Patient App or Clinic App
     final Map<String, String> userAttributes = await fetchCurrentUserAttributes();
     if (userGroup == 'patient_user') {
+      print('ADDING PATIENT USER ');
       try {
         var query = '''
             mutation MyMutation2 {
@@ -153,6 +154,7 @@ class _PageRouterState extends State<PageRouter> {
           if (kDebugMode) {
             print('errors: ${response.errors}');
           }
+          await Amplify.Auth.signOut();
         } else {
           if (kDebugMode) {
             print(response.data);
@@ -187,7 +189,6 @@ class _PageRouterState extends State<PageRouter> {
     }
   }
 
-
   Future<void> initSignedIn() async {
     //Fetch user group
     AuthSession authSession = await Amplify.Auth.fetchAuthSession(
@@ -201,7 +202,7 @@ class _PageRouterState extends State<PageRouter> {
     //Wait for user group to be assigned
     int counter = 0;
     while (userGroup != 'patient_user' && userGroup != 'care_provider_user') {
-      if(counter<120) {
+      if (counter < 120) {
         await Future.delayed(const Duration(seconds: 1));
         authSession = await Amplify.Auth.fetchAuthSession(
           options: CognitoSessionOptions(getAWSCredentials: true),
@@ -286,7 +287,7 @@ class _PageRouterState extends State<PageRouter> {
     return Authenticator(
 // builder used to show a custom sign in and sign up experience
         authenticatorBuilder: (BuildContext context, AuthenticatorState state) {
-          const padding = EdgeInsets.only(left: 16, right: 16, top: 48, bottom: 16);
+          const padding = EdgeInsets.only(left: 16, right: 16, top: 20, bottom: 16);
           switch (state.currentStep) {
             case AuthenticatorStep.signIn:
               return Scaffold(
@@ -296,7 +297,28 @@ class _PageRouterState extends State<PageRouter> {
                     child: Column(
                       children: [
                         // app logo
-                        const Center(child: FlutterLogo(size: 100)),
+                        Padding(padding: const EdgeInsets.fromLTRB(0, 28, 50, 50),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Image.asset(
+                                'assets/BalanceTestIcon.png',
+                                width: 100,
+                                height: 100,
+                              ),
+                              const Text(
+                                'Balance\nTest',
+                                style: TextStyle(
+                                  // color: Color.fromRGBO(141, 148, 162, 1.0),
+                                  color: Colors.black,
+                                  fontFamily: 'DMSans-Regular',
+                                  fontSize: 30,
+                                  fontWeight: FontWeight.w900,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
                         // prebuilt sign in form from amplify_authenticator package
                         SignInForm(),
                       ],
@@ -327,7 +349,27 @@ class _PageRouterState extends State<PageRouter> {
                     child: Column(
                       children: [
                         // app logo
-                        const Center(child: FlutterLogo(size: 100)),
+                        Padding(padding: const EdgeInsets.fromLTRB(0, 28, 50, 50),
+                          child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Image.asset(
+                              'assets/BalanceTestIcon.png',
+                              width: 100,
+                              height: 100,
+                            ),
+                            const Text(
+                              'Balance\nTest',
+                              style: TextStyle(
+                                color: Colors.black,
+                                fontFamily: 'DMSans-Regular',
+                                fontSize: 30,
+                                fontWeight: FontWeight.w900,
+                              ),
+                            ),
+                          ],
+                        ),
+                        ),
                         // prebuilt sign up form from amplify_authenticator package
                         SignUpForm(),
                       ],
@@ -367,14 +409,13 @@ class _PageRouterState extends State<PageRouter> {
           ),
 
           builder: Authenticator.builder(),
-          home: const Scaffold(
+          home: Scaffold(
             body: Center(
-              child: Text('Balance Test',
-                  style: TextStyle(
-                    fontFamily: 'DMSans-Medium',
-                    fontWeight: FontWeight.w600,
-                    fontSize: 30,
-                  )),
+              child: Image.asset(
+                'assets/BalanceTestIcon.png',
+                width: 200,
+                height: 200,
+              ),
             ),
           ),
         ));

@@ -37,6 +37,8 @@ class _AccountPageState extends State<AccountPage> {
   late String userID;
   late String email;
 
+  bool buttonPressed = false;
+
   //FUNCTIONS
 
   @override
@@ -49,6 +51,7 @@ class _AccountPageState extends State<AccountPage> {
     lastName = widget.familyName;
     userID = widget.userID;
     email = widget.email;
+    buttonPressed = false;
   }
 
   Text formatCountdown(int? seconds) {
@@ -250,9 +253,12 @@ class _AccountPageState extends State<AccountPage> {
                     child: ElevatedButton(
                       onPressed: () async {
                         try {
-                          await Amplify.Auth.signOut();
-                          if (context.mounted) {
-                            Navigator.pop(widget.parentCtx);
+                          if (!buttonPressed) {
+                            buttonPressed = true;
+                            await Amplify.Auth.signOut();
+                            if (context.mounted) {
+                              Navigator.pop(widget.parentCtx);
+                            }
                           }
                         } on AmplifyException catch (e) {
                           if (kDebugMode) {

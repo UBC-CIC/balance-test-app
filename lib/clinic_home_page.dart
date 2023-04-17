@@ -30,7 +30,7 @@ class _ClinicHomePageState extends State<ClinicHomePage> {
   }
 
   Future<List<PatientListItem>> getPatientList() async {
-
+    print(widget.userID);
     try {
       var query = '''
         query MyQuery {
