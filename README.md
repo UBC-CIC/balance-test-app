@@ -1,16 +1,25 @@
-# balance_test
+# Balance Test Mobile App
+Start by following the instructions [here]() to deploy the backend and web dashboard of the Balance Test project. The Balance Test Mobile App allows you to record IMU sensor data during Balance Test movements and view statistics and analytics of previously recorded tests. 
 
-A new Flutter project.
+|Index| Description|
+|:----------------|:-----------|
+| [Screenshots](#demo)         |     View screenshots of the application.    |
+| [Deployment](#deployment-guide)         |    Learn how to deploy this project yourself. |
+| [User Guide](#user-guide)         |    Learn how to use this application. |
+| [Disclaimer](#disclaimer)         |    Project disclaimer. |
+| [License](#license)      |     License details.     |
 
-## Getting Started
 
-This project is a starting point for a Flutter application.
 
-A few resources to get you started if this is your first Flutter project:
+# Deployment Guide
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+To deploy this solution, please follow our [Deployment Guide](docs/DeploymentGuide.md).
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+# User Guide
+
+For instructions on how to use the mobile app, refer to the [User Guide](docs/UserGuide.md).
+
+
+# License
+
+This project is distributed under the [MIT License](./LICENSE).

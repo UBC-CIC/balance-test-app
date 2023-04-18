@@ -263,7 +263,7 @@ class _RecordingPageState extends State<RecordingPage> {
             systemOverlayStyle: const SystemUiOverlayStyle(
               statusBarBrightness: Brightness.light, // light for black status bar
             ),
-            leading: SizedBox(
+            leading: !recordingStarted? SizedBox(
               height: 0.06 * height,
               child: IconButton(
                 splashColor: Colors.transparent,
@@ -281,7 +281,7 @@ class _RecordingPageState extends State<RecordingPage> {
                   Navigator.pop(context);
                 },
               ),
-            ),
+            ) : Container(),
             toolbarHeight: 0.12 * height,
             title: Padding(
               padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
@@ -360,7 +360,7 @@ class _RecordingPageState extends State<RecordingPage> {
                           width: 0.4 * width,
                           child: const Icon(
                             Icons.stop_rounded,
-                            size: 60,
+                            size: 80,
                             color: Colors.white,
                           )),
                   ],

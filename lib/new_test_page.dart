@@ -62,6 +62,7 @@ class _NewTestPageState extends State<NewTestPage> {
           tempList.add(Test.fromJson(entry));
         });
 
+
         tempList.sort((a, b) => convertMovementName(b.test_type).compareTo(convertMovementName(a.test_type)));
         return tempList;
       }
@@ -191,7 +192,6 @@ class _NewTestPageState extends State<NewTestPage> {
                                         alignment: Alignment.centerLeft,
                                         fit: BoxFit.scaleDown,
                                         child: Text(
-                                          // 'Sitting with\nBack Unsupported\nFeet Supported',
                                           convertMovementName(test.test_type),
                                           style: GoogleFonts.nunito(
                                             textStyle: const TextStyle(

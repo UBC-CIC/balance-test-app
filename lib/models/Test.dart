@@ -37,74 +37,74 @@ class Test {
       throw new AmplifyCodeGenModelException(
           AmplifyExceptionMessages.codeGenRequiredFieldForceCastExceptionMessage,
           recoverySuggestion:
-            AmplifyExceptionMessages.codeGenRequiredFieldForceCastRecoverySuggestion,
+          AmplifyExceptionMessages.codeGenRequiredFieldForceCastRecoverySuggestion,
           underlyingException: e.toString()
-          );
+      );
     }
   }
-  
+
   String? get instructions {
     return _instructions;
   }
-  
+
   int? get duration_in_seconds {
     return _duration_in_seconds;
   }
-  
+
   const Test._internal({required test_type, instructions, duration_in_seconds}): _test_type = test_type, _instructions = instructions, _duration_in_seconds = duration_in_seconds;
-  
+
   factory Test({required String test_type, String? instructions, int? duration_in_seconds}) {
     return Test._internal(
-      test_type: test_type,
-      instructions: instructions,
-      duration_in_seconds: duration_in_seconds);
+        test_type: test_type,
+        instructions: instructions,
+        duration_in_seconds: duration_in_seconds);
   }
-  
+
   bool equals(Object other) {
     return this == other;
   }
-  
+
   @override
   bool operator ==(Object other) {
     if (identical(other, this)) return true;
     return other is Test &&
-      _test_type == other._test_type &&
-      _instructions == other._instructions &&
-      _duration_in_seconds == other._duration_in_seconds;
+        _test_type == other._test_type &&
+        _instructions == other._instructions &&
+        _duration_in_seconds == other._duration_in_seconds;
   }
-  
+
   @override
   int get hashCode => toString().hashCode;
-  
+
   @override
   String toString() {
     var buffer = new StringBuffer();
-    
+
     buffer.write("Test {");
     buffer.write("test_type=" + "$_test_type" + ", ");
     buffer.write("instructions=" + "$_instructions" + ", ");
     buffer.write("duration_in_seconds=" + (_duration_in_seconds != null ? _duration_in_seconds!.toString() : "null"));
     buffer.write("}");
-    
+
     return buffer.toString();
   }
-  
+
   Test copyWith({String? test_type, String? instructions, int? duration_in_seconds}) {
     return Test._internal(
-      test_type: test_type ?? this.test_type,
-      instructions: instructions ?? this.instructions,
-      duration_in_seconds: duration_in_seconds ?? this.duration_in_seconds);
+        test_type: test_type ?? this.test_type,
+        instructions: instructions ?? this.instructions,
+        duration_in_seconds: duration_in_seconds ?? this.duration_in_seconds);
   }
-  
-  Test.fromJson(Map<String, dynamic> json)  
-    : _test_type = json['test_type'],
-      _instructions = json['instructions'],
-      _duration_in_seconds = (json['duration_in_seconds'] as num?)?.toInt();
-  
+
+  Test.fromJson(Map<String, dynamic> json)
+      : _test_type = json['test_type'],
+        _instructions = json['instructions'],
+        _duration_in_seconds = (json['duration_in_seconds'] as num?)?.toInt();
+
   Map<String, dynamic> toJson() => {
     'test_type': _test_type, 'instructions': _instructions, 'duration_in_seconds': _duration_in_seconds
   };
-  
+
   Map<String, Object?> toMap() => {
     'test_type': _test_type, 'instructions': _instructions, 'duration_in_seconds': _duration_in_seconds
   };
@@ -112,23 +112,23 @@ class Test {
   static var schema = Model.defineSchema(define: (ModelSchemaDefinition modelSchemaDefinition) {
     modelSchemaDefinition.name = "Test";
     modelSchemaDefinition.pluralName = "Tests";
-    
+
     modelSchemaDefinition.addField(ModelFieldDefinition.customTypeField(
-      fieldName: 'test_type',
-      isRequired: true,
-      ofType: ModelFieldType(ModelFieldTypeEnum.string)
+        fieldName: 'test_type',
+        isRequired: true,
+        ofType: ModelFieldType(ModelFieldTypeEnum.string)
     ));
-    
+
     modelSchemaDefinition.addField(ModelFieldDefinition.customTypeField(
-      fieldName: 'instructions',
-      isRequired: false,
-      ofType: ModelFieldType(ModelFieldTypeEnum.string)
+        fieldName: 'instructions',
+        isRequired: false,
+        ofType: ModelFieldType(ModelFieldTypeEnum.string)
     ));
-    
+
     modelSchemaDefinition.addField(ModelFieldDefinition.customTypeField(
-      fieldName: 'duration_in_seconds',
-      isRequired: false,
-      ofType: ModelFieldType(ModelFieldTypeEnum.int)
+        fieldName: 'duration_in_seconds',
+        isRequired: false,
+        ofType: ModelFieldType(ModelFieldTypeEnum.int)
     ));
   });
 }
