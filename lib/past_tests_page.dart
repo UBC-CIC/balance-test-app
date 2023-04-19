@@ -339,7 +339,7 @@ class _PastTestsState extends State<PastTests> {
                                                 style: GoogleFonts.nunito(
                                                   textStyle: TextStyle(
                                                     color:
-                                                    getScoreColor(test == null ? 100 : (test.balance_score == null ? 100 : test.balance_score!)),
+                                                    test.doctor_score != null? Colors.black : getScoreColor(test == null ? 100 : (test.balance_score == null ? 100 : test.balance_score!)),
                                                     fontFamily: 'DMSans-Medium',
                                                     fontSize: 0.067 * width,
                                                     fontWeight: FontWeight.w700,
