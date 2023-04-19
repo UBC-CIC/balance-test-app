@@ -91,7 +91,7 @@ class _PageRouterState extends State<PageRouter> {
     String userGroup = payload['cognito:groups'][0];
     //Wait for user group to be assigned if not already assigned
     int counter = 0;
-    while (userGroup != 'patient_user' && userGroup != 'care_provider_user') {
+    while (userGroup != 'patient' && userGroup != 'careProvider') {
       if (counter < 120) {
         await Future.delayed(const Duration(seconds: 1));
         authSession = await Amplify.Auth.fetchAuthSession(
@@ -132,8 +132,7 @@ class _PageRouterState extends State<PageRouter> {
     }
     //Fetch attributes, add patient to patient table if patient user, and route to Patient App or Clinic App
     final Map<String, String> userAttributes = await fetchCurrentUserAttributes();
-    if (userGroup == 'patient_user') {
-      print('ADDING PATIENT USER ');
+    if (userGroup == 'patient') {
       try {
         var query = '''
             mutation MyMutation2 {
@@ -176,7 +175,7 @@ class _PageRouterState extends State<PageRouter> {
           ),
         );
       }
-    } else if (userGroup == 'care_provider_user' && context.mounted) {
+    } else if (userGroup == 'careProvider' && context.mounted) {
       Navigator.of(context).push(
         PageRouteBuilder(
           pageBuilder: (_, __, ___) => ClinicApp(
@@ -201,7 +200,7 @@ class _PageRouterState extends State<PageRouter> {
     String userGroup = payload['cognito:groups'][0];
     //Wait for user group to be assigned
     int counter = 0;
-    while (userGroup != 'patient_user' && userGroup != 'care_provider_user') {
+    while (userGroup != 'patient' && userGroup != 'careProvider') {
       if (counter < 120) {
         await Future.delayed(const Duration(seconds: 1));
         authSession = await Amplify.Auth.fetchAuthSession(
@@ -218,7 +217,7 @@ class _PageRouterState extends State<PageRouter> {
     }
     //Route to Patient App or Clinic App
     final Map<String, String> userAttributes = await fetchCurrentUserAttributes();
-    if (userGroup == 'patient_user') {
+    if (userGroup == 'patient') {
       if (context.mounted) {
         Navigator.of(context).push(
           PageRouteBuilder(
@@ -230,7 +229,7 @@ class _PageRouterState extends State<PageRouter> {
           ),
         );
       }
-    } else if (userGroup == 'care_provider_user' && context.mounted) {
+    } else if (userGroup == 'careProvider' && context.mounted) {
       Navigator.of(context).push(
         PageRouteBuilder(
           pageBuilder: (_, __, ___) => ClinicApp(
