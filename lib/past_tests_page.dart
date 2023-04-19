@@ -288,16 +288,16 @@ class _PastTestsState extends State<PastTests> {
                         //Used to pop to main page instead of home
                         MaterialPageRoute(
                             builder: (context) => TestDetailsPage(
-                                  testID: test == null ? 'empty' : test.test_event_id,
-                                  formattedMovementName: formatMovementName(test == null ? 'empty' : test.test_type),
-                                  movementName: test.test_type,
-                                  dateFormatted: formatDateTime(test == null ? DateTime.utc(1000, 1, 1) : test.start_time!.getDateTimeInUtc()),
-                                  score: test == null ? 'err' : (test.balance_score == null ? (test.doctor_score == null? '-':'Doctor Score\n${test.doctor_score}') : test.balance_score.toString()),
-                                  notes: test.notes,
-                                  dateTimeObj: test.start_time!.getDateTimeInUtc(),
-                                  userID: widget.userID,
-                                  duration: test.end_time!.getDateTimeInUtc().difference(test.start_time!.getDateTimeInUtc()).inSeconds,
-                                )));
+                              testID: test == null ? 'empty' : test.test_event_id,
+                              formattedMovementName: formatMovementName(test == null ? 'empty' : test.test_type),
+                              movementName: test.test_type,
+                              dateFormatted: formatDateTime(test == null ? DateTime.utc(1000, 1, 1) : test.start_time!.getDateTimeInUtc()),
+                              score: test == null ? 'err' : (test.balance_score == null ? (test.doctor_score == null? '-':test.doctor_score.toString()) : test.balance_score.toString()),
+                              notes: test.notes,
+                              dateTimeObj: test.start_time!.getDateTimeInUtc(),
+                              userID: widget.userID,
+                              duration: test.end_time!.getDateTimeInUtc().difference(test.start_time!.getDateTimeInUtc()).inSeconds,
+                            )));
                   },
                   child: Padding(
                     padding: const EdgeInsets.fromLTRB(0, 4, 0, 4),
@@ -335,11 +335,11 @@ class _PastTestsState extends State<PastTests> {
                                           child: Row(
                                             children: [
                                               Text(
-                                                test == null ? 'err' : (test.balance_score == null ? (test.doctor_score == null ? '-' : 'Doctor Score\n${test.doctor_score.toString()}'): test.balance_score.toString()),
+                                                test == null ? 'err' : (test.balance_score == null ? (test.doctor_score == null ? '-' : test.doctor_score.toString()) : test.balance_score.toString()),
                                                 style: GoogleFonts.nunito(
                                                   textStyle: TextStyle(
                                                     color:
-                                                        getScoreColor(test == null ? 100 : (test.balance_score == null ? 100 : test.balance_score!)),
+                                                    getScoreColor(test == null ? 100 : (test.balance_score == null ? 100 : test.balance_score!)),
                                                     fontFamily: 'DMSans-Medium',
                                                     fontSize: 0.067 * width,
                                                     fontWeight: FontWeight.w700,
@@ -451,9 +451,9 @@ class _PastTestsState extends State<PastTests> {
           } else {
             return const Center(
                 child: SpinKitThreeInOut(
-              color: Colors.indigo,
-              size: 50.0,
-            ));
+                  color: Colors.indigo,
+                  size: 50.0,
+                ));
           }
         },
       ),

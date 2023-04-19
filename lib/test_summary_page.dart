@@ -205,9 +205,9 @@ class _TestSummaryState extends State<TestSummary> {
             notes: "${notesController.text}",
             patient_id: "${widget.userID}",
             test_event_id: "$testID",
-            test_type: "${widget.movementType}") {
-            notes
-          }
+            test_type: "${widget.movementType}",
+            ${clinicScoreController.text.isNotEmpty? 'doctor_score: ${clinicScoreController.text}' : ''}) {
+            notes}
         }
       ''';
 

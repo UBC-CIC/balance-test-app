@@ -350,24 +350,24 @@ class _PageRouterState extends State<PageRouter> {
                         // app logo
                         Padding(padding: const EdgeInsets.fromLTRB(0, 28, 50, 50),
                           child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Image.asset(
-                              'assets/BalanceTestIcon.png',
-                              width: 100,
-                              height: 100,
-                            ),
-                            const Text(
-                              'Balance\nTest',
-                              style: TextStyle(
-                                color: Colors.black,
-                                fontFamily: 'DMSans-Regular',
-                                fontSize: 30,
-                                fontWeight: FontWeight.w900,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Image.asset(
+                                'assets/BalanceTestIcon.png',
+                                width: 100,
+                                height: 100,
                               ),
-                            ),
-                          ],
-                        ),
+                              const Text(
+                                'Balance\nTest',
+                                style: TextStyle(
+                                  color: Colors.black,
+                                  fontFamily: 'DMSans-Regular',
+                                  fontSize: 30,
+                                  fontWeight: FontWeight.w900,
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
                         // prebuilt sign up form from amplify_authenticator package
                         SignUpForm(),
@@ -392,7 +392,7 @@ class _PageRouterState extends State<PageRouter> {
                 ],
               );
             default:
-              // returning null defaults to the prebuilt authenticator for all other steps
+            // returning null defaults to the prebuilt authenticator for all other steps
               return null;
           }
         },
