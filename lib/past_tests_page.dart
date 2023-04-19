@@ -292,7 +292,7 @@ class _PastTestsState extends State<PastTests> {
                                   formattedMovementName: formatMovementName(test == null ? 'empty' : test.test_type),
                                   movementName: test.test_type,
                                   dateFormatted: formatDateTime(test == null ? DateTime.utc(1000, 1, 1) : test.start_time!.getDateTimeInUtc()),
-                                  score: test == null ? '204' : (test.balance_score == null ? '-' : test.balance_score.toString()),
+                                  score: test == null ? 'err' : (test.balance_score == null ? (test.doctor_score == null? '-':'Doctor Score\n${test.doctor_score}') : test.balance_score.toString()),
                                   notes: test.notes,
                                   dateTimeObj: test.start_time!.getDateTimeInUtc(),
                                   userID: widget.userID,
@@ -335,7 +335,7 @@ class _PastTestsState extends State<PastTests> {
                                           child: Row(
                                             children: [
                                               Text(
-                                                test == null ? 'err' : (test.balance_score == null ? '-' : test.balance_score.toString()),
+                                                test == null ? 'err' : (test.balance_score == null ? (test.doctor_score == null ? '-' : 'Doctor Score\n${test.doctor_score.toString()}'): test.balance_score.toString()),
                                                 style: GoogleFonts.nunito(
                                                   textStyle: TextStyle(
                                                     color:
