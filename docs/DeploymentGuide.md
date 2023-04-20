@@ -65,10 +65,10 @@ amplify import storage
 ```
 ### Import AppSync API
 In your AWS Management Console, navigate to the AWS AppSync page and select your API.
-![AppSync Home](/assets/images/AppSyncConsoleHome.png)
+![AppSync Home](/assets/AppSyncConsoleHome.png)
 
 Navigate to the settings page and locate the API ID
-![AppSync Settings](/assets/images/AppSyncAPISettings.png)
+![AppSync Settings](/assets/AppSyncAPISettings.png)
 
 In terminal, run the following command with your API ID:
 ```
