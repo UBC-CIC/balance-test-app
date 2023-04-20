@@ -31,24 +31,51 @@ If you already have a configured AWS account, you may use your own configured ac
 First, clone the github repository onto your machine. To do this:
 1. Create an empty folder to contain the code.
 2. Open terminal and **cd** into the newly created folder.
-3. Clone the github repository by entering the following:
+3. Clone the github repository by running the following command:
 ```
 git clone https://github.com/UBC-CIC/balance-test-app.git
 ```
 
-The code should now be copied into the new folder. Now **cd** into the project folder by running the following command:
+The code should now be copied into the new folder.
+
+
+In terminal, **cd** into root directory of the project folder by running the following command from the newly created folder's directory:
 ```
-cd balance-test-app
+cd balance-test-app/
+```
+
+## Initialize a new Amplify project
+To initialize a new Amplify project, run the following command from the root directory of the project:
+```
+amplify init
+```
+
+## Import Existing Amazon Cognito Resources into your Amplify Project
+
+### Import Cognito Resources
+To import existing Amazon Cognito resources into your Amplify project, execute this command from the root directory of the project:
+```
+amplify import auth
+```
+Select the
+### Import Storage
+To import an existing Amazon S3 bucket execute this command from the root directory of the project:
+```
+amplify import storage
+```
+### Import AppSync API
+In your AWS Management Console, navigate to the AWS AppSync page and select your API.
+![AppSync Home](/assets/images/AppSyncConsoleHome.png)
+
+Navigate to the settings page and locate the API ID
+![AppSync Settings](/assets/images/AppSyncAPISettings.png)
+
+In terminal, run the following command with your API ID:
+```
+amplify add codegen –apiId [API ID]
 ```
 
 
-## Deployment
-### Backend
-The `backend` folder contains AWS CDK stacks and AWS Lambda function code that will manage the data stores and corresponding interactions with the webapp.
 
-Run `cd backend` and follow the instructions in [backend/README.md](./backend/README.md).
+## Deploy to TestFlight
 
-### Frontend
-The `frontend` folder contains the Health Platform dashboard as a React app.
-
-Run `cd frontend` and follow the instructions in [frontend/README.md](./frontend/README.md).
