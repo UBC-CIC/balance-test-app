@@ -6,7 +6,10 @@
 |:-----------------------------------------------------------|:----------------------------------------------------------| 
 | [Dependencies](#Dependencies)                              | Prerequisite dependencies                                 |
 | [Clone the Repository](#clone-the-repository)              | How to clone this repository                              |
-| [Deployment](#Deployment)                                  | Deploy the app to TestFlight                   |
+| [Initialize a new Amplify Project](#initialize-a-new-amplify-project)| Set up a new Amplify Project           |
+| [Import Existing Amazon Cognito Resources into your Amplify Project](#import-existing-amazon-cognito-resources-into-your-amplify-project)| Connect your Amplify project with backend resources|
+| [Deploy to TestFlight](#deploy-to-testflight)              | Deploy your app to TestFlight for testers to use          |
+
 
 ## Dependencies
 Before you start deploying, you must have the following dependencies:
