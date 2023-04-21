@@ -33,7 +33,7 @@ First, clone the github repository onto your machine. To do this:
 2. Open terminal and **cd** into the newly created folder.
 3. Clone the github repository by running the following command:
 ```
-git clone https://github.com/UBC-CIC/balance-test-app.git
+git clone git@github.com:UBC-CIC/balance-test-app.git
 ```
 
 The code should now be copied into the new folder.
@@ -49,7 +49,13 @@ To initialize a new Amplify project, run the following command from the root dir
 ```
 amplify init
 ```
-
+Give the project a name and initialize the project with these settings:
+<pre>
+Enter a name for the environment <b>dev</b>
+Choose your default editor: <b>Android Studio</b>
+Choose the type of app that you're building <b>flutter</b>
+Where do you want to store your configuration file? <b>./lib/</b>
+</pre>
 ## Import Existing Amazon Cognito Resources into your Amplify Project
 
 ### Import Cognito Resources
@@ -57,25 +63,41 @@ To import existing Amazon Cognito resources into your Amplify project, execute t
 ```
 amplify import auth
 ```
-Select the
+Select **Cognito User Pool and Identity Pool**
+
+Select the correct User Pool ID 
+
+Once the User Pool and Identity Pool is successfully imported, run **amplify push** to complete the import process and deploy the changes.
+```
+amplify push
+```
+
 ### Import Storage
-To import an existing Amazon S3 bucket execute this command from the root directory of the project:
+Import the existing Amazon S3 bucket by executing this command from the root directory of the project:
 ```
 amplify import storage
 ```
+Select **S3 bucket - Content (Images, audio, video, etc.)** and the **balancetest-datastorage-bucket**.
+
+Once the S3 bucket is successfully imported, run **amplify push** to complete the import process and deploy the changes.
+```
+amplify push
+```
+
 ### Import AppSync API
-In your AWS Management Console, navigate to the AWS AppSync page and select your API.
+In your AWS Management Console, navigate to the AWS AppSync page and select your API:
+
 ![AppSync Home](/assets/AppSyncConsoleHome.png)
 
-Navigate to the settings page and locate the API ID
+Navigate to the settings page and locate the API ID:
+
 ![AppSync Settings](/assets/AppSyncAPISettings.png)
 
 In terminal, run the following command with your API ID:
 ```
 amplify add codegen –apiId [API ID]
 ```
-
-
+Once the API is successfully added to the project, run **amplify push** to save the changes.
 
 ## Deploy to TestFlight
 
