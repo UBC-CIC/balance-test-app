@@ -47,60 +47,17 @@ In terminal, **cd** into root directory of the project folder by running the fol
 cd balance-test-app/
 ```
 
-## Initialize a new Amplify project
-To initialize a new Amplify project, run the following command from the root directory of the project:
-```
-amplify init
-```
-Give the project a name and initialize the project with these settings:
-<pre>
-Enter a name for the environment <b>dev</b>
-Choose your default editor: <b>Android Studio</b>
-Choose the type of app that you're building <b>flutter</b>
-Where do you want to store your configuration file? <b>./lib/</b>
-</pre>
-## Import Existing Amazon Cognito Resources into your Amplify Project
+## Import Amplify
 
-### Import Cognito Resources
-To import existing Amazon Cognito resources into your Amplify project, execute this command from the root directory of the project:
+1. In terminal, from your project's root directory, run the following command to import the existing Amplify project in your AWS account
 ```
-amplify import auth
+amplify pull
 ```
-Select **Cognito User Pool and Identity Pool**
+2. Select the Amplify project that you created when deploying the web dashboard and backend. 
+3. Choose **Android Studio** as your default editor and **flutter** as the type of app. 
+4. Set the storage location for the configuration file as `./lib/`
+5. Select **Yes** for "Do you plan on modifying this backend?"
 
-Select the correct User Pool ID 
-
-Once the User Pool and Identity Pool is successfully imported, run **amplify push** to complete the import process and deploy the changes.
-```
-amplify push
-```
-
-### Import Storage
-Import the existing Amazon S3 bucket by executing this command from the root directory of the project:
-```
-amplify import storage
-```
-Select **S3 bucket - Content (Images, audio, video, etc.)** and the **balancetest-datastorage-bucket**.
-
-Once the S3 bucket is successfully imported, run **amplify push** to complete the import process and deploy the changes.
-```
-amplify push
-```
-
-### Import AppSync API
-In your AWS Management Console, navigate to the AWS AppSync page and select your API:
-
-![AppSync Home](/assets/AppSyncConsoleHome.png)
-
-Navigate to the settings page and locate the API ID:
-
-![AppSync Settings](/assets/AppSyncAPISettings.png)
-
-In terminal, run the following command with your API ID:
-```
-amplify add codegen –apiId [API ID]
-```
-Once the API is successfully added to the project, run **amplify push** to save the changes.
 
 ## Deploy to TestFlight
 
