@@ -101,3 +101,66 @@ Once the API is successfully added to the project, run **amplify push** to save 
 
 ## Deploy to TestFlight
 
+To deploy your app to TestFlight, you must first register your app on App Store Connect.
+
+The official guide to register your app can be found [here](https://docs.flutter.dev/deployment/ios#register-your-app-on-app-store-connect).
+
+
+### Register a Bundle ID
+1. To get started, log in to [App Store Connect](https://appstoreconnect.apple.com/) with your Apple Developer account and open the [Identifiers Page](https://developer.apple.com/account/resources/identifiers/list).
+2. Click **+** to create a new Bundle ID.
+3. Select **App ID > App**
+4. Enter a description (name for the Bundle ID) and an **Explicit** unique Bundle Id (e.g. **com.[organization name].balanceTestApp**)
+5. Leave the **Capabilites** and **App Services** as default and click **Continue>Register**
+
+### Create an application record on App Store Connect
+1. Now, in the [My Apps](https://appstoreconnect.apple.com/apps) page of App Store Connect, click **+** in the top left corner and select **New App**
+2. Select **iOS** under **Platforms**
+3. Enter a name for the app (e.g. **Balance Test App**)
+4. Select the **Bundle ID** you have just created
+5. Enter a unique ID for your app under **SKU** (e.g. **com.[organization name].balanceTestApp**)
+6. Select **Full Access** for **User Access** and click **Create**
+
+### Beta Test Information
+To start testing with TestFlight, fill out the **Beta App Information**  in the `General Information > Test Information` page of your app in App Store Connect.
+
+
+### Update Xcode project settings
+For an official guide, please view the **Update Xcode project settings** section of the page found [here](https://docs.flutter.dev/deployment/ios#review-xcode-project-settings).
+
+1. Navigate to your project settings by running the following command from the root directory of your project
+```
+open ios/Runner.xcworkspace
+```
+2. Select the **Runner** with the App Store Connect icon in the Xcode navigator
+![Xcode Navigator](/assets/xcode_navigator.png)
+3. In the **General** tab, choose a display name for the app
+4. Under **Minimum Deployments**, ensure it is set to iOS 11.0
+5. Please **ENTER and VERIFY** the **Bundle Identifier** matches with the Bundle Id created in App Store Connect
+![Xcode settings](/assets/xcode_settings.png)
+6. In the **Signing & Capabilities** tab, ensure **Automatically manage signing** is checked and Team is set to the account/team associated with your Apple Developer account. Under Bundle Identifier, check that the Bundle Id matches with the Bundle Id created in App Store Connect
+
+### Create a Build
+1. In Xcode, under the General tab, check that the Version number is set to 1.0.0 and the Build number is set to 1 **for your first deployment**. For future deployments, increment the Version number and reset the Build number for major updates (e.g. 1.0.1+1). For minor updates, incrementing just the Build number is sufficient (e.g. 1.0.0+2). 
+2. In Android Studio, open the **pubspec.yaml** file located in the root directory of your project. Set the version and build number located near the top of the file to match with the version and build number of the current deployment and save the file:
+```yaml
+version: 1.0.0+1
+```
+3. In Xcode, set the Target to be: `Runner > Any iOS Device`
+![Xcode Target](/assets/xcode_deployment_target.png)
+4. From the root directory of your project in **Terminal**, run:
+```
+flutter build ios
+```
+5. Once the Xcode build is complete, select `Product>Archive` in the Xcode menu bar. Wait for the archive to complete.
+6. Once the archive has completed, a window should appear showing all your archives. Select the most recent archive and click `Distribute App`
+![Xcode Archives](/assets/xcode_archives.png)
+7. Select `App Store Connect > Upload > Strip Swift Symbols + Upload your app's symbols + Manage Version and Build Number > Automatically manage signing > Upload`
+
+### Deploy to TestFlight
+
+1. Once the Xcode upload is complete, navigate to your app page on App Store Connect. Under `Builds > iOS`, there should be a list of builds uploaded from Xcode. Builds may take a few minutes to appear here. 
+2. Once the uploaded build appears, click on it, fill in the Test Details, and **add Testers by their Apple ID**
+3. Once a tester is added, the app should be automatically submitted for review. The reviewing process could take a few days to process.
+4. Once the build is processed, testers will recieve a code in their email for TestFlight.
+5. Testers can then install TestFlight from the Apple App Store, sign in with their Apple ID, enter the TestFlight code from their email, and install the build.
