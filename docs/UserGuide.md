@@ -1,5 +1,23 @@
 # Balance Test Mobile App User Guide
 
+## Creating an Account and Logging In
+
+### Creating a Patient User Account
+
+|   |   |
+|---|---|
+|<img src="../assets/account_create_page.PNG" width="60%">| When the app is first opened patient users are able to create an account by filling in their email, password, and name. |
+|<img src="../assets/verification_page.PNG" width="60%">| After clicking **Create Account**, a verification code will be sent to the provided email. Patients must enter the code in the app to complete their account creation. |
+
+
+### Logging In
+
+|   |   |
+|---|---|
+|<img src="../assets/login_page.PNG" width="85%">| Patients and administrators are able to login from the same login page. Administrators will be directed to the Clinic App and patients will be directed to the Clinic App. Administrator accounts for clinicians can be created in the web dashboard. |
+
+
+
 ## Patient App
 
 ### Home Page
@@ -52,9 +70,9 @@
 Clicking on a patient takes you to the Patient Page.
 
 <p float="left">
-  <img src="../assets/clinic_past_tests_page.png" width="100"/>
-  <img src="../assets/clinic_new_test_page.png" width="100"/>
-  <img src="../assets/clinic_analytics_page.png" width="100"/>
+  <img src="../assets/clinic_past_tests_page.png" width="30%"/>
+  <img src="../assets/clinic_new_test_page.png" width="30%"/>
+  <img src="../assets/clinic_analytics_page.png" width="30%"/>
 </p>
 
 From the Patient Page, the Past Tests page, New Test Page, and Analytics page from the Patient App can be viewed for each patient.
@@ -63,4 +81,6 @@ From the Patient Page, the Past Tests page, New Test Page, and Analytics page fr
 
 |   |   |
 |---|---|
-|<img src="../assets/clinic_summary_page.png" width="100%">| In the Test Summary page of recordings done on Clinic accounts, there is an option to assign a score between 0-100 for the tests. For every 10 tests sent with an assigned score, a traning job will be started to train the patient's machine learning model on all tests that have been sent with an assigned score.|
+|<img src="../assets/clinic_summary_page.png" width="100%">| In the Test Summary page of recordings done on Clinic accounts, there is an option to assign a score between 0-100 for the tests. For every 10 tests sent with an assigned score, a traning job will be started to train the patient's machine learning model on all tests that have been sent with an assigned score. |
+
+NOTE: Scores can only be assigned from the Clinic App in administrator accounts created from the web dashboard.
