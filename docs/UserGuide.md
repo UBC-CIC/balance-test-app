@@ -7,7 +7,7 @@
 |   |   |
 |---|---|
 |<img src="../assets/account_create_page.PNG" width="60%">| When the app is first opened patient users are able to create an account by filling in their email, password, and name. |
-|<img src="../assets/verification_page.PNG" width="60%">| After clicking **Create Account**, a verification code will be sent to the provided email. Patients must enter the code in the app to complete their account creation. |
+|<img src="../assets/verification_page.png" width="60%">| After clicking **Create Account**, a verification code will be sent to the provided email. Patients must enter the code in the app to complete their account creation. |
 
 
 ### Logging In
