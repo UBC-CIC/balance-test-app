@@ -30,7 +30,7 @@
 |   |   |
 |---|---|
 |<img src="../assets/analytics_page.PNG" width="100%">|The Analytics page displays the patient’s weekly and monthly balance score averages. Beside the averages shows how the current average compares to the previous week or month. Click on the Sit to Stand analytics button to view more movement specific analytics. |
-|<img src="../assets/sit_to_stand_graphs.PNG" width="100%"> | In the Sit to Stand analytics page, the score graph at the top of the page displays the scores of all the tests the patient has completed. Below the score graphs are IMU sensor range graphs. These graphs display the lowest and highest sensor reading of each IMU sensor on each day a Sit to Stand test was recorded. |
+|<img src="../assets/sit_to_stand_graphs.png" width="100%"> | In the Sit to Stand analytics page, the score graph at the top of the page displays the scores of all the tests the patient has completed. Below the score graphs are IMU sensor range graphs. These graphs display the lowest and highest sensor reading of each IMU sensor on each day a Sit to Stand test was recorded. |
 
 
 ### Account Page 
