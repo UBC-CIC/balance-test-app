@@ -178,6 +178,9 @@ class _SitToStandAnalyticsPageState extends State<SitToStandAnalyticsPage> {
         return <charts.Series<TimeSeriesRangeData, DateTime>>[];
       } else {
         final  rangeDataJson = json.decode(response.data!);
+        if(rangeDataJson["getMeasurementRange"]['min']==null || rangeDataJson["getMeasurementRange"]['max']==null) {
+          return <charts.Series<TimeSeriesRangeData, DateTime>>[];
+        }
         List<double> minList = rangeDataJson["getMeasurementRange"]['min'].map<double>((e) => double.parse(e.toString()))
             .toList();
         List<double> maxList = rangeDataJson["getMeasurementRange"]['max'].map<double>((e) => double.parse(e.toString()))
