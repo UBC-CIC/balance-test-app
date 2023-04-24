@@ -1,5 +1,14 @@
 # Balance Test Mobile App User Guide
 
+
+| Index                                                                    | Description                                 |
+| :----------------------------------------------------------------------- | :------------------------------------------ |
+| [Creating an Account and Logging In](#creating-an-account-and-logging-in)| How to create an account and login          |
+| [Patient App Guide](#patient-app)                                        | How to use the Patient App                  |
+| [Clinic App Guide](#clinic-app)                                          | How to use the Clinic App                   |
+
+
+
 ## Creating an Account and Logging In
 
 ### Creating a Patient User Account
