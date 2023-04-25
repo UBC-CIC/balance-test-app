@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:core';
 import 'package:amplify_flutter/amplify_flutter.dart';
+import 'package:balance_test/range_graphs_page.dart';
 import 'package:balance_test/sit_to_stand_analytics_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
@@ -477,6 +478,85 @@ class _AnalyticsPageState extends State<AnalyticsPage> {
                   ),
                 ),
               ),
+            ),
+
+            GestureDetector(
+              onTap: () {
+                Gaimon.selection();
+                Navigator.push(
+                    widget.parentCtx,
+                    //Used to pop to main page instead of home
+                    MaterialPageRoute(builder: (context) => RangeGraphsPage(userID: widget.userID)));
+              },
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(0, 4, 0, 4),
+                child: Center(
+                  child: Card(
+                    color: const Color(0xffffffff),
+                    elevation: 1,
+                    shadowColor: Colors.white70,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20.0),
+                    ),
+                    child: SizedBox(
+                      width: width * 0.90,
+                      height: 80,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Padding(
+                            padding: EdgeInsets.fromLTRB(0.06 * width, 0, 0, 0),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Container(
+                                  alignment: Alignment.centerLeft,
+                                  width: 0.5 * width,
+                                  height: 50,
+                                  child: FittedBox(
+                                    fit: BoxFit.scaleDown,
+                                    child: Text(
+                                      'Sensor Range Graphs',
+                                      style: GoogleFonts.nunito(
+                                        textStyle: const TextStyle(
+                                          color: Color(0xff2A2A2A),
+                                          fontSize: 22,
+                                          fontWeight: FontWeight.w700,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.fromLTRB(0, 0, 5, 0),
+                            child: SizedBox(
+                              height: 0.13 * width,
+                              width: 0.13 * width,
+                              child: Icon(
+                                CupertinoIcons.forward,
+                                color: const Color(0xffc4c4c6),
+                                size: 0.06 * width,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+            const Divider(
+              height: 22,
+              thickness: 1,
+              indent: 5,
+              endIndent: 5,
+              color: Colors.transparent,
             ),
             Padding(
               padding: EdgeInsets.fromLTRB(0.05 * width, 20, 0, 0),
