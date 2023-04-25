@@ -72,8 +72,8 @@ Click on the Sit to Stand analytics button to view more movement specific analyt
 
 |   |   |
 |---|---|
-|<img src="../assets/account_page.png" width="70%">| The account page lets you view your account information, including name, email, user ID, and recording countdown time. |
-|<img src="../assets/countdown_selection_page.png" width="70%">| Clicking on the Countdown button will open a page allowing you to change the countdown duration. |
+|<img src="../assets/account_page.png" width="60%">| The account page lets you view your account information, including name, email, user ID, and recording countdown time. |
+|<img src="../assets/countdown_selection_page.png" width="60%">| Clicking on the Countdown button will open a page allowing you to change the countdown duration. |
 
 ## Clinic App
 
@@ -98,6 +98,6 @@ From the Patient Page, the Past Tests page, New Test Page, and Analytics page fr
 
 |   |   |
 |---|---|
-|<img src="../assets/clinic_summary_page.png" width="70%">| In the Test Summary page of recordings done on Clinic accounts, there is an option to assign a score between 0-100 for the tests. For every 10 tests sent with an assigned score, a traning job will be started to train the patient's machine learning model on all tests that have been sent with an assigned score. |
+|<img src="../assets/clinic_summary_page.png" width="100%">| In the Test Summary page of recordings done on Clinic accounts, there is an option to assign a score between 0-100 for the tests. For every 10 tests sent with an assigned score, a traning job will be started to train the patient's machine learning model on all tests that have been sent with an assigned score. |
 
 NOTE: Scores can only be assigned from the Clinic App in administrator accounts created from the web dashboard.
