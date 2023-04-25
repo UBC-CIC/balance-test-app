@@ -81,7 +81,7 @@ Click on the Sit to Stand analytics button to view more movement specific analyt
 
 |   |   |
 |---|---|
-|<img src="../assets/clinic_patient_list.PNG" width="70%">| In the Patient List page of the clinic app, care providers will be able to view the names and user IDs of all patients assigned to them. New patients are able to be assigned in the web dashboard.|
+|<img src="../assets/clinic_patient_list.png" width="70%">| In the Patient List page of the clinic app, care providers will be able to view the names and user IDs of all patients assigned to them. New patients are able to be assigned in the web dashboard.|
 
 ### Patient Page
 Clicking on a patient takes you to the Patient Page.
