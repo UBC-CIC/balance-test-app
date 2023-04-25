@@ -1,10 +1,10 @@
-# Balance Test Mobile App Deployment
+# Balance Test Mobile App Deployment Guide
 
-
+<b>Note: This is the deployment guide for the Mobile App of the Balance Test Project. Please ensure you have deployed the [AWS backend and web dashboard](https://github.com/UBC-CIC/balance-test-dashboard/blob/main/docs/DeploymentGuide.md) before proceeding with this guide.</b>
 
 | Index                                                      | Description                                               |
 |:-----------------------------------------------------------|:----------------------------------------------------------| 
-| [Dependencies](#Dependencies)                              | Prerequisite dependencies                                 |
+| [Dependencies](#Dependencies)                              | Required services and tools for deployment                                 |
 | [Clone the Repository](#clone-the-repository)              | How to clone this repository                              |
 | [Initialize a new Amplify Project](#initialize-a-new-amplify-project)| Set up a new Amplify Project           |
 | [Import Existing Amazon Cognito Resources into your Amplify Project](#import-existing-amazon-cognito-resources-into-your-amplify-project)| Connect your Amplify project with backend resources|
@@ -13,11 +13,19 @@
 
 ## Dependencies
 Before you start deploying, you must have the following dependencies:
-- [NodeJS](https://nodejs.org/en/download/)
-- [Git](https://git-scm.com/downloads)
-- [AWS Account](https://aws.amazon.com/account/) 
-- [GitHub Account](https://github.com/) 
-- Install the [Amplify CLI](https://docs.amplify.aws/cli) tool.
+- [GitHub Account](https://github.com/)
+- [Git](https://git-scm.com/)
+- [AWS Account](https://aws.amazon.com/account/)
+- [AWS CLI](https://aws.amazon.com/cli/)
+- [Android Studio, version 2020.3.1 (Arctic Fox) or later](https://docs.flutter.dev/get-started/install/macos#install-android-studio)
+- [Flutter](https://docs.flutter.dev/get-started/install/macos#get-sdk)
+- [Xcode](https://docs.flutter.dev/get-started/install/macos#install-xcode)
+- [CocoaPods](https://guides.cocoapods.org/using/getting-started.html#installation) - Additionally, if you are installing on an Apple Silicon Mac, run the command:
+```
+sudo gem uninstall ffi && sudo gem install ffi -- --enable-libffi-alloc
+```
+
+
 
 If you do not currently have a configured AWS Account, configure an account with the following instructions:
 
