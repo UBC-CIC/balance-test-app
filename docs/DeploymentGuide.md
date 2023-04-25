@@ -112,7 +112,7 @@ version: 1.0.0+1
 flutter build ios
 ```
 5. Once the Xcode build is complete, select `Product>Archive` in the Xcode menu bar. Wait for the archive to complete.
-6. Once the archive has completed, a window should appear showing all your archives. Select the most recent archive and click `Distribute App`
+6. Once the archive has completed, a window should appear showing all of your archives. Select the most recent archive and click `Distribute App`
 ![Xcode Archives](/assets/xcode_archives.png)
 7. Select `App Store Connect > Upload > Strip Swift Symbols + Upload your app's symbols + Manage Version and Build Number > Automatically manage signing > Upload`
 

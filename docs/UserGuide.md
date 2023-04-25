@@ -23,7 +23,7 @@
 
 |   |   |
 |---|---|
-|<img src="../assets/login_page.PNG" width="85%">| Patients and administrators are able to login from the same login page. Administrators will be directed to the Clinic App and patients will be directed to the Clinic App. Administrator accounts for clinicians can be created in the web dashboard. |
+|<img src="../assets/login_page.PNG" width="85%">| Patients and care providers are able to login from the same login page. Care providers will be directed to the Clinic App and patients will be directed to the Clinic App. Administrator accounts for clinicians can be created in the web dashboard. |
 
 
 
@@ -64,7 +64,7 @@
 
 |   |   |
 |---|---|
-|<img src="../assets/account_page.PNG" width="55%">| This page allows you to view your account information, including name, email, user ID, and recording countdown time. |
+|<img src="../assets/account_page.PNG" width="55%">| The account page lets you view your account information, including name, email, user ID, and recording countdown time. |
 |<img src="../assets/countdown_selection.PNG" width="55%">| Clicking on the Countdown button will open a page allowing you to change the countdown duration. |
 
 ## Clinic App
@@ -73,7 +73,7 @@
 
 |   |   |
 |---|---|
-|<img src="../assets/patient_list_page.PNG" width="77%">| In the Patient List page of the clinic app, administrators will be able to view the names and user IDs of all patients assigned to them. New patients are able to be assigned in the web dashboard.|
+|<img src="../assets/patient_list_page.PNG" width="77%">| In the Patient List page of the clinic app, care providers will be able to view the names and user IDs of all patients assigned to them. New patients are able to be assigned in the web dashboard.|
 
 ### Patient Page
 Clicking on a patient takes you to the Patient Page.
