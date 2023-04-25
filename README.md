@@ -14,22 +14,22 @@ Start by following the instructions [here](https://github.com/UBC-CIC/balance-te
 ## Patient App
 
 <p float="left">
-  <img src="assets/new_test_page.png" width="30%"/>
-  <img src="assets/recording_page.png" width="30%"/>
-  <img src="assets/recording_in_progress.png" width="30%"/> 
+  <img src="assets/new_test_page.PNG" width="30%"/>
+  <img src="assets/recording_page.PNG" width="30%"/>
+  <img src="assets/recording_in_progress.PNG" width="30%"/> 
 </p>
 <p float="left">
-  <img src="assets/analytics_page.png" width="30%"/>
-  <img src="assets/past_tests_page.png" width="30%"/>
-  <img src="assets/account_page.png" width="30%"/> 
+  <img src="assets/analytics_page.PNG" width="30%"/>
+  <img src="assets/past_tests_page.PNG" width="30%"/>
+  <img src="assets/account_page.PNG" width="30%"/> 
 </p>
 
 ## Clinic App
 
 <p float="left">
-  <img src="assets/clinic_past_tests.png" width="30%"/>
-  <img src="assets/clinic_new_test.png" width="30%"/>
-  <img src="assets/clinic_analytics.png" width="30%"/> 
+  <img src="assets/clinic_past_tests.PNG" width="30%"/>
+  <img src="assets/clinic_new_test.PNG" width="30%"/>
+  <img src="assets/clinic_analytics.PNG" width="30%"/> 
 </p>
 
 

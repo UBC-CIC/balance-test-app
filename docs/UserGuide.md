@@ -36,9 +36,9 @@
 |<img src="../assets/new_test_page.PNG" width="70%">| In the Home page, patients will be able to see the movement tests assigned to them. The estimated movement duration is noted in the bottom left corner. |
 |<img src="../assets/instructions_page.PNG" width="70%">| To start the test, click on the `Start` button of a movement test. This will open a new page containing the instructions to the movement. |
 |<img src="../assets/recording_page.PNG" width="70%">| To head to the recording page, click on the Begin button. This will take you to a page with a timer and a `Start` button. |
-|<img src="../assets/countdown_page.PNG" width="70%">| When the `Start` button is pressed, a countdown page will appear to allow you to prepare for the movement. The countdown can be dismissed early by tapping anywhere on the screen. |
+|<img src="../assets/countdown_page.png" width="70%">| When the `Start` button is pressed, a countdown page will appear to allow you to prepare for the movement. The countdown can be dismissed early by tapping anywhere on the screen. |
 |<img src="../assets/recording_in_progress.PNG" width="70%">| Once the countdown is finished, the app will start recording. To stop the recording, tap anywhere on the screen. |
-|<img src="../assets/summary_page.PNG" width="70%">| After the test recording, the app will navigate to a summary page for review. Additional notes can be entered and saved if needed. To upload and save the recording to the backend, click on the button with the arrow icon. |
+|<img src="../assets/summary_page.png" width="70%">| After the test recording, the app will navigate to a summary page for review. Additional notes can be entered and saved if needed. To upload and save the recording to the backend, click on the button with the arrow icon. |
 
 
 >
@@ -72,7 +72,7 @@ Click on the Sit to Stand analytics button to view more movement specific analyt
 
 |   |   |
 |---|---|
-|<img src="../assets/account_page.png" width="60%">| The account page lets you view your account information, including name, email, user ID, and recording countdown time. |
+|<img src="../assets/account_page.PNG" width="60%">| The account page lets you view your account information, including name, email, user ID, and recording countdown time. |
 |<img src="../assets/countdown_selection_page.png" width="60%">| Clicking on the Countdown button will open a page allowing you to change the countdown duration. |
 
 ## Clinic App
