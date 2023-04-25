@@ -12,18 +12,20 @@
 
 
 ## Dependencies
-Before you start deploying, you must have the following dependencies:
+The full list of steps to create and deploy a new Flutter application from scratch can be found [here](https://docs.flutter.dev/get-started/install/macos#deploy-to-ios-devices).
+
+ Below are the required tools and services to deploy the existing project from the GitHub repository:
+ - [Apple Developer Account enrolled in the Apple Developer Program](https://developer.apple.com/programs/enroll/)
 - [GitHub Account](https://github.com/)
 - [Git](https://git-scm.com/)
 - [AWS Account](https://aws.amazon.com/account/)
-- [Amplify CLI](https://docs.amplify.aws/start/getting-started/installation/q/integration/flutter/)
 - [Flutter](https://docs.flutter.dev/get-started/install/macos#get-sdk)
+- [Amplify CLI](https://docs.amplify.aws/start/getting-started/installation/q/integration/flutter/)
 - [Android Studio, version 2020.3.1 (Arctic Fox) or later](https://docs.flutter.dev/get-started/install/macos#install-android-studio)
 - [Xcode](https://docs.flutter.dev/get-started/install/macos#install-xcode)
-- [CocoaPods](https://guides.cocoapods.org/using/getting-started.html#installation) - Additionally, if you are installing on an Apple Silicon Mac, run the command:
-```
-sudo gem uninstall ffi && sudo gem install ffi -- --enable-libffi-alloc
-```
+- [CocoaPods](https://guides.cocoapods.org/using/getting-started.html#installation) - Additionally, if you are installing on an Apple Silicon Mac, follow step 2 of [this section](https://docs.flutter.dev/get-started/install/macos#deploy-to-ios-devices)
+
+
 
 
 ## Clone The Repository
@@ -44,7 +46,7 @@ In terminal, **cd** into root directory of the project folder by running the fol
 cd balance-test-app/
 ```
 
-## Import Amplify
+## Import Amplify Project
 
 1. In terminal, from your project's root directory, run the following command to import the existing Amplify project in your AWS account
 ```
@@ -64,7 +66,7 @@ The official guide to register your app can be found [here](https://docs.flutter
 
 
 ### Register a Bundle ID
-1. To get started, log in to [App Store Connect](https://appstoreconnect.apple.com/) with your Apple Developer account and open the [Identifiers Page](https://developer.apple.com/account/resources/identifiers/list).
+1. To get started, sign in to [App Store Connect](https://appstoreconnect.apple.com/) with your Apple Developer account and open the [Identifiers Page](https://developer.apple.com/account/resources/identifiers/list).
 2. Click **+** to create a new Bundle ID.
 3. Select **App ID > App**
 4. Enter a description (name for the Bundle ID) and an **Explicit** unique Bundle Id (e.g. **com.[organization name].balanceTestApp**)
