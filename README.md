@@ -27,9 +27,9 @@ Start by following the instructions [here](https://github.com/UBC-CIC/balance-te
 ## Clinic App
 
 <p float="left">
-  <img src="assets/clinic_past_tests.PNG" width="30%"/>
-  <img src="assets/clinic_new_test.PNG" width="30%"/>
-  <img src="assets/clinic_analytics.PNG" width="30%"/> 
+  <img src="assets/clinic_past_tests.png" width="30%"/>
+  <img src="assets/clinic_new_test.png" width="30%"/>
+  <img src="assets/clinic_analytics.png" width="30%"/> 
 </p>
 
 
