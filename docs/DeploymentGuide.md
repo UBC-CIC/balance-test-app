@@ -16,7 +16,7 @@ Before you start deploying, you must have the following dependencies:
 - [GitHub Account](https://github.com/)
 - [Git](https://git-scm.com/)
 - [AWS Account](https://aws.amazon.com/account/)
-- [AWS CLI](https://aws.amazon.com/cli/)
+- [Amplify CLI](https://docs.amplify.aws/cli/)
 - [Android Studio, version 2020.3.1 (Arctic Fox) or later](https://docs.flutter.dev/get-started/install/macos#install-android-studio)
 - [Flutter](https://docs.flutter.dev/get-started/install/macos#get-sdk)
 - [Xcode](https://docs.flutter.dev/get-started/install/macos#install-xcode)
@@ -25,17 +25,6 @@ Before you start deploying, you must have the following dependencies:
 sudo gem uninstall ffi && sudo gem install ffi -- --enable-libffi-alloc
 ```
 
-
-
-If you do not currently have a configured AWS Account, configure an account with the following instructions:
-
-- Configure the AWS CLI tool for your AWS Account in the `ca-central-1` region, using a user with programmatic access and the "AdministratorAccess" policy (moving forward, we will assume you have [configured a profile](https://awscli.amazonaws.com/v2/documentation/api/latest/reference/configure/index.html) called `health-platform`):
-  > `aws configure --profile health-platform`
-
-If you already have a configured AWS account, you may use your own configured account to deploy. Please note that if you decide to use your own account to deploy, be sure to change our command line commands to use your profile whenever there is a ```--profile``` command.
-```
---profile YOUR_AWS_PROFILE_HERE
-```
 
 ## Clone The Repository
 
