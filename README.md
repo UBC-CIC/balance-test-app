@@ -3,7 +3,7 @@ Start by following the instructions [here](https://github.com/UBC-CIC/balance-te
 
 |Index| Description|
 |:----------------|:-----------|
-| [Screenshots](#demo)         |     View screenshots of the application.    |
+| [Screenshots](#screenshots)         |     View screenshots of the application.    |
 | [Deployment](#deployment-guide)         |    Learn how to deploy this project yourself. |
 | [User Guide](#user-guide)         |    Learn how to use this application. |
 | [License](#license)      |     License details.     |
@@ -12,17 +12,24 @@ Start by following the instructions [here](https://github.com/UBC-CIC/balance-te
 # Screenshots
 
 ## Patient App
+
 <p float="left">
-  <img src="../assets/clinic_past_tests_page.png" width="30%"/>
-  <img src="../assets/clinic_past_tests_page.png" width="30%"/>
-  <img src="../assets/clinic_past_tests_page.png" width="30%"/>
+  <img src="assets/new_test_page.png" width="30%"/>
+  <img src="assets/recording_page.png" width="30%"/>
+  <img src="assets/recording_in_progress.png" width="30%"/> 
+</p>
+<p float="left">
+  <img src="assets/analytics_page.png" width="30%"/>
+  <img src="assets/past_tests_page.png" width="30%"/>
+  <img src="assets/account_page.png" width="30%"/> 
 </p>
 
 ## Clinic App
+
 <p float="left">
-  <img src="../assets/clinic_past_tests_page.png" width="30%"/>
-  <img src="../assets/clinic_new_test_page.png" width="30%"/>
-  <img src="../assets/clinic_analytics_page.png" width="30%"/>
+  <img src="assets/clinic_past_tests.png" width="30%"/>
+  <img src="assets/clinic_new_test.png" width="30%"/>
+  <img src="assets/clinic_analytics.png" width="30%"/> 
 </p>
 
 
