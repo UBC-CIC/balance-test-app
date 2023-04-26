@@ -6,8 +6,7 @@
 |:-----------------------------------------------------------|:----------------------------------------------------------| 
 | [Dependencies](#Dependencies)                              | Required services and tools for deployment                                 |
 | [Clone the Repository](#clone-the-repository)              | How to clone this repository                              |
-| [Initialize a new Amplify Project](#initialize-a-new-amplify-project)| Set up a new Amplify Project           |
-| [Import Existing Amazon Cognito Resources into your Amplify Project](#import-existing-amazon-cognito-resources-into-your-amplify-project)| Connect your Amplify project with backend resources|
+| [Import Amplify Project](#import-amplify-project)| Import the existing Amplify project           |
 | [Deploy to TestFlight](#deploy-to-testflight)              | Deploy your app to TestFlight for testers to use          |
 
 
