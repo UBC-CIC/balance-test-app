@@ -12,7 +12,7 @@
 
 
 ## Dependencies
-The full list of steps to create and deploy a new Flutter application from scratch can be found [here](https://docs.flutter.dev/get-started/install/macos#deploy-to-ios-devices).
+The full list of steps to create and deploy a new Flutter application from scratch can be found [here](https://docs.flutter.dev/get-started/install/macos).
 
  Below are the required tools and services to deploy the existing project from the GitHub repository:
  - [Apple Developer Account enrolled in the Apple Developer Program](https://developer.apple.com/programs/enroll/)

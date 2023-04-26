@@ -552,7 +552,7 @@ class _AnalyticsPageState extends State<AnalyticsPage> {
               ),
             ),
             const Divider(
-              height: 22,
+              height: 5,
               thickness: 1,
               indent: 5,
               endIndent: 5,
