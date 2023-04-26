@@ -47,15 +47,15 @@
 
 |   |   |
 |---|---|
-|<img src="../assets/past_tests_page.PNG" width="70%">| The Past Tests page displays a list of previously recorded movement tests. Each test block displays the score, the movement type, and the date it was completed. |
-|<img src="../assets/test_details_page.PNG" width="70%">| Clicking on a test will open the Test Details page. The test details are displayed here, including date and time, test duration, score, and notes. IMU sensor graphs can be found below the test details as well. These graphs display the raw data recorded from each IMU sensor and axes. | 
+|<img src="../assets/past_tests_page.PNG" width="90%">| The Past Tests page displays a list of previously recorded movement tests. Each test block displays the score, the movement type, and the date it was completed. Scores that are manually assigned will appear in black text while scores that are assigned by the machine learning model will appear in colour.|
+|<img src="../assets/test_details_page.PNG" width="90%">| Clicking on a test will open the Test Details page. The test details are displayed here, including date and time, test duration, score, and notes. IMU sensor graphs can be found below the test details as well. These graphs display the raw data recorded from each IMU sensor and axes. | 
 
 
 ### Analytics Page
 
 |   |   |
 |---|---|
-|<img src="../assets/analytics_page.PNG" width="70%">| The Analytics page displays the patient’s weekly and monthly balance score averages. Beside the averages shows how the current average compares to the previous week or month. |
+|<img src="../assets/analytics_page.PNG" width="65%">| The Analytics page displays the patient’s weekly and monthly balance score averages. Beside the averages shows how the current average compares to the previous week or month. |
 
 Click on the Sensor Range Graphs button to navigate to a page to view sensor range graphs.
 

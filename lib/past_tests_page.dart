@@ -253,9 +253,6 @@ class _PastTestsState extends State<PastTests> {
                         buttonPadding: EdgeInsets.only(left: 0.02 * width, right: 0.02 * width),
                         buttonDecoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(14),
-                          // border: Border.all(
-                          //   color: Colors.black26,
-                          // ),
                           color: Colors.transparent,
                         ),
                         buttonElevation: 0,
@@ -297,6 +294,7 @@ class _PastTestsState extends State<PastTests> {
                               dateTimeObj: test.start_time!.getDateTimeInUtc(),
                               userID: widget.userID,
                               duration: test.end_time!.getDateTimeInUtc().difference(test.start_time!.getDateTimeInUtc()).inSeconds,
+                              assignedScore: test.doctor_score != null ? true : false,
                             )));
                   },
                   child: Padding(

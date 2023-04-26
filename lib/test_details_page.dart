@@ -19,6 +19,7 @@ class TestDetailsPage extends StatefulWidget {
     required this.dateTimeObj,
     required this.userID,
     required this.duration,
+    required this.assignedScore,
   }) : super(key: key);
 
   final String testID;
@@ -30,6 +31,7 @@ class TestDetailsPage extends StatefulWidget {
   final DateTime dateTimeObj;
   final String userID;
   final int duration;
+  final bool assignedScore;
 
   @override
   State<TestDetailsPage> createState() => _TestDetailsPageState();
@@ -347,6 +349,24 @@ class _TestDetailsPageState extends State<TestDetailsPage> {
                                                 fontSize: 20,
                                                 fontWeight: FontWeight.bold,
                                               ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                      Row(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: const [
+                                          Padding(
+                                              padding: EdgeInsets.fromLTRB(0, 0, 3, 0),
+                                              child: Icon(
+                                                CupertinoIcons.info,
+                                                size: 16,
+                                                color: Color(0xffa4a3aa),
+                                              )),
+                                          Flexible(
+                                            child: Text(
+                                              'Assigned Score',
+                                              style: TextStyle(fontSize: 15, color: Color(0xffa4a3aa)),
                                             ),
                                           ),
                                         ],
