@@ -6,6 +6,8 @@ Start by following the instructions [here](https://github.com/UBC-CIC/balance-te
 | [Screenshots](#screenshots)         |     View screenshots of the application.    |
 | [Deployment](#deployment-guide)         |    Learn how to deploy this project yourself. |
 | [User Guide](#user-guide)         |    Learn how to use this application. |
+| [Changelog](#changelog)         |    Any changes post publish |
+| [Credits](#credits)         |    Meet the team behind the solution |
 | [License](#license)      |     License details.     |
 
 
@@ -40,6 +42,15 @@ To deploy this solution, please follow our [Deployment Guide](docs/DeploymentGui
 # User Guide
 
 For instructions on how to use the mobile app, refer to the [User Guide](docs/UserGuide.md).
+
+# Changelog
+
+View the changelog [here](/docs/Changelog.md)
+
+# Credits
+
+This application was architected and developed by Timothy Jin, with guidance from the UBC CIC technical and project management teams.
+
 
 
 # License
