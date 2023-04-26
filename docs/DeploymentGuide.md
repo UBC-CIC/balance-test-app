@@ -123,3 +123,4 @@ flutter build ios
 3. Once a tester is added, the app should be automatically submitted for review. The reviewing process could take a few days to process.
 4. Once the build is processed, testers will recieve a code in their email for TestFlight.
 5. Testers can then install TestFlight from the Apple App Store, sign in with their Apple ID, enter the TestFlight code from their email, and install the build.
+6. Builds uploaded to TestFlight have a lifespan of 90 days and will expire after that. To create another build of the app to upload to TestFlight after the 90 day period, please follow the steps above to [create another build](#create-a-build) and [upload to TestFlight](#deploy-to-testflight-1).
