@@ -23,7 +23,7 @@
 
 |   |   |
 |---|---|
-|<img src="../assets/sign_in_page.png" width="85%">| Patients and care providers are able to login from the same login page. Care providers will be directed to the Clinic App and patients will be directed to the Clinic App. Administrator accounts for clinicians can be created in the web dashboard. |
+|<img src="../assets/sign_in_page.png" width="85%">| Patients and care providers are able to login from the same login page. Care providers will be directed to the Clinic App and patients will be directed to the Clinic App. Care provider accounts for clinicians can be created in the web dashboard. |
 
 
 
