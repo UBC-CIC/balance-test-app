@@ -353,7 +353,7 @@ class _TestDetailsPageState extends State<TestDetailsPage> {
                                           ),
                                         ],
                                       ),
-                                      Row(
+                                      widget.assignedScore ? Row(
                                         crossAxisAlignment: CrossAxisAlignment.start,
                                         children: const [
                                           Padding(
@@ -370,7 +370,7 @@ class _TestDetailsPageState extends State<TestDetailsPage> {
                                             ),
                                           ),
                                         ],
-                                      ),
+                                      ) : Container(),
                                     ],
                                   ),
                                 ),
