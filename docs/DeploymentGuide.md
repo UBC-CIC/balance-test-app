@@ -52,7 +52,8 @@ cd balance-test-app/
 ```
 amplify pull
 ```
-2. Select the Amplify project that you created when deploying the web dashboard and backend. 
+2. Select the Amplify project that you created when deploying the web dashboard and backend. Confirm that the ID matches the Amplify project ID found in the AWS console.
+![Xcode Navigator](/assets/amplify_console_page.png)
 3. Choose **Android Studio** as your default editor and **flutter** as the type of app. 
 4. Set the storage location for the configuration file as `./lib/`
 5. Select **Yes** for "Do you plan on modifying this backend?"
@@ -118,7 +119,7 @@ flutter build ios
 
 ### Deploy to TestFlight
 
-1. Once the Xcode upload is complete, navigate to your app page on App Store Connect. Under `Builds > iOS`, there should be a list of builds uploaded from Xcode. Builds may take a few minutes to appear here. 
+1. Once the Xcode upload is complete, navigate to your app page in App Store Connect. Under `Builds > iOS`, there should be a list of builds uploaded from Xcode. Builds may take a few minutes to appear here. 
 2. Once the uploaded build appears, click on it, fill in the Test Details, and **add Testers by their Apple ID**
 3. Once a tester is added, the app should be automatically submitted for review. The reviewing process could take a few days to process.
 4. Once the build is processed, testers will recieve a code in their email for TestFlight.
