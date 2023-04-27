@@ -23,6 +23,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner:false,
       title: 'Main',
       theme: ThemeData(
         primarySwatch: Colors.blue,
@@ -88,18 +89,27 @@ class _PageRouterState extends State<PageRouter> {
     );
     String token = (authSession as CognitoAuthSession).userPoolTokens!.idToken;
     Map<String, dynamic> payload = Jwt.parseJwt(token);
-    String userGroup = payload['cognito:groups'][0];
+    String userGroup;
+    if(payload['cognito:groups']!=null) {
+      userGroup = payload['cognito:groups'][0];
+    } else {
+      userGroup = '';
+    }
     //Wait for user group to be assigned if not already assigned
     int counter = 0;
     while (userGroup != 'patient' && userGroup != 'careProvider') {
-      if (counter < 120) {
+      if (counter < 10) {
         await Future.delayed(const Duration(seconds: 1));
         authSession = await Amplify.Auth.fetchAuthSession(
           options: CognitoSessionOptions(getAWSCredentials: true),
         );
         token = (authSession as CognitoAuthSession).userPoolTokens!.idToken;
         payload = Jwt.parseJwt(token);
-        userGroup = payload['cognito:groups'][0];
+        if(payload['cognito:groups']!=null) {
+          userGroup = payload['cognito:groups'][0];
+        } else {
+          userGroup = '';
+        }
         counter++;
       } else {
         await Amplify.Auth.signOut();
@@ -197,18 +207,27 @@ class _PageRouterState extends State<PageRouter> {
     // Parse the JWT
     Map<String, dynamic> payload = Jwt.parseJwt(token);
     // Access the groups
-    String userGroup = payload['cognito:groups'][0];
+    String userGroup;
+    if(payload['cognito:groups']!=null) {
+      userGroup = payload['cognito:groups'][0];
+    } else {
+      userGroup = '';
+    }
     //Wait for user group to be assigned
     int counter = 0;
     while (userGroup != 'patient' && userGroup != 'careProvider') {
-      if (counter < 120) {
+      if (counter < 10) {
         await Future.delayed(const Duration(seconds: 1));
         authSession = await Amplify.Auth.fetchAuthSession(
           options: CognitoSessionOptions(getAWSCredentials: true),
         );
         token = (authSession as CognitoAuthSession).userPoolTokens!.idToken;
         payload = Jwt.parseJwt(token);
-        userGroup = payload['cognito:groups'][0];
+        if(payload['cognito:groups']!=null) {
+          userGroup = payload['cognito:groups'][0];
+        } else {
+          userGroup = '';
+        }
         counter++;
       } else {
         await Amplify.Auth.signOut();
@@ -397,6 +416,7 @@ class _PageRouterState extends State<PageRouter> {
           }
         },
         child: MaterialApp(
+          debugShowCheckedModeBanner:false,
           // set the default theme
           theme: ThemeData.from(
             colorScheme: ColorScheme.fromSwatch(
