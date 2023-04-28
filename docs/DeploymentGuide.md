@@ -16,11 +16,12 @@ The full list of steps to create and deploy a new Flutter application from scrat
  Below are the required tools and services to deploy the existing project from the GitHub repository:
  - [Apple Developer Account enrolled in the Apple Developer Program](https://developer.apple.com/programs/enroll/)
 - [GitHub Account](https://github.com/)
-- [Git](https://git-scm.com/)
+- [Git](https://git-scm.com/) v2.14.1 or later
 - [Node.js](https://nodejs.org/en/download) v14.x or later
+- [npm](https://www.npmjs.com/) v6.14.4 or later
 - [AWS Account](https://aws.amazon.com/account/)
 - [Flutter](https://docs.flutter.dev/get-started/install/macos#get-sdk) version 3.3 or higher
-- [Amplify CLI](https://docs.amplify.aws/start/getting-started/installation/q/integration/flutter/)
+- [Amplify CLI](https://docs.amplify.aws/cli/start/install/)
 - [Android Studio, version 2020.3.1 (Arctic Fox) or later](https://docs.flutter.dev/get-started/install/macos#install-android-studio)
 - [Xcode](https://docs.flutter.dev/get-started/install/macos#install-xcode)
 - [CocoaPods](https://guides.cocoapods.org/using/getting-started.html#installation) - Additionally, if you are installing on an Apple Silicon Mac, follow step 2 of [this section](https://docs.flutter.dev/get-started/install/macos#deploy-to-ios-devices)
