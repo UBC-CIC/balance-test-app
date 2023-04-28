@@ -17,12 +17,17 @@ The full list of steps to create and deploy a new Flutter application from scrat
  - [Apple Developer Account enrolled in the Apple Developer Program](https://developer.apple.com/programs/enroll/)
 - [GitHub Account](https://github.com/)
 - [Git](https://git-scm.com/)
+- [Node.js](https://nodejs.org/en/download) v14.x or later
 - [AWS Account](https://aws.amazon.com/account/)
-- [Flutter](https://docs.flutter.dev/get-started/install/macos#get-sdk)
+- [Flutter](https://docs.flutter.dev/get-started/install/macos#get-sdk) version 3.3 or higher
 - [Amplify CLI](https://docs.amplify.aws/start/getting-started/installation/q/integration/flutter/)
 - [Android Studio, version 2020.3.1 (Arctic Fox) or later](https://docs.flutter.dev/get-started/install/macos#install-android-studio)
 - [Xcode](https://docs.flutter.dev/get-started/install/macos#install-xcode)
 - [CocoaPods](https://guides.cocoapods.org/using/getting-started.html#installation) - Additionally, if you are installing on an Apple Silicon Mac, follow step 2 of [this section](https://docs.flutter.dev/get-started/install/macos#deploy-to-ios-devices)
+
+
+
+Please configure your AWS Account user with administrator access in the Amplify CLI by following the instructions found [here](https://docs.amplify.aws/cli/start/install/#configure-the-amplify-cli).
 
 
 
@@ -100,7 +105,7 @@ open ios/Runner.xcworkspace
 6. In the **Signing & Capabilities** tab, ensure **Automatically manage signing** is checked and Team is set to the account/team associated with your Apple Developer account. Under Bundle Identifier, check that the Bundle Id matches with the Bundle Id created in App Store Connect
 
 ### Create a Build
-1. In Xcode, under the General tab, check that the Version number is set to 1.0.0 and the Build number is set to 1 **for your first deployment**. For future deployments, increment the Version number and reset the Build number for major updates (e.g. 1.0.1+1). For minor updates, incrementing just the Build number is sufficient (e.g. 1.0.0+2). 
+1. In Xcode, in the General tab under Identity, check that the Version number is set to 1.0.0 and the Build number is set to 1 **for your first deployment**. For future deployments, increment the Version number and reset the Build number for major updates (e.g. 1.0.1+1). For minor updates, incrementing just the Build number is sufficient (e.g. 1.0.0+2). 
 2. In Android Studio, open the **pubspec.yaml** file located in the root directory of your project. Set the version and build number located near the top of the file to match with the version and build number of the current deployment and save the file:
 ```yaml
 version: 1.0.0+1
