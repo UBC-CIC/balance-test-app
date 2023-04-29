@@ -3,6 +3,7 @@ import 'package:amplify_auth_cognito/amplify_auth_cognito.dart';
 import 'package:amplify_authenticator/amplify_authenticator.dart';
 import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:amplify_storage_s3/amplify_storage_s3.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -112,6 +113,29 @@ class _PageRouterState extends State<PageRouter> {
         }
         counter++;
       } else {
+        if(context.mounted) {
+          await showDialog<String>(
+            context: context,
+            builder: (BuildContext context) =>
+                CupertinoAlertDialog(
+                  title: const Text('Invalid Credentials'),
+                  content: const Text('Please contact your administrator or care provider to gain access to this application.'),
+                  actions: <CupertinoDialogAction>[
+                    CupertinoDialogAction(
+
+                      /// This parameter indicates the action would perform
+                      /// a destructive action such as deletion, and turns
+                      /// the action's text color to red.
+                      isDestructiveAction: false,
+                      onPressed: () async {
+                        Navigator.pop(context);
+                      },
+                      child: const Text('OK'),
+                    ),
+                  ],
+                ),
+          );
+        }
         await Amplify.Auth.signOut();
         break;
       }
@@ -230,6 +254,29 @@ class _PageRouterState extends State<PageRouter> {
         }
         counter++;
       } else {
+        if(context.mounted) {
+          await showDialog<String>(
+            context: context,
+            builder: (BuildContext context) =>
+                CupertinoAlertDialog(
+                  title: const Text('Invalid Credentials'),
+                  content: const Text('Please contact your administrator or care provider to gain access to this application.'),
+                  actions: <CupertinoDialogAction>[
+                    CupertinoDialogAction(
+
+                      /// This parameter indicates the action would perform
+                      /// a destructive action such as deletion, and turns
+                      /// the action's text color to red.
+                      isDestructiveAction: false,
+                      onPressed: () async {
+                        Navigator.pop(context);
+                      },
+                      child: const Text('OK'),
+                    ),
+                  ],
+                ),
+          );
+        }
         await Amplify.Auth.signOut();
         break;
       }
