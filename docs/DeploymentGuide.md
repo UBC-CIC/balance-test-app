@@ -101,8 +101,9 @@ open ios/Runner.xcworkspace
 ![Xcode Navigator](/assets/xcode_navigator.png)
 3. In the **General** tab, choose a display name for the app
 4. Under **Minimum Deployments**, ensure it is set to iOS 11.0
-5. Please **ENTER and VERIFY** the **Bundle Identifier** matches with the Bundle Id created in App Store Connect
+5. Head to the **Signing & Capabilities** tab and sign in with your Apple Developer account if have not done so already
 ![Xcode settings](/assets/xcode_settings.png)
+5. Please **ENTER and VERIFY** the **Bundle Identifier** matches with the Bundle Id created in App Store Connect
 6. In the **Signing & Capabilities** tab, ensure **Automatically manage signing** is checked and Team is set to the account/team associated with your Apple Developer account. Under Bundle Identifier, check that the Bundle Id matches with the Bundle Id created in App Store Connect
 
 ### Create a Build
