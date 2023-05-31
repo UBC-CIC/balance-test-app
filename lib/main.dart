@@ -7,7 +7,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:jwt_decode/jwt_decode.dart';
 import 'ClinicApp.dart';
 import 'PatientApp.dart';
 import 'amplifyconfiguration.dart';
@@ -61,19 +60,19 @@ class _PageRouterState extends State<PageRouter> {
 
   Future<void> _checkUserSignIn() async {
     await _configureAmplify();
-    StreamSubscription hubSubscription = Amplify.Hub.listen([HubChannel.Auth], (hubEvent) {
-      print(hubEvent.eventName);
-      switch (hubEvent.eventName) {
-        case "SIGNED_IN":
-          {
-            initNotSignedIn();
-          }
+    final hubSubscription = Amplify.Hub.listen(HubChannel.Auth, (AuthHubEvent event) {
+      switch (event.type) {
+        case AuthHubEventType.signedIn:
+          initNotSignedIn();
           break;
-        case "SIGNED_OUT":
-          {}
+        case AuthHubEventType.signedOut:
+          safePrint('User is signed out.');
           break;
-        case "SESSION_EXPIRED":
-          {}
+        case AuthHubEventType.sessionExpired:
+          safePrint('The session has expired.');
+          break;
+        case AuthHubEventType.userDeleted:
+          safePrint('The user has been deleted.');
           break;
       }
     });
@@ -88,11 +87,11 @@ class _PageRouterState extends State<PageRouter> {
     AuthSession authSession = await Amplify.Auth.fetchAuthSession(
       options: CognitoSessionOptions(getAWSCredentials: true),
     );
-    String token = (authSession as CognitoAuthSession).userPoolTokens!.idToken;
-    Map<String, dynamic> payload = Jwt.parseJwt(token);
+    List<String> groups = (authSession as CognitoAuthSession).userPoolTokensResult.value.idToken.groups;
+    print(groups);
     String userGroup;
-    if(payload['cognito:groups']!=null) {
-      userGroup = payload['cognito:groups'][0];
+    if(groups.isNotEmpty) {
+      userGroup = groups[0];
     } else {
       userGroup = '';
     }
@@ -104,10 +103,9 @@ class _PageRouterState extends State<PageRouter> {
         authSession = await Amplify.Auth.fetchAuthSession(
           options: CognitoSessionOptions(getAWSCredentials: true),
         );
-        token = (authSession as CognitoAuthSession).userPoolTokens!.idToken;
-        payload = Jwt.parseJwt(token);
-        if(payload['cognito:groups']!=null) {
-          userGroup = payload['cognito:groups'][0];
+        List<String> groups = (authSession as CognitoAuthSession).userPoolTokensResult.value.idToken.groups;
+        if(groups.isNotEmpty) {
+          userGroup = groups[0];
         } else {
           userGroup = '';
         }
@@ -156,7 +154,7 @@ class _PageRouterState extends State<PageRouter> {
       try {
         await Amplify.Auth.updateUserAttribute(
           userAttributeKey: const CognitoUserAttributeKey.custom('identity_id'),
-          value: identityId.split(":")[1],
+          value: identityId,
         );
       } on AmplifyException catch (e) {
         if (kDebugMode) {
@@ -166,11 +164,16 @@ class _PageRouterState extends State<PageRouter> {
     }
     //Fetch attributes, add patient to patient table if patient user, and route to Patient App or Clinic App
     final Map<String, String> userAttributes = await fetchCurrentUserAttributes();
+    final authSessionCreatePatient = await Amplify.Auth.fetchAuthSession(
+      options: CognitoSessionOptions(getAWSCredentials: true),
+    );
+    String identityIdCreatePatient = (authSessionCreatePatient as CognitoAuthSession).identityId!;
     if (userGroup == 'patient') {
+
       try {
         var query = '''
             mutation MyMutation2 {
-              createPatient(patient_id: "${userAttributes['custom:identity_id']}", email: "${userAttributes['email']}", first_name: "${userAttributes['given_name']}", last_name: "${userAttributes['family_name']}") {
+              createPatient(patient_id: "$identityIdCreatePatient", email: "${userAttributes['email']}", first_name: "${userAttributes['given_name']}", last_name: "${userAttributes['family_name']}") {
                 email
                 first_name
                 last_name
@@ -179,6 +182,7 @@ class _PageRouterState extends State<PageRouter> {
             }
           ''';
 
+        print(query);
         final response = await Amplify.API
             .query(request: GraphQLRequest<String>(document: query, variables: {'patient_id': "${userAttributes['custom:identity_id']}"}))
             .response;
@@ -188,6 +192,7 @@ class _PageRouterState extends State<PageRouter> {
             print('errors: ${response.errors}');
           }
           await Amplify.Auth.signOut();
+          return;
         } else {
           if (kDebugMode) {
             print(response.data);
@@ -195,8 +200,11 @@ class _PageRouterState extends State<PageRouter> {
         }
       } on ApiException catch (e) {
         if (kDebugMode) {
-          print('Query failed: $e');
+          print(
+              'Query failed: $e');
         }
+        await Amplify.Auth.signOut();
+        return;
       }
       if (context.mounted) {
         Navigator.of(context).push(
@@ -227,13 +235,11 @@ class _PageRouterState extends State<PageRouter> {
     AuthSession authSession = await Amplify.Auth.fetchAuthSession(
       options: CognitoSessionOptions(getAWSCredentials: true),
     );
-    String token = (authSession as CognitoAuthSession).userPoolTokens!.idToken;
-    // Parse the JWT
-    Map<String, dynamic> payload = Jwt.parseJwt(token);
+    List<String> groups = (authSession as CognitoAuthSession).userPoolTokens!.idToken.groups;
     // Access the groups
     String userGroup;
-    if(payload['cognito:groups']!=null) {
-      userGroup = payload['cognito:groups'][0];
+    if(groups.isNotEmpty) {
+      userGroup = groups[0];
     } else {
       userGroup = '';
     }
@@ -245,10 +251,10 @@ class _PageRouterState extends State<PageRouter> {
         authSession = await Amplify.Auth.fetchAuthSession(
           options: CognitoSessionOptions(getAWSCredentials: true),
         );
-        token = (authSession as CognitoAuthSession).userPoolTokens!.idToken;
-        payload = Jwt.parseJwt(token);
-        if(payload['cognito:groups']!=null) {
-          userGroup = payload['cognito:groups'][0];
+        List<String> groups = (authSession as CognitoAuthSession).userPoolTokens!.idToken.groups;
+        // Access the groups
+        if(groups.isNotEmpty) {
+          userGroup = groups[0];
         } else {
           userGroup = '';
         }
@@ -310,9 +316,12 @@ class _PageRouterState extends State<PageRouter> {
 
   Future<bool> _configureAmplify() async {
     final api = AmplifyAPI(modelProvider: ModelProvider.instance, authProviders: const [CustomFunctionProvider()]);
+    final storagePlugin = AmplifyStorageS3(
+      prefixResolver: const PassThroughPrefixResolver(),
+    );
     try {
       await Amplify.addPlugin(AmplifyAuthCognito());
-      await Amplify.addPlugin(AmplifyStorageS3());
+      await Amplify.addPlugin(storagePlugin);
       await Amplify.addPlugin(api);
       await Amplify.configure(amplifyconfig);
       return true;
@@ -330,14 +339,13 @@ class _PageRouterState extends State<PageRouter> {
     final authSession = await Amplify.Auth.fetchAuthSession(
       options: CognitoSessionOptions(getAWSCredentials: true),
     );
-    String token = (authSession as CognitoAuthSession).userPoolTokens!.idToken;
-    // Parse the JWT
-    Map<String, dynamic> payload = Jwt.parseJwt(token);
+    List<String> groups = (authSession as CognitoAuthSession).userPoolTokens!.idToken.groups;
     // Access the groups
-    String userGroup = payload['cognito:groups'][0];
+    String userGroup = groups[0];
 
     authInfo = data;
     authInfo["user_group"] = userGroup;
+    print(authInfo);
     return authInfo;
   }
 
@@ -496,7 +504,7 @@ class CustomFunctionProvider extends FunctionAuthProvider {
     AuthSession authSession = await Amplify.Auth.fetchAuthSession(
       options: CognitoSessionOptions(getAWSCredentials: true),
     );
-    String token = (authSession as CognitoAuthSession).userPoolTokens!.idToken;
+    String token = (authSession as CognitoAuthSession).userPoolTokens!.idToken.raw;
     return token;
   }
 }

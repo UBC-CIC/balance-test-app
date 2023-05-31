@@ -77,11 +77,9 @@ class _RangeGraphsPageState extends State<RangeGraphsPage> {
           }
         }
       ''';
-
       final response = await Amplify.API
           .query(request: GraphQLRequest<String>(document: query, variables: {'patient_id': widget.userID}))
           .response;
-
       if (response.data == null) {
         if (kDebugMode) {
           print('errors: ${response.errors}');
@@ -89,7 +87,7 @@ class _RangeGraphsPageState extends State<RangeGraphsPage> {
         return <charts.Series<TimeSeriesRangeData, DateTime>>[];
       } else {
         final  rangeDataJson = json.decode(response.data!);
-        if(rangeDataJson["getMeasurementRange"]['min']==null || rangeDataJson["getMeasurementRange"]['max']==null) {
+        if(rangeDataJson==null || rangeDataJson["getMeasurementRange"]==null || rangeDataJson[ "getMeasurementRange"]['min']==null || rangeDataJson["getMeasurementRange"]['max']==null) {
           return <charts.Series<TimeSeriesRangeData, DateTime>>[];
         }
         List<double> minList = rangeDataJson["getMeasurementRange"]['min'].map<double>((e) => double.parse(e.toString()))

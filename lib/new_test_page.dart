@@ -45,9 +45,9 @@ class _NewTestPageState extends State<NewTestPage> {
           }
         }
       ''';
-
+        print(query);
       final response = await Amplify.API.query(request: GraphQLRequest<String>(document: query, variables: {'patient_id': widget.userID})).response;
-
+      print(response.data);
       if (response.data == null) {
         if (kDebugMode) {
           print('errors: ${response.errors}');
@@ -55,7 +55,6 @@ class _NewTestPageState extends State<NewTestPage> {
         return <Test>[];
       } else {
         final testListJson = json.decode(response.data!);
-
         List<Test> tempList = [];
 
         testListJson["getPatientAssignedTests"].forEach((entry) {

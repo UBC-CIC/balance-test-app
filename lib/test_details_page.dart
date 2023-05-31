@@ -70,9 +70,8 @@ class _TestDetailsPageState extends State<TestDetailsPage> {
           }
         }
       ''';
-
+      print(query);
       final response = await Amplify.API.query(request: GraphQLRequest<String>(document: query, variables: {'patient_id': widget.userID})).response;
-
       if (response.data == null) {
         if (kDebugMode) {
           print('errors: ${response.errors}');

@@ -1,5 +1,7 @@
 import 'dart:math';
+import 'package:amplify_auth_cognito/amplify_auth_cognito.dart';
 import 'package:amplify_flutter/amplify_flutter.dart';
+import 'package:amplify_storage_s3/amplify_storage_s3.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -14,7 +16,6 @@ import 'package:gaimon/gaimon.dart';
 import 'package:path_provider/path_provider.dart';
 import 'dart:io';
 import 'package:uuid/uuid.dart';
-
 
 class TestSummary extends StatefulWidget {
   const TestSummary({
@@ -125,13 +126,13 @@ class _TestSummaryState extends State<TestSummary> {
       if (n >= 10) return '$n';
       return '0$n';
     }
+
     DateTime dateTime = DateTime.parse(input).toLocal();
     DateFormat outputFormat = DateFormat("yyyy-MM-dd HH:mm:ss");
     String outputTimeString = outputFormat.format(dateTime);
     final duration = dateTime.timeZoneOffset, hours = duration.inHours;
     return "$outputTimeString${hours > 0 ? '+' : '-'}${twoDigits(hours.abs())}";
   }
-
 
   Future<bool> postRequest() async {
     String testID = uuid.v4();
@@ -187,8 +188,16 @@ class _TestSummaryState extends State<TestSummary> {
 
     String body = json.encode(arrayMap);
 
-    String key = widget.isClinicApp? (clinicScoreController.text.isNotEmpty? 'patientID=${widget.userID}/movement=${widget.movementType}/training/test_event_id=$testID.json' : 'patientID=${widget.userID}/movement=${widget.movementType}/year=${now.year.toString()}/month=${now.month.toString()}/day=${now.day.toString()}/test_event_id=$testID.json') :
-    'movement=${widget.movementType}/year=${now.year.toString()}/month=${now.month.toString()}/day=${now.day.toString()}/test_event_id=$testID.json';
+    final authSession = await Amplify.Auth.fetchAuthSession(
+      options: CognitoSessionOptions(getAWSCredentials: true),
+    );
+    String identityId = (authSession as CognitoAuthSession).identityId!;
+
+    String key = widget.isClinicApp
+        ? (clinicScoreController.text.isNotEmpty
+        ? 'recording_data/patientID=${widget.userID}/movement=${widget.movementType}/training/test_event_id=$testID.json'
+        : 'recording_data/patientID=${widget.userID}/movement=${widget.movementType}/year=${now.year.toString()}/month=${now.month.toString()}/day=${now.day.toString()}/test_event_id=$testID.json')
+        : 'recording_data/patientID=$identityId/movement=${widget.movementType}/year=${now.year.toString()}/month=${now.month.toString()}/day=${now.day.toString()}/test_event_id=$testID.json';
 
     final tempDir = await getTemporaryDirectory();
     final tempFile = File('${tempDir.path}/recording.json')
@@ -206,7 +215,7 @@ class _TestSummaryState extends State<TestSummary> {
             patient_id: "${widget.userID}",
             test_event_id: "$testID",
             test_type: "${widget.movementType}",
-            ${clinicScoreController.text.isNotEmpty? 'doctor_score: ${clinicScoreController.text}' : ''}) {
+            ${clinicScoreController.text.isNotEmpty ? 'doctor_score: ${clinicScoreController.text}' : ''}) {
             notes}
         }
       ''';
@@ -221,21 +230,14 @@ class _TestSummaryState extends State<TestSummary> {
 
     // Upload the file to S3
     try {
-      final UploadFileResult result = await Amplify.Storage.uploadFile(
-          local: tempFile,
-          options: UploadFileOptions(
-            accessLevel: StorageAccessLevel.private,
-          ),
-          key: key,
-          onProgress: (progress) {
-            safePrint('Fraction completed: ${progress.getFractionCompleted()}');
-          });
-      safePrint('Successfully uploaded file: ${result.key}');
+      final result = await Amplify.Storage.uploadData(
+        data: S3DataPayload.json(arrayMap),
+        key: key,
+      ).result;
+      safePrint('Uploaded data: ${result.uploadedItem.key}');
     } on StorageException catch (e) {
       try {
-        if (kDebugMode) {
-          print('deleting from rds');
-        }
+        safePrint('Error uploading data: ${e.message}');
 
         var query = '''
         mutation MyMutation {
@@ -441,53 +443,53 @@ class _TestSummaryState extends State<TestSummary> {
                         ),
                         widget.isClinicApp
                             ? Column(
-                                children: [
-                                  Padding(
-                                    padding: EdgeInsets.fromLTRB(0.05 * width, 0.02 * height, 0.05 * width, 0),
-                                    child: Container(
-                                      decoration: BoxDecoration(color: const Color(0x0A3F51B5), borderRadius: BorderRadius.circular(10)),
-                                      padding: EdgeInsets.fromLTRB(0.06 * width, 8, 0, 6),
-                                      child: Column(
-                                        mainAxisSize: MainAxisSize.min,
-                                        children: [
-                                          CupertinoTextField.borderless(
-                                            controller: clinicScoreController,
-                                            maxLength: 3,
-                                            onChanged: updateFilledStatus,
-                                            keyboardType: const TextInputType.numberWithOptions(signed: true, decimal: false),
-                                            padding: const EdgeInsets.only(left: 45, top: 6, right: 6, bottom: 6),
-                                            prefix: const Text(
-                                              'Assign Score',
-                                              style: TextStyle(fontSize: 16),
-                                            ),
-                                            placeholder: 'Optional',
-                                          ),
-                                        ],
+                          children: [
+                            Padding(
+                              padding: EdgeInsets.fromLTRB(0.05 * width, 0.02 * height, 0.05 * width, 0),
+                              child: Container(
+                                decoration: BoxDecoration(color: const Color(0x0A3F51B5), borderRadius: BorderRadius.circular(10)),
+                                padding: EdgeInsets.fromLTRB(0.06 * width, 8, 0, 6),
+                                child: Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    CupertinoTextField.borderless(
+                                      controller: clinicScoreController,
+                                      maxLength: 3,
+                                      onChanged: updateFilledStatus,
+                                      keyboardType: const TextInputType.numberWithOptions(signed: true, decimal: false),
+                                      padding: const EdgeInsets.only(left: 45, top: 6, right: 6, bottom: 6),
+                                      prefix: const Text(
+                                        'Assign Score',
+                                        style: TextStyle(fontSize: 16),
                                       ),
+                                      placeholder: 'Optional',
                                     ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                            showScoreInputWarning
+                                ? Padding(
+                              padding: EdgeInsets.fromLTRB(0.1 * width, 10, 0.05 * width, 0),
+                              child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: const [
+                                Padding(
+                                    padding: EdgeInsets.fromLTRB(0, 0, 3, 0),
+                                    child: Icon(
+                                      CupertinoIcons.exclamationmark_circle,
+                                      size: 16,
+                                      color: Colors.red,
+                                    )),
+                                Flexible(
+                                  child: Text(
+                                    'Please enter a score between 0-100',
+                                    style: TextStyle(fontSize: 15, color: Colors.red),
                                   ),
-                                  showScoreInputWarning
-                                      ? Padding(
-                                          padding: EdgeInsets.fromLTRB(0.1 * width, 10, 0.05 * width, 0),
-                                          child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: const [
-                                            Padding(
-                                                padding: EdgeInsets.fromLTRB(0, 0, 3, 0),
-                                                child: Icon(
-                                                  CupertinoIcons.exclamationmark_circle,
-                                                  size: 16,
-                                                  color: Colors.red,
-                                                )),
-                                            Flexible(
-                                              child: Text(
-                                                'Please enter a score between 0-100',
-                                                style: TextStyle(fontSize: 15, color: Colors.red),
-                                              ),
-                                            )
-                                          ]),
-                                        )
-                                      : Container(),
-                                ],
-                              )
+                                )
+                              ]),
+                            )
+                                : Container(),
+                          ],
+                        )
                             : Container(),
                         Padding(
                           padding: const EdgeInsets.fromLTRB(0, 20, 0, 0),
@@ -582,16 +584,15 @@ class _TestSummaryState extends State<TestSummary> {
 
                                                     final response = await Amplify.API
                                                         .query(
-                                                            request:
-                                                                GraphQLRequest<String>(document: query, variables: {'patient_id': widget.userID}))
+                                                        request:
+                                                        GraphQLRequest<String>(document: query, variables: {'patient_id': widget.userID}))
                                                         .response;
 
                                                     if (response.data == null) {
                                                       if (kDebugMode) {
                                                         print('errors: ${response.errors}');
                                                       }
-                                                    } else {
-                                                    }
+                                                    } else {}
                                                   } on ApiException catch (e) {
                                                     if (kDebugMode) {
                                                       print('Query failed: $e');
