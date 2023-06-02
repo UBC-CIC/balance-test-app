@@ -33,7 +33,7 @@ class _ClinicHomePageState extends State<ClinicHomePage> {
     try {
       var query = '''
         query MyQuery {
-          getPatientsForCareprovider(care_provider_id: "${widget.userID}") {
+          getPatientsForCareprovider(care_provider_id: "${widget.userID.split(":")[1]}") {
             email
             first_name
             last_name
@@ -42,10 +42,12 @@ class _ClinicHomePageState extends State<ClinicHomePage> {
         }
       ''';
 
+      print(query);
+
       final response = await Amplify.API
           .query(request: GraphQLRequest<String>(document: query, variables: {'patient_id': widget.userID}))
           .response;
-
+    print(response);
       if (response.data == null) {
         if (kDebugMode) {
           print('errors: ${response.errors}');
